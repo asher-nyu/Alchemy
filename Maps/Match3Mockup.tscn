@@ -1,0 +1,914 @@
+[gd_scene load_steps=7 format=3 uid="uid://qcajss72ygjo"]
+
+[ext_resource type="Texture2D" uid="uid://mintveg123456" path="res://assets/vegetables/mint.png" id="1_mint"]
+[ext_resource type="Texture2D" uid="uid://c8vwyay00abcd" path="res://Art Assets/garlic.png" id="2_garlic"]
+[ext_resource type="Texture2D" uid="uid://defgh1i2j3klm" path="res://Art Assets/ginger.png" id="3_ginger"]
+[ext_resource type="Texture2D" uid="uid://bxpmd47jf3elj" path="res://Art Assets/bg_landscape.png" id="4_background"]
+[ext_resource type="Script" uid="uid://b1uqchtcun0te" path="res://Scripts/TileGrid.gd" id="5_tilegrid"]
+[ext_resource type="Texture2D" uid="uid://cgdub0h3mjyld" path="res://Art Assets/tile_bg.png" id="6_tilebg"]
+
+[node name="Match3Mockup" type="Node2D"]
+
+[node name="Background" type="Sprite2D" parent="."]
+z_index = -1
+position = Vector2(602, 338)
+texture = ExtResource("4_background")
+
+[node name="TileGrid" type="Node2D" parent="."]
+position = Vector2(270, 30)
+script = ExtResource("5_tilegrid")
+tile_texture = ExtResource("6_tilebg")
+
+[node name="@Sprite2D@29407" type="Sprite2D" parent="TileGrid"]
+z_index = -10
+position = Vector2(100, 100)
+scale = Vector2(0.22, 0.22)
+texture = ExtResource("6_tilebg")
+
+[node name="@Sprite2D@29408" type="Sprite2D" parent="TileGrid"]
+z_index = -10
+position = Vector2(100, 160)
+scale = Vector2(0.22, 0.22)
+texture = ExtResource("6_tilebg")
+
+[node name="@Sprite2D@29409" type="Sprite2D" parent="TileGrid"]
+z_index = -10
+position = Vector2(100, 220)
+scale = Vector2(0.22, 0.22)
+texture = ExtResource("6_tilebg")
+
+[node name="@Sprite2D@29410" type="Sprite2D" parent="TileGrid"]
+z_index = -10
+position = Vector2(100, 280)
+scale = Vector2(0.22, 0.22)
+texture = ExtResource("6_tilebg")
+
+[node name="@Sprite2D@29411" type="Sprite2D" parent="TileGrid"]
+z_index = -10
+position = Vector2(100, 340)
+scale = Vector2(0.22, 0.22)
+texture = ExtResource("6_tilebg")
+
+[node name="@Sprite2D@29412" type="Sprite2D" parent="TileGrid"]
+z_index = -10
+position = Vector2(100, 400)
+scale = Vector2(0.22, 0.22)
+texture = ExtResource("6_tilebg")
+
+[node name="@Sprite2D@29413" type="Sprite2D" parent="TileGrid"]
+z_index = -10
+position = Vector2(100, 460)
+scale = Vector2(0.22, 0.22)
+texture = ExtResource("6_tilebg")
+
+[node name="@Sprite2D@29414" type="Sprite2D" parent="TileGrid"]
+z_index = -10
+position = Vector2(100, 520)
+scale = Vector2(0.22, 0.22)
+texture = ExtResource("6_tilebg")
+
+[node name="@Sprite2D@29415" type="Sprite2D" parent="TileGrid"]
+z_index = -10
+position = Vector2(100, 580)
+scale = Vector2(0.22, 0.22)
+texture = ExtResource("6_tilebg")
+
+[node name="@Sprite2D@29416" type="Sprite2D" parent="TileGrid"]
+z_index = -10
+position = Vector2(160, 100)
+scale = Vector2(0.22, 0.22)
+texture = ExtResource("6_tilebg")
+
+[node name="@Sprite2D@29417" type="Sprite2D" parent="TileGrid"]
+z_index = -10
+position = Vector2(160, 160)
+scale = Vector2(0.22, 0.22)
+texture = ExtResource("6_tilebg")
+
+[node name="@Sprite2D@29418" type="Sprite2D" parent="TileGrid"]
+z_index = -10
+position = Vector2(160, 220)
+scale = Vector2(0.22, 0.22)
+texture = ExtResource("6_tilebg")
+
+[node name="@Sprite2D@29419" type="Sprite2D" parent="TileGrid"]
+z_index = -10
+position = Vector2(160, 280)
+scale = Vector2(0.22, 0.22)
+texture = ExtResource("6_tilebg")
+
+[node name="@Sprite2D@29420" type="Sprite2D" parent="TileGrid"]
+z_index = -10
+position = Vector2(160, 340)
+scale = Vector2(0.22, 0.22)
+texture = ExtResource("6_tilebg")
+
+[node name="@Sprite2D@29421" type="Sprite2D" parent="TileGrid"]
+z_index = -10
+position = Vector2(160, 400)
+scale = Vector2(0.22, 0.22)
+texture = ExtResource("6_tilebg")
+
+[node name="@Sprite2D@29422" type="Sprite2D" parent="TileGrid"]
+z_index = -10
+position = Vector2(160, 460)
+scale = Vector2(0.22, 0.22)
+texture = ExtResource("6_tilebg")
+
+[node name="@Sprite2D@29423" type="Sprite2D" parent="TileGrid"]
+z_index = -10
+position = Vector2(160, 520)
+scale = Vector2(0.22, 0.22)
+texture = ExtResource("6_tilebg")
+
+[node name="@Sprite2D@29424" type="Sprite2D" parent="TileGrid"]
+z_index = -10
+position = Vector2(160, 580)
+scale = Vector2(0.22, 0.22)
+texture = ExtResource("6_tilebg")
+
+[node name="@Sprite2D@29425" type="Sprite2D" parent="TileGrid"]
+z_index = -10
+position = Vector2(220, 100)
+scale = Vector2(0.22, 0.22)
+texture = ExtResource("6_tilebg")
+
+[node name="@Sprite2D@29426" type="Sprite2D" parent="TileGrid"]
+z_index = -10
+position = Vector2(220, 160)
+scale = Vector2(0.22, 0.22)
+texture = ExtResource("6_tilebg")
+
+[node name="@Sprite2D@29427" type="Sprite2D" parent="TileGrid"]
+z_index = -10
+position = Vector2(220, 220)
+scale = Vector2(0.22, 0.22)
+texture = ExtResource("6_tilebg")
+
+[node name="@Sprite2D@29428" type="Sprite2D" parent="TileGrid"]
+z_index = -10
+position = Vector2(220, 280)
+scale = Vector2(0.22, 0.22)
+texture = ExtResource("6_tilebg")
+
+[node name="@Sprite2D@29429" type="Sprite2D" parent="TileGrid"]
+z_index = -10
+position = Vector2(220, 340)
+scale = Vector2(0.22, 0.22)
+texture = ExtResource("6_tilebg")
+
+[node name="@Sprite2D@29430" type="Sprite2D" parent="TileGrid"]
+z_index = -10
+position = Vector2(220, 400)
+scale = Vector2(0.22, 0.22)
+texture = ExtResource("6_tilebg")
+
+[node name="@Sprite2D@29431" type="Sprite2D" parent="TileGrid"]
+z_index = -10
+position = Vector2(220, 460)
+scale = Vector2(0.22, 0.22)
+texture = ExtResource("6_tilebg")
+
+[node name="@Sprite2D@29432" type="Sprite2D" parent="TileGrid"]
+z_index = -10
+position = Vector2(220, 520)
+scale = Vector2(0.22, 0.22)
+texture = ExtResource("6_tilebg")
+
+[node name="@Sprite2D@29433" type="Sprite2D" parent="TileGrid"]
+z_index = -10
+position = Vector2(220, 580)
+scale = Vector2(0.22, 0.22)
+texture = ExtResource("6_tilebg")
+
+[node name="@Sprite2D@29434" type="Sprite2D" parent="TileGrid"]
+z_index = -10
+position = Vector2(280, 100)
+scale = Vector2(0.22, 0.22)
+texture = ExtResource("6_tilebg")
+
+[node name="@Sprite2D@29435" type="Sprite2D" parent="TileGrid"]
+z_index = -10
+position = Vector2(280, 160)
+scale = Vector2(0.22, 0.22)
+texture = ExtResource("6_tilebg")
+
+[node name="@Sprite2D@29436" type="Sprite2D" parent="TileGrid"]
+z_index = -10
+position = Vector2(280, 220)
+scale = Vector2(0.22, 0.22)
+texture = ExtResource("6_tilebg")
+
+[node name="@Sprite2D@29437" type="Sprite2D" parent="TileGrid"]
+z_index = -10
+position = Vector2(280, 280)
+scale = Vector2(0.22, 0.22)
+texture = ExtResource("6_tilebg")
+
+[node name="@Sprite2D@29438" type="Sprite2D" parent="TileGrid"]
+z_index = -10
+position = Vector2(280, 340)
+scale = Vector2(0.22, 0.22)
+texture = ExtResource("6_tilebg")
+
+[node name="@Sprite2D@29439" type="Sprite2D" parent="TileGrid"]
+z_index = -10
+position = Vector2(280, 400)
+scale = Vector2(0.22, 0.22)
+texture = ExtResource("6_tilebg")
+
+[node name="@Sprite2D@29440" type="Sprite2D" parent="TileGrid"]
+z_index = -10
+position = Vector2(280, 460)
+scale = Vector2(0.22, 0.22)
+texture = ExtResource("6_tilebg")
+
+[node name="@Sprite2D@29441" type="Sprite2D" parent="TileGrid"]
+z_index = -10
+position = Vector2(280, 520)
+scale = Vector2(0.22, 0.22)
+texture = ExtResource("6_tilebg")
+
+[node name="@Sprite2D@29442" type="Sprite2D" parent="TileGrid"]
+z_index = -10
+position = Vector2(280, 580)
+scale = Vector2(0.22, 0.22)
+texture = ExtResource("6_tilebg")
+
+[node name="@Sprite2D@29443" type="Sprite2D" parent="TileGrid"]
+z_index = -10
+position = Vector2(340, 100)
+scale = Vector2(0.22, 0.22)
+texture = ExtResource("6_tilebg")
+
+[node name="@Sprite2D@29444" type="Sprite2D" parent="TileGrid"]
+z_index = -10
+position = Vector2(340, 160)
+scale = Vector2(0.22, 0.22)
+texture = ExtResource("6_tilebg")
+
+[node name="@Sprite2D@29445" type="Sprite2D" parent="TileGrid"]
+z_index = -10
+position = Vector2(340, 220)
+scale = Vector2(0.22, 0.22)
+texture = ExtResource("6_tilebg")
+
+[node name="@Sprite2D@29446" type="Sprite2D" parent="TileGrid"]
+z_index = -10
+position = Vector2(340, 280)
+scale = Vector2(0.22, 0.22)
+texture = ExtResource("6_tilebg")
+
+[node name="@Sprite2D@29447" type="Sprite2D" parent="TileGrid"]
+z_index = -10
+position = Vector2(340, 340)
+scale = Vector2(0.22, 0.22)
+texture = ExtResource("6_tilebg")
+
+[node name="@Sprite2D@29448" type="Sprite2D" parent="TileGrid"]
+z_index = -10
+position = Vector2(340, 400)
+scale = Vector2(0.22, 0.22)
+texture = ExtResource("6_tilebg")
+
+[node name="@Sprite2D@29449" type="Sprite2D" parent="TileGrid"]
+z_index = -10
+position = Vector2(340, 460)
+scale = Vector2(0.22, 0.22)
+texture = ExtResource("6_tilebg")
+
+[node name="@Sprite2D@29450" type="Sprite2D" parent="TileGrid"]
+z_index = -10
+position = Vector2(340, 520)
+scale = Vector2(0.22, 0.22)
+texture = ExtResource("6_tilebg")
+
+[node name="@Sprite2D@29451" type="Sprite2D" parent="TileGrid"]
+z_index = -10
+position = Vector2(340, 580)
+scale = Vector2(0.22, 0.22)
+texture = ExtResource("6_tilebg")
+
+[node name="@Sprite2D@29452" type="Sprite2D" parent="TileGrid"]
+z_index = -10
+position = Vector2(400, 100)
+scale = Vector2(0.22, 0.22)
+texture = ExtResource("6_tilebg")
+
+[node name="@Sprite2D@29453" type="Sprite2D" parent="TileGrid"]
+z_index = -10
+position = Vector2(400, 160)
+scale = Vector2(0.22, 0.22)
+texture = ExtResource("6_tilebg")
+
+[node name="@Sprite2D@29454" type="Sprite2D" parent="TileGrid"]
+z_index = -10
+position = Vector2(400, 220)
+scale = Vector2(0.22, 0.22)
+texture = ExtResource("6_tilebg")
+
+[node name="@Sprite2D@29455" type="Sprite2D" parent="TileGrid"]
+z_index = -10
+position = Vector2(400, 280)
+scale = Vector2(0.22, 0.22)
+texture = ExtResource("6_tilebg")
+
+[node name="@Sprite2D@29456" type="Sprite2D" parent="TileGrid"]
+z_index = -10
+position = Vector2(400, 340)
+scale = Vector2(0.22, 0.22)
+texture = ExtResource("6_tilebg")
+
+[node name="@Sprite2D@29457" type="Sprite2D" parent="TileGrid"]
+z_index = -10
+position = Vector2(400, 400)
+scale = Vector2(0.22, 0.22)
+texture = ExtResource("6_tilebg")
+
+[node name="@Sprite2D@29458" type="Sprite2D" parent="TileGrid"]
+z_index = -10
+position = Vector2(400, 460)
+scale = Vector2(0.22, 0.22)
+texture = ExtResource("6_tilebg")
+
+[node name="@Sprite2D@29459" type="Sprite2D" parent="TileGrid"]
+z_index = -10
+position = Vector2(400, 520)
+scale = Vector2(0.22, 0.22)
+texture = ExtResource("6_tilebg")
+
+[node name="@Sprite2D@29460" type="Sprite2D" parent="TileGrid"]
+z_index = -10
+position = Vector2(400, 580)
+scale = Vector2(0.22, 0.22)
+texture = ExtResource("6_tilebg")
+
+[node name="@Sprite2D@29461" type="Sprite2D" parent="TileGrid"]
+z_index = -10
+position = Vector2(460, 100)
+scale = Vector2(0.22, 0.22)
+texture = ExtResource("6_tilebg")
+
+[node name="@Sprite2D@29462" type="Sprite2D" parent="TileGrid"]
+z_index = -10
+position = Vector2(460, 160)
+scale = Vector2(0.22, 0.22)
+texture = ExtResource("6_tilebg")
+
+[node name="@Sprite2D@29463" type="Sprite2D" parent="TileGrid"]
+z_index = -10
+position = Vector2(460, 220)
+scale = Vector2(0.22, 0.22)
+texture = ExtResource("6_tilebg")
+
+[node name="@Sprite2D@29464" type="Sprite2D" parent="TileGrid"]
+z_index = -10
+position = Vector2(460, 280)
+scale = Vector2(0.22, 0.22)
+texture = ExtResource("6_tilebg")
+
+[node name="@Sprite2D@29465" type="Sprite2D" parent="TileGrid"]
+z_index = -10
+position = Vector2(460, 340)
+scale = Vector2(0.22, 0.22)
+texture = ExtResource("6_tilebg")
+
+[node name="@Sprite2D@29466" type="Sprite2D" parent="TileGrid"]
+z_index = -10
+position = Vector2(460, 400)
+scale = Vector2(0.22, 0.22)
+texture = ExtResource("6_tilebg")
+
+[node name="@Sprite2D@29467" type="Sprite2D" parent="TileGrid"]
+z_index = -10
+position = Vector2(460, 460)
+scale = Vector2(0.22, 0.22)
+texture = ExtResource("6_tilebg")
+
+[node name="@Sprite2D@29468" type="Sprite2D" parent="TileGrid"]
+z_index = -10
+position = Vector2(460, 520)
+scale = Vector2(0.22, 0.22)
+texture = ExtResource("6_tilebg")
+
+[node name="@Sprite2D@29469" type="Sprite2D" parent="TileGrid"]
+z_index = -10
+position = Vector2(460, 580)
+scale = Vector2(0.22, 0.22)
+texture = ExtResource("6_tilebg")
+
+[node name="@Sprite2D@29470" type="Sprite2D" parent="TileGrid"]
+z_index = -10
+position = Vector2(520, 100)
+scale = Vector2(0.22, 0.22)
+texture = ExtResource("6_tilebg")
+
+[node name="@Sprite2D@29471" type="Sprite2D" parent="TileGrid"]
+z_index = -10
+position = Vector2(520, 160)
+scale = Vector2(0.22, 0.22)
+texture = ExtResource("6_tilebg")
+
+[node name="@Sprite2D@29472" type="Sprite2D" parent="TileGrid"]
+z_index = -10
+position = Vector2(520, 220)
+scale = Vector2(0.22, 0.22)
+texture = ExtResource("6_tilebg")
+
+[node name="@Sprite2D@29473" type="Sprite2D" parent="TileGrid"]
+z_index = -10
+position = Vector2(520, 280)
+scale = Vector2(0.22, 0.22)
+texture = ExtResource("6_tilebg")
+
+[node name="@Sprite2D@29474" type="Sprite2D" parent="TileGrid"]
+z_index = -10
+position = Vector2(520, 340)
+scale = Vector2(0.22, 0.22)
+texture = ExtResource("6_tilebg")
+
+[node name="@Sprite2D@29475" type="Sprite2D" parent="TileGrid"]
+z_index = -10
+position = Vector2(520, 400)
+scale = Vector2(0.22, 0.22)
+texture = ExtResource("6_tilebg")
+
+[node name="@Sprite2D@29476" type="Sprite2D" parent="TileGrid"]
+z_index = -10
+position = Vector2(520, 460)
+scale = Vector2(0.22, 0.22)
+texture = ExtResource("6_tilebg")
+
+[node name="@Sprite2D@29477" type="Sprite2D" parent="TileGrid"]
+z_index = -10
+position = Vector2(520, 520)
+scale = Vector2(0.22, 0.22)
+texture = ExtResource("6_tilebg")
+
+[node name="@Sprite2D@29478" type="Sprite2D" parent="TileGrid"]
+z_index = -10
+position = Vector2(520, 580)
+scale = Vector2(0.22, 0.22)
+texture = ExtResource("6_tilebg")
+
+[node name="@Sprite2D@29479" type="Sprite2D" parent="TileGrid"]
+z_index = -10
+position = Vector2(580, 100)
+scale = Vector2(0.22, 0.22)
+texture = ExtResource("6_tilebg")
+
+[node name="@Sprite2D@29480" type="Sprite2D" parent="TileGrid"]
+z_index = -10
+position = Vector2(580, 160)
+scale = Vector2(0.22, 0.22)
+texture = ExtResource("6_tilebg")
+
+[node name="@Sprite2D@29481" type="Sprite2D" parent="TileGrid"]
+z_index = -10
+position = Vector2(580, 220)
+scale = Vector2(0.22, 0.22)
+texture = ExtResource("6_tilebg")
+
+[node name="@Sprite2D@29482" type="Sprite2D" parent="TileGrid"]
+z_index = -10
+position = Vector2(580, 280)
+scale = Vector2(0.22, 0.22)
+texture = ExtResource("6_tilebg")
+
+[node name="@Sprite2D@29483" type="Sprite2D" parent="TileGrid"]
+z_index = -10
+position = Vector2(580, 340)
+scale = Vector2(0.22, 0.22)
+texture = ExtResource("6_tilebg")
+
+[node name="@Sprite2D@29484" type="Sprite2D" parent="TileGrid"]
+z_index = -10
+position = Vector2(580, 400)
+scale = Vector2(0.22, 0.22)
+texture = ExtResource("6_tilebg")
+
+[node name="@Sprite2D@29485" type="Sprite2D" parent="TileGrid"]
+z_index = -10
+position = Vector2(580, 460)
+scale = Vector2(0.22, 0.22)
+texture = ExtResource("6_tilebg")
+
+[node name="@Sprite2D@29486" type="Sprite2D" parent="TileGrid"]
+z_index = -10
+position = Vector2(580, 520)
+scale = Vector2(0.22, 0.22)
+texture = ExtResource("6_tilebg")
+
+[node name="@Sprite2D@29487" type="Sprite2D" parent="TileGrid"]
+z_index = -10
+position = Vector2(580, 580)
+scale = Vector2(0.22, 0.22)
+texture = ExtResource("6_tilebg")
+
+[node name="Grid" type="Node2D" parent="."]
+position = Vector2(270, 30)
+
+[node name="Cell_0_0" type="Sprite2D" parent="Grid"]
+position = Vector2(100, 100)
+scale = Vector2(1.3, 1.3)
+texture = ExtResource("1_mint")
+
+[node name="Cell_0_1" type="Sprite2D" parent="Grid"]
+position = Vector2(100, 160)
+scale = Vector2(1.3, 1.3)
+texture = ExtResource("2_garlic")
+
+[node name="Cell_0_2" type="Sprite2D" parent="Grid"]
+position = Vector2(100, 220)
+scale = Vector2(1.3, 1.3)
+texture = ExtResource("3_ginger")
+
+[node name="Cell_0_3" type="Sprite2D" parent="Grid"]
+position = Vector2(100, 280)
+scale = Vector2(1.3, 1.3)
+texture = ExtResource("1_mint")
+
+[node name="Cell_0_4" type="Sprite2D" parent="Grid"]
+position = Vector2(100, 340)
+scale = Vector2(1.3, 1.3)
+texture = ExtResource("2_garlic")
+
+[node name="Cell_0_5" type="Sprite2D" parent="Grid"]
+position = Vector2(100, 400)
+scale = Vector2(1.3, 1.3)
+texture = ExtResource("3_ginger")
+
+[node name="Cell_0_6" type="Sprite2D" parent="Grid"]
+position = Vector2(100, 460)
+scale = Vector2(1.3, 1.3)
+texture = ExtResource("1_mint")
+
+[node name="Cell_0_7" type="Sprite2D" parent="Grid"]
+position = Vector2(100, 520)
+scale = Vector2(1.3, 1.3)
+texture = ExtResource("2_garlic")
+
+[node name="Cell_0_8" type="Sprite2D" parent="Grid"]
+position = Vector2(100, 580)
+scale = Vector2(1.3, 1.3)
+texture = ExtResource("3_ginger")
+
+[node name="Cell_1_0" type="Sprite2D" parent="Grid"]
+position = Vector2(160, 100)
+scale = Vector2(1.3, 1.3)
+texture = ExtResource("2_garlic")
+
+[node name="Cell_1_1" type="Sprite2D" parent="Grid"]
+position = Vector2(160, 160)
+scale = Vector2(1.3, 1.3)
+texture = ExtResource("3_ginger")
+
+[node name="Cell_1_2" type="Sprite2D" parent="Grid"]
+position = Vector2(160, 220)
+scale = Vector2(1.3, 1.3)
+texture = ExtResource("1_mint")
+
+[node name="Cell_1_3" type="Sprite2D" parent="Grid"]
+position = Vector2(160, 280)
+scale = Vector2(1.3, 1.3)
+texture = ExtResource("2_garlic")
+
+[node name="Cell_1_4" type="Sprite2D" parent="Grid"]
+position = Vector2(160, 340)
+scale = Vector2(1.3, 1.3)
+texture = ExtResource("3_ginger")
+
+[node name="Cell_1_5" type="Sprite2D" parent="Grid"]
+position = Vector2(160, 400)
+scale = Vector2(1.3, 1.3)
+texture = ExtResource("1_mint")
+
+[node name="Cell_1_6" type="Sprite2D" parent="Grid"]
+position = Vector2(160, 460)
+scale = Vector2(1.3, 1.3)
+texture = ExtResource("2_garlic")
+
+[node name="Cell_1_7" type="Sprite2D" parent="Grid"]
+position = Vector2(160, 520)
+scale = Vector2(1.3, 1.3)
+texture = ExtResource("3_ginger")
+
+[node name="Cell_1_8" type="Sprite2D" parent="Grid"]
+position = Vector2(160, 580)
+scale = Vector2(1.3, 1.3)
+texture = ExtResource("1_mint")
+
+[node name="Cell_2_0" type="Sprite2D" parent="Grid"]
+position = Vector2(220, 100)
+scale = Vector2(1.3, 1.3)
+texture = ExtResource("3_ginger")
+
+[node name="Cell_2_1" type="Sprite2D" parent="Grid"]
+position = Vector2(220, 160)
+scale = Vector2(1.3, 1.3)
+texture = ExtResource("1_mint")
+
+[node name="Cell_2_2" type="Sprite2D" parent="Grid"]
+position = Vector2(220, 220)
+scale = Vector2(1.3, 1.3)
+texture = ExtResource("2_garlic")
+
+[node name="Cell_2_3" type="Sprite2D" parent="Grid"]
+position = Vector2(220, 280)
+scale = Vector2(1.3, 1.3)
+texture = ExtResource("3_ginger")
+
+[node name="Cell_2_4" type="Sprite2D" parent="Grid"]
+position = Vector2(220, 340)
+scale = Vector2(1.3, 1.3)
+texture = ExtResource("1_mint")
+
+[node name="Cell_2_5" type="Sprite2D" parent="Grid"]
+position = Vector2(220, 400)
+scale = Vector2(1.3, 1.3)
+texture = ExtResource("2_garlic")
+
+[node name="Cell_2_6" type="Sprite2D" parent="Grid"]
+position = Vector2(220, 460)
+scale = Vector2(1.3, 1.3)
+texture = ExtResource("3_ginger")
+
+[node name="Cell_2_7" type="Sprite2D" parent="Grid"]
+position = Vector2(220, 520)
+scale = Vector2(1.3, 1.3)
+texture = ExtResource("1_mint")
+
+[node name="Cell_2_8" type="Sprite2D" parent="Grid"]
+position = Vector2(220, 580)
+scale = Vector2(1.3, 1.3)
+texture = ExtResource("2_garlic")
+
+[node name="Cell_3_0" type="Sprite2D" parent="Grid"]
+position = Vector2(280, 100)
+scale = Vector2(1.3, 1.3)
+texture = ExtResource("1_mint")
+
+[node name="Cell_3_1" type="Sprite2D" parent="Grid"]
+position = Vector2(280, 160)
+scale = Vector2(1.3, 1.3)
+texture = ExtResource("3_ginger")
+
+[node name="Cell_3_2" type="Sprite2D" parent="Grid"]
+position = Vector2(280, 220)
+scale = Vector2(1.3, 1.3)
+texture = ExtResource("2_garlic")
+
+[node name="Cell_3_3" type="Sprite2D" parent="Grid"]
+position = Vector2(280, 280)
+scale = Vector2(1.3, 1.3)
+texture = ExtResource("1_mint")
+
+[node name="Cell_3_4" type="Sprite2D" parent="Grid"]
+position = Vector2(280, 340)
+scale = Vector2(1.3, 1.3)
+texture = ExtResource("3_ginger")
+
+[node name="Cell_3_5" type="Sprite2D" parent="Grid"]
+position = Vector2(280, 400)
+scale = Vector2(1.3, 1.3)
+texture = ExtResource("2_garlic")
+
+[node name="Cell_3_6" type="Sprite2D" parent="Grid"]
+position = Vector2(280, 460)
+scale = Vector2(1.3, 1.3)
+texture = ExtResource("1_mint")
+
+[node name="Cell_3_7" type="Sprite2D" parent="Grid"]
+position = Vector2(280, 520)
+scale = Vector2(1.3, 1.3)
+texture = ExtResource("3_ginger")
+
+[node name="Cell_3_8" type="Sprite2D" parent="Grid"]
+position = Vector2(280, 580)
+scale = Vector2(1.3, 1.3)
+texture = ExtResource("2_garlic")
+
+[node name="Cell_4_0" type="Sprite2D" parent="Grid"]
+position = Vector2(340, 100)
+scale = Vector2(1.3, 1.3)
+texture = ExtResource("2_garlic")
+
+[node name="Cell_4_1" type="Sprite2D" parent="Grid"]
+position = Vector2(340, 160)
+scale = Vector2(1.3, 1.3)
+texture = ExtResource("1_mint")
+
+[node name="Cell_4_2" type="Sprite2D" parent="Grid"]
+position = Vector2(340, 220)
+scale = Vector2(1.3, 1.3)
+texture = ExtResource("3_ginger")
+
+[node name="Cell_4_3" type="Sprite2D" parent="Grid"]
+position = Vector2(340, 280)
+scale = Vector2(1.3, 1.3)
+texture = ExtResource("2_garlic")
+
+[node name="Cell_4_4" type="Sprite2D" parent="Grid"]
+position = Vector2(340, 340)
+scale = Vector2(1.3, 1.3)
+texture = ExtResource("1_mint")
+
+[node name="Cell_4_5" type="Sprite2D" parent="Grid"]
+position = Vector2(340, 400)
+scale = Vector2(1.3, 1.3)
+texture = ExtResource("3_ginger")
+
+[node name="Cell_4_6" type="Sprite2D" parent="Grid"]
+position = Vector2(340, 460)
+scale = Vector2(1.3, 1.3)
+texture = ExtResource("2_garlic")
+
+[node name="Cell_4_7" type="Sprite2D" parent="Grid"]
+position = Vector2(340, 520)
+scale = Vector2(1.3, 1.3)
+texture = ExtResource("1_mint")
+
+[node name="Cell_4_8" type="Sprite2D" parent="Grid"]
+position = Vector2(340, 580)
+scale = Vector2(1.3, 1.3)
+texture = ExtResource("3_ginger")
+
+[node name="Cell_5_0" type="Sprite2D" parent="Grid"]
+position = Vector2(400, 100)
+scale = Vector2(1.3, 1.3)
+texture = ExtResource("3_ginger")
+
+[node name="Cell_5_1" type="Sprite2D" parent="Grid"]
+position = Vector2(400, 160)
+scale = Vector2(1.3, 1.3)
+texture = ExtResource("2_garlic")
+
+[node name="Cell_5_2" type="Sprite2D" parent="Grid"]
+position = Vector2(400, 220)
+scale = Vector2(1.3, 1.3)
+texture = ExtResource("1_mint")
+
+[node name="Cell_5_3" type="Sprite2D" parent="Grid"]
+position = Vector2(400, 280)
+scale = Vector2(1.3, 1.3)
+texture = ExtResource("3_ginger")
+
+[node name="Cell_5_4" type="Sprite2D" parent="Grid"]
+position = Vector2(400, 340)
+scale = Vector2(1.3, 1.3)
+texture = ExtResource("2_garlic")
+
+[node name="Cell_5_5" type="Sprite2D" parent="Grid"]
+position = Vector2(400, 400)
+scale = Vector2(1.3, 1.3)
+texture = ExtResource("1_mint")
+
+[node name="Cell_5_6" type="Sprite2D" parent="Grid"]
+position = Vector2(400, 460)
+scale = Vector2(1.3, 1.3)
+texture = ExtResource("3_ginger")
+
+[node name="Cell_5_7" type="Sprite2D" parent="Grid"]
+position = Vector2(400, 520)
+scale = Vector2(1.3, 1.3)
+texture = ExtResource("2_garlic")
+
+[node name="Cell_5_8" type="Sprite2D" parent="Grid"]
+position = Vector2(400, 580)
+scale = Vector2(1.3, 1.3)
+texture = ExtResource("1_mint")
+
+[node name="Cell_6_0" type="Sprite2D" parent="Grid"]
+position = Vector2(460, 100)
+scale = Vector2(1.3, 1.3)
+texture = ExtResource("1_mint")
+
+[node name="Cell_6_1" type="Sprite2D" parent="Grid"]
+position = Vector2(460, 160)
+scale = Vector2(1.3, 1.3)
+texture = ExtResource("3_ginger")
+
+[node name="Cell_6_2" type="Sprite2D" parent="Grid"]
+position = Vector2(460, 220)
+scale = Vector2(1.3, 1.3)
+texture = ExtResource("2_garlic")
+
+[node name="Cell_6_3" type="Sprite2D" parent="Grid"]
+position = Vector2(460, 280)
+scale = Vector2(1.3, 1.3)
+texture = ExtResource("1_mint")
+
+[node name="Cell_6_4" type="Sprite2D" parent="Grid"]
+position = Vector2(460, 340)
+scale = Vector2(1.3, 1.3)
+texture = ExtResource("3_ginger")
+
+[node name="Cell_6_5" type="Sprite2D" parent="Grid"]
+position = Vector2(460, 400)
+scale = Vector2(1.3, 1.3)
+texture = ExtResource("2_garlic")
+
+[node name="Cell_6_6" type="Sprite2D" parent="Grid"]
+position = Vector2(460, 460)
+scale = Vector2(1.3, 1.3)
+texture = ExtResource("1_mint")
+
+[node name="Cell_6_7" type="Sprite2D" parent="Grid"]
+position = Vector2(460, 520)
+scale = Vector2(1.3, 1.3)
+texture = ExtResource("3_ginger")
+
+[node name="Cell_6_8" type="Sprite2D" parent="Grid"]
+position = Vector2(460, 580)
+scale = Vector2(1.3, 1.3)
+texture = ExtResource("2_garlic")
+
+[node name="Cell_7_0" type="Sprite2D" parent="Grid"]
+position = Vector2(520, 100)
+scale = Vector2(1.3, 1.3)
+texture = ExtResource("2_garlic")
+
+[node name="Cell_7_1" type="Sprite2D" parent="Grid"]
+position = Vector2(520, 160)
+scale = Vector2(1.3, 1.3)
+texture = ExtResource("1_mint")
+
+[node name="Cell_7_2" type="Sprite2D" parent="Grid"]
+position = Vector2(520, 220)
+scale = Vector2(1.3, 1.3)
+texture = ExtResource("3_ginger")
+
+[node name="Cell_7_3" type="Sprite2D" parent="Grid"]
+position = Vector2(520, 280)
+scale = Vector2(1.3, 1.3)
+texture = ExtResource("2_garlic")
+
+[node name="Cell_7_4" type="Sprite2D" parent="Grid"]
+position = Vector2(520, 340)
+scale = Vector2(1.3, 1.3)
+texture = ExtResource("1_mint")
+
+[node name="Cell_7_5" type="Sprite2D" parent="Grid"]
+position = Vector2(520, 400)
+scale = Vector2(1.3, 1.3)
+texture = ExtResource("3_ginger")
+
+[node name="Cell_7_6" type="Sprite2D" parent="Grid"]
+position = Vector2(520, 460)
+scale = Vector2(1.3, 1.3)
+texture = ExtResource("2_garlic")
+
+[node name="Cell_7_7" type="Sprite2D" parent="Grid"]
+position = Vector2(520, 520)
+scale = Vector2(1.3, 1.3)
+texture = ExtResource("1_mint")
+
+[node name="Cell_7_8" type="Sprite2D" parent="Grid"]
+position = Vector2(520, 580)
+scale = Vector2(1.3, 1.3)
+texture = ExtResource("3_ginger")
+
+[node name="Cell_8_0" type="Sprite2D" parent="Grid"]
+position = Vector2(580, 100)
+scale = Vector2(1.3, 1.3)
+texture = ExtResource("3_ginger")
+
+[node name="Cell_8_1" type="Sprite2D" parent="Grid"]
+position = Vector2(580, 160)
+scale = Vector2(1.3, 1.3)
+texture = ExtResource("2_garlic")
+
+[node name="Cell_8_2" type="Sprite2D" parent="Grid"]
+position = Vector2(580, 220)
+scale = Vector2(1.3, 1.3)
+texture = ExtResource("1_mint")
+
+[node name="Cell_8_3" type="Sprite2D" parent="Grid"]
+position = Vector2(580, 280)
+scale = Vector2(1.3, 1.3)
+texture = ExtResource("3_ginger")
+
+[node name="Cell_8_4" type="Sprite2D" parent="Grid"]
+position = Vector2(580, 340)
+scale = Vector2(1.3, 1.3)
+texture = ExtResource("2_garlic")
+
+[node name="Cell_8_5" type="Sprite2D" parent="Grid"]
+position = Vector2(580, 400)
+scale = Vector2(1.3, 1.3)
+texture = ExtResource("1_mint")
+
+[node name="Cell_8_6" type="Sprite2D" parent="Grid"]
+position = Vector2(580, 460)
+scale = Vector2(1.3, 1.3)
+texture = ExtResource("3_ginger")
+
+[node name="Cell_8_7" type="Sprite2D" parent="Grid"]
+position = Vector2(580, 520)
+scale = Vector2(1.3, 1.3)
+texture = ExtResource("2_garlic")
+
+[node name="Cell_8_8" type="Sprite2D" parent="Grid"]
+position = Vector2(580, 580)
+scale = Vector2(1.3, 1.3)
+texture = ExtResource("1_mint")

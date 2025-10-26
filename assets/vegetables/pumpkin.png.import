@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bvnwos38xumnd"
-path="res://.godot/imported/favicon.svg-f112d2e2a5afd8acf5a67f30019368d7.ctex"
+uid="uid://bwxg8c8ljhnju"
+path="res://.godot/imported/pumpkin.png-4c7b0845484cdfe43e2241c721f5a43a.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/icons/favicon.svg"
-dest_files=["res://.godot/imported/favicon.svg-f112d2e2a5afd8acf5a67f30019368d7.ctex"]
+source_file="res://assets/vegetables/pumpkin.png"
+dest_files=["res://.godot/imported/pumpkin.png-4c7b0845484cdfe43e2241c721f5a43a.ctex"]
 
 [params]
 
@@ -38,6 +38,3 @@ process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
 detect_3d/compress_to=1
-svg/scale=1.0
-editor/scale_with_editor_scale=false
-editor/convert_colors_with_editor_theme=false

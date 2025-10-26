@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dvcsteklxnx15"
-path="res://.godot/imported/Alchemy.png-5c47ded0655c8d9a4d43aa6b4ac70825.ctex"
+uid="uid://ds6ptwx4t40mg"
+path="res://.godot/imported/eggplant.png-c1c83fd42bc0532f1fedc8b32071b208.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/icons/Alchemy.png"
-dest_files=["res://.godot/imported/Alchemy.png-5c47ded0655c8d9a4d43aa6b4ac70825.ctex"]
+source_file="res://assets/vegetables/eggplant.png"
+dest_files=["res://.godot/imported/eggplant.png-c1c83fd42bc0532f1fedc8b32071b208.ctex"]
 
 [params]
 
