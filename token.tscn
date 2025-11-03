@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://du1kgnsc0meu8"]
+
+[ext_resource type="Script" uid="uid://c84gx5guj3fdp" path="res://token.gd" id="1_bd72f"]
+
+[node name="Token" type="Sprite2D"]
+script = ExtResource("1_bd72f")

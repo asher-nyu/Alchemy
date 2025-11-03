@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://v1trrljj2vt4"]
+
+[ext_resource type="Script" uid="uid://fb4h22wcmwb5" path="res://pink_potion.gd" id="1_orrsn"]
+
+[node name="pink_potion" type="Sprite2D"]
+script = ExtResource("1_orrsn")

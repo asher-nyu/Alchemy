@@ -1,0 +1,15 @@
+[gd_scene load_steps=4 format=3 uid="uid://bf2ebv61fp485"]
+
+[ext_resource type="Script" uid="uid://biqgvbpedkk6l" path="res://door.gd" id="1_v6xrn"]
+[ext_resource type="Texture2D" uid="uid://cminc2f8uo8dg" path="res://assets/tileset_dungeon_PNG.png" id="2_0phs7"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_50cdl"]
+
+[node name="door" type="Area2D"]
+script = ExtResource("1_v6xrn")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_50cdl")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_0phs7")

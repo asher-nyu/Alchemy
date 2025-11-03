@@ -1,0 +1,17 @@
+[gd_scene load_steps=3 format=3 uid="uid://syh68nvymtc1"]
+
+[ext_resource type="Script" uid="uid://dqamu1a1txdwo" path="res://garlic_pickup.gd" id="1_qhw3h"]
+[ext_resource type="Texture2D" uid="uid://htbiyw0ay83l" path="res://assets/garlic.png" id="2_5ovvk"]
+
+[node name="Garlic_pickup" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("1_qhw3h")
+
+[node name="Sprite" type="TextureRect" parent="."]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+texture = ExtResource("2_5ovvk")
