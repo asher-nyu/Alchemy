@@ -1,5 +1,8 @@
 extends CharacterBody2D
 
+var enemy_attack_sound = AudioStreamPlayer.new()
+var enemy_death_sound = AudioStreamPlayer.new()
+
 # Movement constants
 const PATROL_SPEED = 50.0
 const GRAVITY = 980.0
@@ -34,6 +37,13 @@ var garlic_pickup_scene = preload("res://garlic_pickup.tscn")
 var player: CharacterBody2D = null
 
 func _ready():
+	
+	add_child(enemy_attack_sound)
+	enemy_attack_sound.stream = load("res://assets/Audio Pack/enemy_attack_1.mp3")
+	
+	add_child(enemy_death_sound)
+	enemy_death_sound.stream = load("res://assets/Audio Pack/enemy-death-sound.mp3")
+	
 	spawn_position = global_position
 	current_health = max_health
 	
@@ -124,6 +134,9 @@ func attack_behavior():
 	if attack_timer <= 0:
 		deal_damage_to_player()
 		attack_timer = attack_cooldown
+		
+		if enemy_attack_sound:
+			enemy_attack_sound.play()
 
 func deal_damage_to_player():
 	if player and player.has_method("take_damage"):
@@ -203,9 +216,15 @@ func die():
 	# Play death animation if available
 	if animated_sprite and animated_sprite.sprite_frames.has_animation("dead"):
 		animated_sprite.play("dead")
-		# Wait for animation (max 2 seconds)
-		await get_tree().create_timer(2.0).timeout
-	
+
+	# Play death sound
+	if enemy_death_sound:
+		enemy_death_sound.play()
+		
+	# Wait until the sound finishes before freeing the enemy
+	var sound_length = enemy_death_sound.stream.get_length()
+	await get_tree().create_timer(sound_length).timeout
+		
 	# Add to inventory
 	Inventory.add_garlic(1)
 	

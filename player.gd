@@ -1,5 +1,12 @@
 extends CharacterBody2D
 
+var run_sound = AudioStreamPlayer.new()
+var attack_sound = AudioStreamPlayer.new()
+var hero_death_sound = AudioStreamPlayer.new()
+var hero_jump_sound = AudioStreamPlayer.new()
+
+
+
 const SPEED = 400.0
 const JUMP_VELOCITY = -800.0
 const AIR_CONTROL = 0.8
@@ -20,6 +27,22 @@ const ATTACK_ANIMATION_TIME = 0.3
 @onready var health_label = $Camera2D2/UI/HealthLabel
 
 func _ready():
+	
+	add_child(run_sound)
+	run_sound.stream = load("res://assets/Audio Pack/run.wav")
+	run_sound.pitch_scale = 1.2  # make it faster
+	
+	add_child(attack_sound)
+	attack_sound.stream = load("res://assets/Audio Pack/attack.mp3")
+	
+	add_child(hero_death_sound)
+	hero_death_sound.stream = load("res://assets/Audio Pack/hero-death.mp3")
+	
+	add_child(hero_jump_sound)
+	hero_jump_sound.stream = load("res://assets/Audio Pack/jump.mp3")
+
+
+	
 	current_health = max_health
 	
 	if health_label:
@@ -54,9 +77,20 @@ func _physics_process(delta: float) -> void:
 	
 	if Input.is_action_just_pressed("ui_up") and is_on_floor():
 		velocity.y = JUMP_VELOCITY
+		if hero_jump_sound and not hero_jump_sound.playing:
+			hero_jump_sound.play()
 	
 	var direction := Input.get_axis("ui_left", "ui_right")
 	
+	if direction != 0 and is_on_floor():
+		if not run_sound.playing:
+			run_sound.play()
+			run_sound.connect("finished", Callable(run_sound, "play"))  # restart when done
+	else:
+		if run_sound.playing:
+			run_sound.stop()
+			run_sound.disconnect("finished", Callable(run_sound, "play"))
+		
 	if direction != 0:
 		if is_on_floor():
 			velocity.x = direction * SPEED
@@ -94,7 +128,7 @@ func perform_attack():
 	var hit_something = false
 	
 	for enemy in enemies:
-		if enemy and is_instance_valid(enemy):
+		if enemy and is_instance_valid(enemy) and enemy.current_health > 0:
 			var distance = global_position.distance_to(enemy.global_position)
 			
 			if distance <= attack_range:
@@ -102,6 +136,9 @@ func perform_attack():
 					enemy.take_damage(attack_damage)
 					hit_something = true
 	
+	if hit_something:
+		attack_sound.play()
+		
 	# Wait for attack animation to finish
 	await get_tree().create_timer(ATTACK_ANIMATION_TIME).timeout
 	is_attacking = false
@@ -130,7 +167,16 @@ func heal(amount: int) -> void:
 
 func die() -> void:
 	await get_tree().create_timer(1.0).timeout
-	get_tree().reload_current_scene()
+	
+	# Play death sound
+	if hero_death_sound:
+		hero_death_sound.play()
+		
+		var hero_sound_length = hero_death_sound.stream.get_length()
+		await get_tree().create_timer(hero_sound_length).timeout
+	
+	get_tree().change_scene_to_file("res://GameOverScreen.tscn")
+
 	
 
 func update_health_display() -> void:

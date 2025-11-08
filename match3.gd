@@ -1,5 +1,12 @@
 extends Node2D
 
+var click_sound_player = AudioStreamPlayer.new()
+var collect_sound_player = AudioStreamPlayer.new()
+var match_start = AudioStreamPlayer.new()
+var sparkle_sound_player = AudioStreamPlayer.new()
+var swap_fail_sound = AudioStreamPlayer.new()
+
+
 # Grid settings
 const GRID_WIDTH = 9
 const GRID_HEIGHT = 9
@@ -58,6 +65,24 @@ var match_detector = MatchDetector.new()
 var grid_refiller = GridRefiller.new()
 
 func _ready():
+	
+
+	
+	click_sound_player.stream = load("res://assets/Audio Pack/click.mp3")
+	add_child(click_sound_player)
+	
+	collect_sound_player.stream = load("res://assets/Audio Pack/collect.wav")
+	add_child(collect_sound_player)
+	
+	match_start.stream = load("res://assets/Audio Pack/match_start.wav")
+	add_child(match_start)
+	
+	sparkle_sound_player.stream = load("res://assets/Audio Pack/sparkle.wav")
+	add_child(sparkle_sound_player)
+	
+	swap_fail_sound.stream = load("res://assets/Audio Pack/swap_fail_sound.wav")
+	add_child(swap_fail_sound)
+	
 	camera = get_viewport().get_camera_2d()
 	
 	load_textures()
@@ -93,6 +118,8 @@ func create_grid_with_tokens():
 			var pos = get_tile_position(x, y)
 			create_background_tile(pos)
 			create_token_sprite(x, y, token_type, pos)
+			if match_start:
+				match_start.play()
 
 func get_tile_position(x: int, y: int) -> Vector2:
 	var effective_tile_size = TILE_SIZE * SCALE_FACTOR
@@ -169,6 +196,8 @@ func handle_tile_click(x: int, y: int):
 func select_tile(x: int, y: int):
 	selected_tile = {"x": x, "y": y}
 	tile_sprites[x][y].highlight()
+	if click_sound_player:
+		click_sound_player.play()
 
 func deselect_tile():
 	if selected_tile:
@@ -196,6 +225,8 @@ func swap_tiles(x1: int, y1: int, x2: int, y2: int):
 	
 	# Animate the swap
 	await animate_swap(x1, y1, x2, y2)
+	if swap_fail_sound:
+		swap_fail_sound.play()
 	
 	# Check if this swap created a match
 	var has_match = match_detector.check_match_at_position(grid, x1, y1, GRID_WIDTH, GRID_HEIGHT) or match_detector.check_match_at_position(grid, x2, y2, GRID_WIDTH, GRID_HEIGHT)
@@ -302,6 +333,8 @@ func animate_matches(matches: Array):
 		if sprite:
 			tween.tween_property(sprite, "scale", Vector2.ZERO, 0.3)
 			tween.tween_property(sprite, "modulate:a", 0.0, 0.3)
+			if sparkle_sound_player:
+				sparkle_sound_player.play()
 	
 	await tween.finished
 
@@ -316,6 +349,8 @@ func spawn_pink_potion_in_circle(circle_index: int):
 	add_child(potion)
 	potion.initialize(Vector2(start_x, start_y))
 	await potion.animate_to_circle(POTION_CIRCLE_POSITIONS[circle_index])
+	if collect_sound_player:
+		collect_sound_player.play()
 	
 	while potion_sprites_in_circles.size() <= circle_index:
 		potion_sprites_in_circles.append(null)
