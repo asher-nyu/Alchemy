@@ -1,10 +1,11 @@
-[gd_scene load_steps=43 format=3 uid="uid://bq2w0ktf50l2n"]
+[gd_scene load_steps=44 format=3 uid="uid://bq2w0ktf50l2n"]
 
 [ext_resource type="Texture2D" uid="uid://bio6nu5mws8e4" path="res://assets/spr_player_attack_strip9.png" id="1_hqtel"]
 [ext_resource type="Script" uid="uid://c3pm7d2xpdlcg" path="res://player.gd" id="1_sweqy"]
 [ext_resource type="Texture2D" uid="uid://cvb1jv53a2f4q" path="res://assets/spr_player_idle_strip5.png" id="2_sweqy"]
 [ext_resource type="Texture2D" uid="uid://7y0tty7llerl" path="res://assets/spr_player_jump_strip12.png" id="3_2hs0m"]
 [ext_resource type="Texture2D" uid="uid://bl7nn1bfgy88d" path="res://assets/spr_player_run_strip9.png" id="4_1jxqw"]
+[ext_resource type="Script" path="res://InventoryUI.gd" id="5_invui"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_dw050"]
 atlas = ExtResource("1_hqtel")
@@ -274,6 +275,42 @@ animations = [{
 "speed": 15.0
 }]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_slot1"]
+bg_color = Color(0.15, 0.15, 0.15, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(1, 1, 0, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_slot2"]
+bg_color = Color(0.15, 0.15, 0.15, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(1, 1, 0, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_slot3"]
+bg_color = Color(0.15, 0.15, 0.15, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(1, 1, 0, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_sweqy"]
 size = Vector2(34, 61)
 
@@ -287,3 +324,192 @@ animation = &"attack"
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(1, 0.5)
 shape = SubResource("RectangleShape2D_sweqy")
+
+[node name="Camera2D2" type="Camera2D" parent="."]
+enabled = true
+
+[node name="UI" type="CanvasLayer" parent="Camera2D2"]
+layer = 10
+
+[node name="HealthLabel" type="Label" parent="Camera2D2/UI"]
+offset_left = 10.0
+offset_top = 10.0
+offset_right = 250.0
+offset_bottom = 60.0
+text = "HP: 100/100"
+
+[node name="PotionLabel" type="Label" parent="Camera2D2/UI"]
+offset_left = 10.0
+offset_top = 70.0
+offset_right = 250.0
+offset_bottom = 120.0
+text = "Potions: 0"
+
+[node name="InventoryUI" type="Control" parent="Camera2D2/UI"]
+visible = true
+z_index = 100
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -320.0
+offset_top = -180.0
+offset_right = -20.0
+offset_bottom = -20.0
+grow_horizontal = 0
+grow_vertical = 0
+script = ExtResource("5_invui")
+
+[node name="Background" type="ColorRect" parent="Camera2D2/UI/InventoryUI"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(1, 0, 0, 1)
+
+[node name="Title" type="Label" parent="Camera2D2/UI/InventoryUI"]
+z_index = 1
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 30.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(1, 1, 0, 1)
+theme_override_font_sizes/font_size = 28
+text = "INVENTORY"
+horizontal_alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Camera2D2/UI/InventoryUI"]
+z_index = 1
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -140.0
+offset_top = 5.0
+offset_right = 140.0
+offset_bottom = 100.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 10
+alignment = 1
+
+[node name="Slot1" type="Panel" parent="Camera2D2/UI/InventoryUI/HBoxContainer"]
+visible = true
+z_index = 10
+custom_minimum_size = Vector2(90, 95)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_slot1")
+
+[node name="KeyLabel" type="Label" parent="Camera2D2/UI/InventoryUI/HBoxContainer/Slot1"]
+z_index = 20
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 25.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(1, 1, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 24
+text = "1"
+horizontal_alignment = 1
+
+[node name="PotionIcon" type="TextureRect" parent="Camera2D2/UI/InventoryUI/HBoxContainer/Slot1"]
+visible = true
+z_index = 15
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -30.0
+offset_top = -15.0
+offset_right = 30.0
+offset_bottom = 45.0
+grow_horizontal = 2
+grow_vertical = 2
+stretch_mode = 5
+
+[node name="Slot2" type="Panel" parent="Camera2D2/UI/InventoryUI/HBoxContainer"]
+visible = true
+z_index = 10
+custom_minimum_size = Vector2(90, 95)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_slot2")
+
+[node name="KeyLabel" type="Label" parent="Camera2D2/UI/InventoryUI/HBoxContainer/Slot2"]
+z_index = 20
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 25.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(1, 1, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 24
+text = "2"
+horizontal_alignment = 1
+
+[node name="PotionIcon" type="TextureRect" parent="Camera2D2/UI/InventoryUI/HBoxContainer/Slot2"]
+visible = true
+z_index = 15
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -30.0
+offset_top = -15.0
+offset_right = 30.0
+offset_bottom = 45.0
+grow_horizontal = 2
+grow_vertical = 2
+stretch_mode = 5
+
+[node name="Slot3" type="Panel" parent="Camera2D2/UI/InventoryUI/HBoxContainer"]
+visible = true
+z_index = 10
+custom_minimum_size = Vector2(90, 95)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_slot3")
+
+[node name="KeyLabel" type="Label" parent="Camera2D2/UI/InventoryUI/HBoxContainer/Slot3"]
+z_index = 20
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 25.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(1, 1, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 24
+text = "3"
+horizontal_alignment = 1
+
+[node name="PotionIcon" type="TextureRect" parent="Camera2D2/UI/InventoryUI/HBoxContainer/Slot3"]
+visible = true
+z_index = 15
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -30.0
+offset_top = -15.0
+offset_right = 30.0
+offset_bottom = 45.0
+grow_horizontal = 2
+grow_vertical = 2
+stretch_mode = 5

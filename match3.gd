@@ -64,6 +64,9 @@ var pink_potion_scene = preload("res://pink_potion.tscn")
 var match_detector = MatchDetector.new()
 var grid_refiller = GridRefiller.new()
 
+# Game state
+var game_ended = false
+
 func _ready():
 	
 
@@ -289,11 +292,11 @@ func process_all_matches():
 		for i in range(potions_before, pick_potions):
 			spawn_pink_potion_in_circle(i)
 		
-		# Check if player won
+		# Check if player collected max potions
 		if pick_potions >= MAX_POTIONS:
 			cascade_depth = 0
 			await get_tree().create_timer(2.0).timeout
-			#game_won()
+			end_game_and_transition()
 			return
 	
 	# Add to score
@@ -323,6 +326,11 @@ func process_all_matches():
 	# Check for cascade matches
 	await get_tree().create_timer(0.1).timeout
 	await process_all_matches()
+	
+	# After processing all matches, check if there are any valid moves left
+	if not game_ended and not has_valid_moves():
+		await get_tree().create_timer(1.0).timeout
+		end_game_and_transition()
 
 func animate_matches(matches: Array):
 	var tween = create_tween()
@@ -356,11 +364,66 @@ func spawn_pink_potion_in_circle(circle_index: int):
 		potion_sprites_in_circles.append(null)
 	potion_sprites_in_circles[circle_index] = potion
 
-#func game_won():
-	#
-	#is_swapping = true
-	#
-	#for i in range(MAX_POTIONS):
-		#if potion_sprites_in_circles[i]:
-			#potion_sprites_in_circles[i].pulse_forever()
-			#
+func has_valid_moves() -> bool:
+	# Check every position for possible swaps that would create a match
+	for y in range(GRID_HEIGHT):
+		for x in range(GRID_WIDTH):
+			# Try swapping with right neighbor
+			if x < GRID_WIDTH - 1:
+				# Simulate swap
+				var temp = grid[x][y]
+				grid[x][y] = grid[x + 1][y]
+				grid[x + 1][y] = temp
+				
+				# Check for matches
+				var has_match = match_detector.check_match_at_position(grid, x, y, GRID_WIDTH, GRID_HEIGHT) or \
+								match_detector.check_match_at_position(grid, x + 1, y, GRID_WIDTH, GRID_HEIGHT)
+				
+				# Swap back
+				temp = grid[x][y]
+				grid[x][y] = grid[x + 1][y]
+				grid[x + 1][y] = temp
+				
+				if has_match:
+					return true
+			
+			# Try swapping with bottom neighbor
+			if y < GRID_HEIGHT - 1:
+				# Simulate swap
+				var temp = grid[x][y]
+				grid[x][y] = grid[x][y + 1]
+				grid[x][y + 1] = temp
+				
+				# Check for matches
+				var has_match = match_detector.check_match_at_position(grid, x, y, GRID_WIDTH, GRID_HEIGHT) or \
+								match_detector.check_match_at_position(grid, x, y + 1, GRID_WIDTH, GRID_HEIGHT)
+				
+				# Swap back
+				temp = grid[x][y]
+				grid[x][y] = grid[x][y + 1]
+				grid[x][y + 1] = temp
+				
+				if has_match:
+					return true
+	
+	return false
+
+func end_game_and_transition():
+	if game_ended:
+		return
+	
+	game_ended = true
+	is_swapping = true
+	
+	# Save potions to inventory
+	Inventory.add_health_potions(pick_potions)
+	
+	# Pulse the collected potions
+	for i in range(pick_potions):
+		if potion_sprites_in_circles[i]:
+			potion_sprites_in_circles[i].pulse_forever()
+	
+	await get_tree().create_timer(2.0).timeout
+	
+	# Transition to level 2
+	get_tree().change_scene_to_file("res://level_2.tscn")

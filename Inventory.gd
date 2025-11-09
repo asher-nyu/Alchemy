@@ -10,9 +10,11 @@ enum TokenType {
 
 var garlic_count: int = 0
 var collected_tokens: Array = []  # This will be used by match-3 GridRefiller
+var health_potions: int = 0  # Health potions collected from match-3
 
 signal garlic_changed(new_count: int)
 signal token_collected(token_type: int)
+signal potions_changed(new_count: int)
 
 func add_garlic(amount: int = 1):
 	garlic_count += amount
@@ -57,3 +59,17 @@ func get_collected_tokens() -> Array:
 
 func has_token_type(token_type: int) -> bool:
 	return collected_tokens.has(token_type)
+
+func add_health_potions(amount: int = 1):
+	health_potions += amount
+	potions_changed.emit(health_potions)
+
+func get_health_potions() -> int:
+	return health_potions
+
+func use_health_potion() -> bool:
+	if health_potions > 0:
+		health_potions -= 1
+		potions_changed.emit(health_potions)
+		return true
+	return false
