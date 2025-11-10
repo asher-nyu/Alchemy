@@ -143,9 +143,11 @@ func _ready():
 				# Potion icon
 				var icon = TextureRect.new()
 				icon.name = "PotionIcon"
+				icon.texture = load("res://assets/pink_potion.png")
 				icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-				icon.position = Vector2(12, 30)
-				icon.size = Vector2(60, 60)
+				icon.expand_mode = TextureRect.EXPAND_FIT_WIDTH_PROPORTIONAL
+				icon.position = Vector2(10, 35)
+				icon.size = Vector2(65, 55)
 				icon.visible = false
 				slot.add_child(icon)
 				
