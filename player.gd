@@ -31,131 +31,7 @@ const POTION_COOLDOWN = 0.3
 @onready var health_label = $Camera2D2/UI/HealthLabel
 @onready var potion_label = $Camera2D2/UI/PotionLabel
 
-var inventory_ui = null
-
 func _ready():
-	print("PLAYER: _ready() called!")
-	
-	# Try to find the InventoryUI node
-	inventory_ui = get_node_or_null("Camera2D2/UI/InventoryUI")
-	print("PLAYER: inventory_ui = ", inventory_ui)
-	
-	if inventory_ui:
-		print("PLAYER: InventoryUI FOUND!")
-		print("PLAYER: InventoryUI visible = ", inventory_ui.visible)
-		print("PLAYER: InventoryUI position = ", inventory_ui.position)
-		print("PLAYER: InventoryUI global_position = ", inventory_ui.global_position)
-		inventory_ui.visible = true
-		inventory_ui.z_index = 1000
-	else:
-		print("PLAYER: InventoryUI NOT FOUND! Searching for it...")
-		# Try to find it by traversing the tree
-		var ui_layer = null
-		for child in camera.get_children():
-			print("  Camera child: ", child.name)
-			if child.name == "UI":
-				ui_layer = child
-				for ui_child in child.get_children():
-					print("    UI child: ", ui_child.name)
-					if ui_child.name == "InventoryUI":
-						inventory_ui = ui_child
-						print("PLAYER: Found InventoryUI by search!")
-		
-		# If still not found, create it programmatically
-		if not inventory_ui and ui_layer:
-			print("PLAYER: Creating InventoryUI programmatically...")
-			var InventoryUIScript = load("res://InventoryUI.gd")
-			inventory_ui = Control.new()
-			inventory_ui.name = "InventoryUI"
-			inventory_ui.set_script(InventoryUIScript)
-			
-			# Position at bottom-right
-			inventory_ui.set_anchors_preset(Control.PRESET_BOTTOM_RIGHT)
-			inventory_ui.anchor_left = 1.0
-			inventory_ui.anchor_top = 1.0
-			inventory_ui.anchor_right = 1.0
-			inventory_ui.anchor_bottom = 1.0
-			inventory_ui.offset_left = -320
-			inventory_ui.offset_top = -180
-			inventory_ui.offset_right = -20
-			inventory_ui.offset_bottom = -20
-			inventory_ui.visible = true
-			inventory_ui.z_index = 1000
-			
-			# Create dark semi-transparent background
-			var bg = ColorRect.new()
-			bg.name = "Background"
-			bg.color = Color(0.1, 0.1, 0.1, 0.9)
-			bg.set_anchors_preset(Control.PRESET_FULL_RECT)
-			inventory_ui.add_child(bg)
-			
-			# Create title label
-			var title = Label.new()
-			title.name = "Title"
-			title.text = "INVENTORY"
-			title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-			title.add_theme_font_size_override("font_size", 24)
-			title.add_theme_color_override("font_color", Color(1, 1, 0, 1))
-			title.position = Vector2(0, 10)
-			title.size = Vector2(300, 30)
-			inventory_ui.add_child(title)
-			
-			# Create HBoxContainer for slots
-			var hbox = HBoxContainer.new()
-			hbox.name = "HBoxContainer"
-			hbox.position = Vector2(15, 50)
-			hbox.size = Vector2(270, 100)
-			hbox.add_theme_constant_override("separation", 10)
-			hbox.alignment = BoxContainer.ALIGNMENT_CENTER
-			inventory_ui.add_child(hbox)
-			
-			# Create 3 slots
-			for i in range(3):
-				var slot = Panel.new()
-				slot.name = "Slot" + str(i + 1)
-				slot.custom_minimum_size = Vector2(85, 95)
-				
-				# Create StyleBox for slot border
-				var style = StyleBoxFlat.new()
-				style.bg_color = Color(0.15, 0.15, 0.15, 1)
-				style.border_color = Color(1, 1, 0, 1)
-				style.border_width_left = 3
-				style.border_width_right = 3
-				style.border_width_top = 3
-				style.border_width_bottom = 3
-				style.corner_radius_top_left = 4
-				style.corner_radius_top_right = 4
-				style.corner_radius_bottom_left = 4
-				style.corner_radius_bottom_right = 4
-				slot.add_theme_stylebox_override("panel", style)
-				
-				# Key label (1, 2, 3)
-				var key_label = Label.new()
-				key_label.name = "KeyLabel"
-				key_label.text = str(i + 1)
-				key_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-				key_label.add_theme_font_size_override("font_size", 22)
-				key_label.add_theme_color_override("font_color", Color(1, 1, 0, 1))
-				key_label.position = Vector2(0, 5)
-				key_label.size = Vector2(85, 25)
-				slot.add_child(key_label)
-				
-				# Potion icon
-				var icon = TextureRect.new()
-				icon.name = "PotionIcon"
-				icon.texture = load("res://assets/pink_potion.png")
-				icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-				icon.expand_mode = TextureRect.EXPAND_FIT_WIDTH_PROPORTIONAL
-				icon.position = Vector2(10, 35)
-				icon.size = Vector2(65, 55)
-				icon.visible = false
-				slot.add_child(icon)
-				
-				hbox.add_child(slot)
-			
-			# Add to UI layer
-			ui_layer.add_child(inventory_ui)
-			print("PLAYER: InventoryUI created and added!")
 	
 	add_child(run_sound)
 	run_sound.stream = load("res://assets/Audio Pack/run.wav")
@@ -175,10 +51,7 @@ func _ready():
 	current_health = max_health
 	
 	if health_label:
-		
-		# Check parent visibility
 		var parent = health_label.get_parent()
-		print("   Parent (UI) visible: ", parent.visible if parent else "No parent")
 		
 		# Force set properties to make it visible
 		health_label.visible = true
@@ -207,7 +80,7 @@ func _physics_process(delta: float) -> void:
 	if not is_on_floor():
 		velocity += get_gravity() * delta
 	
-	# Handle inventory hotkeys - 1, 2, 3 keys ONLY (not Enter!)
+	# Handle potion hotkeys - 1, 2, 3 keys
 	if can_use_potion:
 		if Input.is_physical_key_pressed(KEY_1):
 			use_potion_from_slot(1)
@@ -230,11 +103,15 @@ func _physics_process(delta: float) -> void:
 	if direction != 0 and is_on_floor():
 		if not run_sound.playing:
 			run_sound.play()
-			run_sound.connect("finished", Callable(run_sound, "play"))  # restart when done
+			# Connect signal only if not already connected
+			if not run_sound.is_connected("finished", Callable(run_sound, "play")):
+				run_sound.connect("finished", Callable(run_sound, "play"))  # restart when done
 	else:
 		if run_sound.playing:
 			run_sound.stop()
-			run_sound.disconnect("finished", Callable(run_sound, "play"))
+			# Disconnect signal only if it's connected
+			if run_sound.is_connected("finished", Callable(run_sound, "play")):
+				run_sound.disconnect("finished", Callable(run_sound, "play"))
 		
 	if direction != 0:
 		if is_on_floor():
@@ -335,26 +212,21 @@ func update_potion_display() -> void:
 
 func use_health_potion() -> void:
 	if current_health < max_health and Inventory.use_health_potion():
-		heal(50)  # Heal 50 HP
+		heal(50)
 		update_potion_display()
-		print("Used health potion! Potions remaining: ", Inventory.get_health_potions())
 
 func use_potion_from_slot(slot_number: int) -> void:
 	var potion_count = Inventory.get_health_potions()
 	
-	# Check if this slot has a potion
 	if slot_number <= potion_count:
 		if current_health < max_health and Inventory.use_health_potion():
-			heal(50)  # Heal 50 HP
+			heal(50)
 			update_potion_display()
-			print("Used potion from slot %d! Potions remaining: %d" % [slot_number, Inventory.get_health_potions()])
 			
 			# Start potion cooldown
-			can_use_potion = false
-			await get_tree().create_timer(POTION_COOLDOWN).timeout
-			can_use_potion = true
-	else:
-		print("No potion in slot %d" % slot_number)
+		can_use_potion = false
+		await get_tree().create_timer(POTION_COOLDOWN).timeout
+		can_use_potion = true
 
 func melt_into_lava(target_x: float, lava_y: float) -> void:
 	# Stop movement

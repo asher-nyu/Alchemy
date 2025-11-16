@@ -1,15 +1,17 @@
-[gd_scene load_steps=16 format=3 uid="uid://cyabmjro6aa6p"]
+[gd_scene load_steps=19 format=3 uid="uid://cyabmjro6aa6p"]
 
-[ext_resource type="Shader" uid="uid://db5uqbnml0f0l" path="res://Alchemy.gdshader" id="1_0s5r2"]
-[ext_resource type="Texture2D" uid="uid://crjd1bscx4mg5" path="res://assets/purplbckgd.png" id="1_hbghi"]
-[ext_resource type="Texture2D" uid="uid://b4ab64s0jew6g" path="res://assets/tileset-cave.png" id="2_hn12h"]
+[ext_resource type="Shader" path="res://Alchemy.gdshader" id="1_0s5r2"]
+[ext_resource type="Texture2D" uid="uid://y87xuavicbjn" path="res://assets/purplbckgd.png" id="1_hbghi"]
+[ext_resource type="Texture2D" uid="uid://bpkv6basthxvi" path="res://assets/tileset-cave.png" id="2_hn12h"]
 [ext_resource type="PackedScene" uid="uid://bq2w0ktf50l2n" path="res://player.tscn" id="3_hn12h"]
 [ext_resource type="PackedScene" uid="uid://doqe7a8sola7a" path="res://skeleton_enemy.tscn" id="4_ihfcg"]
 [ext_resource type="PackedScene" uid="uid://bf2ebv61fp485" path="res://door.tscn" id="5_rka8t"]
-[ext_resource type="Script" uid="uid://k2cx8u601psg" path="res://lava_(area_2d).gd" id="7_7dov7"]
+[ext_resource type="Script" path="res://lava_(area_2d).gd" id="7_7dov7"]
 [ext_resource type="Texture2D" uid="uid://cwyy57oiy08dw" path="res://assets/lava.png" id="8_ehv2h"]
-[ext_resource type="Script" uid="uid://3h6mw3tbkpeg" path="res://spike.gd" id="9_15wb7"]
+[ext_resource type="Script" path="res://spike.gd" id="9_15wb7"]
 [ext_resource type="Texture2D" uid="uid://cwhqtjf2q0m6a" path="res://assets/spikes.png" id="9_ehv2h"]
+[ext_resource type="PackedScene" path="res://ghost_enemy.tscn" id="12_s77qv"]
+[ext_resource type="PackedScene" path="res://wizard_enemy.tscn" id="13_5hnhx"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_7j8ne"]
 shader = ExtResource("1_0s5r2")
@@ -902,3 +904,11 @@ position = Vector2(9899.531, 6522.9688)
 scale = Vector2(3.5479736, 2.9551675)
 texture = ExtResource("9_ehv2h")
 offset = Vector2(550, 0)
+
+[node name="ghost_enemy" parent="." instance=ExtResource("12_s77qv")]
+position = Vector2(1130, 2901)
+scale = Vector2(2, 2)
+
+[node name="wizard_enemy" parent="." instance=ExtResource("13_5hnhx")]
+position = Vector2(626, 2944)
+scale = Vector2(2, 2)

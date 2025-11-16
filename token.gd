@@ -4,7 +4,8 @@ enum TokenType {
 	ROCK = -1,
 	GINGER = 0,
 	GARLIC = 1,
-	MINT = 2
+	MINT = 2,
+	PEPPER = 3
 }
 
 var token_type: int
@@ -33,6 +34,9 @@ func initialize(type: int, pos: Vector2, x: int, y: int):
 		TokenType.MINT:
 			texture = load("res://assets/mint.png")
 			scale = Vector2(4, 4)
+		TokenType.PEPPER:
+			texture = load("res://assets/vegetables/pepper.png")
+			scale = Vector2(4, 4)
 	
 	name = "Token_%d_%d_%s" % [x, y, get_token_name()]
 
@@ -46,6 +50,8 @@ func get_token_name() -> String:
 			return "Garlic"
 		TokenType.MINT:
 			return "Mint"
+		TokenType.PEPPER:
+			return "Pepper"
 		_:
 			return "Unknown"
 

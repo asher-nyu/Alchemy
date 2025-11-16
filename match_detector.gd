@@ -4,7 +4,8 @@ enum TokenType {
 	ROCK = -1,
 	GINGER = 0,
 	GARLIC = 1,
-	MINT = 2
+	MINT = 2,
+	PEPPER = 3
 }
 
 func check_match_at_position(grid: Array, x: int, y: int, width: int, height: int) -> bool:
@@ -164,3 +165,117 @@ func is_position_in_array(pos: Vector2i, positions: Array) -> bool:
 		if p.x == pos.x and p.y == pos.y:
 			return true
 	return false
+
+func check_for_mint_matches(matches: Array, grid: Array, width: int, height: int) -> int:
+	var mint_match_count = 0
+	var processed_positions = []
+	
+	# First, filter matches to only include mint positions
+	var mint_matches = []
+	for match_pos in matches:
+		if grid[match_pos.x][match_pos.y] == TokenType.MINT:
+			mint_matches.append(match_pos)
+	
+	if mint_matches.size() == 0:
+		return 0
+	
+	# Check horizontal mint groups
+	for y in range(height):
+		var consecutive = []
+		for x in range(width):
+			var pos = Vector2i(x, y)
+			if is_position_in_array(pos, mint_matches) and not is_position_in_array(pos, processed_positions):
+				consecutive.append(pos)
+			else:
+				# End of consecutive run
+				if consecutive.size() >= 3:
+					mint_match_count += 1
+					for p in consecutive:
+						processed_positions.append(p)
+				consecutive = []
+		
+		# Check end of row
+		if consecutive.size() >= 3:
+			mint_match_count += 1
+			for p in consecutive:
+				processed_positions.append(p)
+	
+	# Check vertical mint groups
+	for x in range(width):
+		var consecutive = []
+		for y in range(height):
+			var pos = Vector2i(x, y)
+			if is_position_in_array(pos, mint_matches) and not is_position_in_array(pos, processed_positions):
+				consecutive.append(pos)
+			else:
+				# End of consecutive run
+				if consecutive.size() >= 3:
+					mint_match_count += 1
+					for p in consecutive:
+						processed_positions.append(p)
+				consecutive = []
+		
+		# Check end of column
+		if consecutive.size() >= 3:
+			mint_match_count += 1
+			for p in consecutive:
+				processed_positions.append(p)
+	
+	return mint_match_count
+
+func check_for_pepper_matches(matches: Array, grid: Array, width: int, height: int) -> int:
+	var pepper_match_count = 0
+	var processed_positions = []
+	
+	# First, filter matches to only include pepper positions
+	var pepper_matches = []
+	for match_pos in matches:
+		if grid[match_pos.x][match_pos.y] == TokenType.PEPPER:
+			pepper_matches.append(match_pos)
+	
+	if pepper_matches.size() == 0:
+		return 0
+	
+	# Check horizontal pepper groups
+	for y in range(height):
+		var consecutive = []
+		for x in range(width):
+			var pos = Vector2i(x, y)
+			if is_position_in_array(pos, pepper_matches) and not is_position_in_array(pos, processed_positions):
+				consecutive.append(pos)
+			else:
+				# End of consecutive run
+				if consecutive.size() >= 3:
+					pepper_match_count += 1
+					for p in consecutive:
+						processed_positions.append(p)
+				consecutive = []
+		
+		# Check end of row
+		if consecutive.size() >= 3:
+			pepper_match_count += 1
+			for p in consecutive:
+				processed_positions.append(p)
+	
+	# Check vertical pepper groups
+	for x in range(width):
+		var consecutive = []
+		for y in range(height):
+			var pos = Vector2i(x, y)
+			if is_position_in_array(pos, pepper_matches) and not is_position_in_array(pos, processed_positions):
+				consecutive.append(pos)
+			else:
+				# End of consecutive run
+				if consecutive.size() >= 3:
+					pepper_match_count += 1
+					for p in consecutive:
+						processed_positions.append(p)
+				consecutive = []
+		
+		# Check end of column
+		if consecutive.size() >= 3:
+			pepper_match_count += 1
+			for p in consecutive:
+				processed_positions.append(p)
+	
+	return pepper_match_count

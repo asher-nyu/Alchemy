@@ -1,0 +1,14 @@
+[gd_scene load_steps=3 format=3 uid="uid://bhk5lwp7l8r8e"]
+
+[ext_resource type="Script" path="res://mint_pickup.gd" id="1_mint"]
+[ext_resource type="Texture2D" uid="uid://bol58ahsmr8gp" path="res://assets/vegetables/mint.png" id="2_mint"]
+
+[node name="MintPickup" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_mint")
+
+[node name="Sprite" type="TextureRect" parent="."]
+layout_mode = 0
+texture = ExtResource("2_mint")
+

@@ -1,0 +1,86 @@
+[gd_scene load_steps=13 format=3 uid="uid://cj5m7p2q8rvwn"]
+
+[ext_resource type="Script" uid="uid://dmw8lv3ujx6wu" path="res://wizard_enemy.gd" id="1_wizard"]
+[ext_resource type="Texture2D" uid="uid://d5miltgwe57e" path="res://assets/sprWizard.png" id="2_wizard"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_w8tlf"]
+atlas = ExtResource("2_wizard")
+region = Rect2(0, 0, 26, 18)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_g2wqp"]
+atlas = ExtResource("2_wizard")
+region = Rect2(26, 0, 26, 18)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_gkiky"]
+atlas = ExtResource("2_wizard")
+region = Rect2(52, 0, 26, 18)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_pa83j"]
+atlas = ExtResource("2_wizard")
+region = Rect2(78, 0, 26, 18)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_f3osd"]
+atlas = ExtResource("2_wizard")
+region = Rect2(104, 0, 26, 18)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_htc34"]
+atlas = ExtResource("2_wizard")
+region = Rect2(130, 0, 26, 18)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4kvv8"]
+atlas = ExtResource("2_wizard")
+region = Rect2(156, 0, 26, 18)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_wizard"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_w8tlf")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_g2wqp")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_gkiky")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_pa83j")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_f3osd")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_htc34")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_4kvv8")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 10.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_wizard"]
+size = Vector2(60, 84)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_wizard"]
+radius = 250.0
+
+[node name="WizardEnemy" type="CharacterBody2D"]
+collision_layer = 2
+script = ExtResource("1_wizard")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+scale = Vector2(3, 3)
+sprite_frames = SubResource("SpriteFrames_wizard")
+animation = &"idle"
+autoplay = "idle"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_wizard")
+
+[node name="AttackDetector" type="Area2D" parent="."]
+collision_layer = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="AttackDetector"]
+shape = SubResource("CircleShape2D_wizard")

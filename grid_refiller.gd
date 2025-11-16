@@ -5,7 +5,8 @@ enum TokenType {
 	ROCK = -1,
 	GINGER = 0,
 	GARLIC = 1,
-	MINT = 2
+	MINT = 2,
+	PEPPER = 3
 }
 
 func get_valid_token(grid: Array, x: int, y: int, collected_tokens: Array, width: int, height: int) -> int:
