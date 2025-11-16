@@ -355,3 +355,87 @@ func use_potion_from_slot(slot_number: int) -> void:
 			can_use_potion = true
 	else:
 		print("No potion in slot %d" % slot_number)
+
+func melt_into_lava(target_x: float, lava_y: float) -> void:
+	# Stop movement
+	velocity = Vector2.ZERO
+	set_process(false)
+	set_physics_process(false)
+
+	# Play death sound
+	if hero_death_sound:
+		hero_death_sound.play()
+
+	var melt_time = 1.5
+	var timer = 0.0
+	var start_pos = global_position
+	var start_scale = scale
+
+	while timer < melt_time:
+		var t = timer / melt_time
+		# Keep x the same, sink y toward lava surface
+		global_position.x = start_pos.x
+		global_position.y = lerp(start_pos.y, lava_y, t)
+		# Shrink vertically only
+		scale.y = start_scale.y * (1.0 - t)
+		timer += get_process_delta_time()
+		await get_tree().process_frame
+
+	# Fully disappear
+	visible = false
+
+	# Wait for death sound
+	if hero_death_sound:
+		var sound_length = hero_death_sound.stream.get_length()
+		await get_tree().create_timer(sound_length).timeout
+
+	# Restart scene
+	get_tree().change_scene_to_file("res://GameOverScreen.tscn")
+	
+
+func start_pixel_death(delay: float = 1.0) -> void:
+	# Stop movement and input
+	set_process(false)
+	set_physics_process(false)
+	velocity = Vector2.ZERO
+
+	# Hide main sprite
+	if $AnimatedSprite2D:
+		$AnimatedSprite2D.hide()
+
+	# Play death sound once
+	if hero_death_sound and not hero_death_sound.playing:
+		hero_death_sound.play()
+
+	# Bold pixel particles
+	var pixels = 20
+	for i in range(pixels):
+		var part = Polygon2D.new()
+		get_parent().add_child(part)
+
+		# Random oval shape
+		var width = randf_range(16, 32)
+		var height = randf_range(8, 24)
+		var segments = 16
+		var points = []
+		for j in range(segments):
+			var angle = (float(j) / segments) * TAU
+			points.append(Vector2(cos(angle) * width / 2, sin(angle) * height / 2))
+		part.polygon = points
+
+		part.color = Color(1, 0.2, 0.2)
+		part.global_position = global_position + Vector2(randf()*32-16, randf()*32-16)
+
+		# Tween particles
+		var t = create_tween()
+		var target_pos = part.global_position + Vector2(randf()*200-100, randf()*200-100)
+		t.tween_property(part, "global_position", target_pos, delay)
+		t.tween_property(part, "modulate:a", 0.0, delay)
+		t.play()
+
+	# Wait for effect + death sound
+	await get_tree().create_timer(delay).timeout
+	if hero_death_sound:
+		var sound_length = hero_death_sound.stream.get_length()
+		await get_tree().create_timer(sound_length).timeout
+		get_tree().change_scene_to_file("res://GameOverScreen.tscn")
