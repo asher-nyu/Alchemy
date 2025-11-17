@@ -21,7 +21,8 @@ enum TokenType {
 	ROCK = -1,
 	GINGER = 0,
 	GARLIC = 1,
-	MINT = 2
+	MINT = 2,
+	PEPPER = 3
 }
 
 # Collected tokens
@@ -298,6 +299,16 @@ func process_all_matches():
 			await get_tree().create_timer(2.0).timeout
 			end_game_and_transition()
 			return
+	
+	# Check for mint matches and award jump potions
+	var mint_matches = match_detector.check_for_mint_matches(matches, grid, GRID_WIDTH, GRID_HEIGHT)
+	if mint_matches > 0:
+		Inventory.add_jump_potions(mint_matches)
+	
+	# Check for pepper matches and award hulk potions
+	var pepper_matches = match_detector.check_for_pepper_matches(matches, grid, GRID_WIDTH, GRID_HEIGHT)
+	if pepper_matches > 0:
+		Inventory.add_hulk_potions(pepper_matches)
 	
 	# Add to score
 	var points = matches.size() * 10

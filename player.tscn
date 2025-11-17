@@ -355,27 +355,6 @@ offset_bottom = 160.0
 grow_horizontal = 0
 script = ExtResource("5_invui")
 
-[node name="Background" type="ColorRect" parent="Camera2D2/UI/InventoryUI"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-color = Color(1, 0, 0, 1)
-
-[node name="Title" type="Label" parent="Camera2D2/UI/InventoryUI"]
-z_index = 1
-layout_mode = 1
-anchors_preset = 10
-anchor_right = 1.0
-offset_bottom = 30.0
-grow_horizontal = 2
-theme_override_colors/font_color = Color(1, 1, 0, 1)
-theme_override_font_sizes/font_size = 28
-text = "Pocket Inventory"
-horizontal_alignment = 1
-
 [node name="HBoxContainer" type="HBoxContainer" parent="Camera2D2/UI/InventoryUI"]
 z_index = 1
 layout_mode = 1
