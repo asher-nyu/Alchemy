@@ -3,6 +3,7 @@ extends Control
 @onready var sprite: TextureRect = $Sprite
 
 func _ready():
+	
 	# Setup the sprite
 	sprite.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	sprite.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED

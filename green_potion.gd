@@ -8,8 +8,8 @@ func initialize(start_pos: Vector2):
 	centered = true
 	
 	# Load texture
-	if ResourceLoader.exists("res://assets/pink_potion.png"):
-		texture = load("res://assets/pink_potion.png")
+	if ResourceLoader.exists("res://assets/green_potion.png"):
+		texture = load("res://assets/green_potion.png")
 
 func animate_to_circle(target_pos: Vector2):
 	var tween = create_tween()

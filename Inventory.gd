@@ -1,6 +1,5 @@
 extends Node
 
-# Use the same TokenType enum as the match-3 system
 enum TokenType {
 	ROCK = -1,
 	GINGER = 0,
@@ -9,21 +8,40 @@ enum TokenType {
 	PEPPER = 3
 }
 
+enum PotionType {
+	PINK,
+	GREEN,
+	BLUE
+}
+
 var garlic_count: int = 0
-var mint_count: int = 0
-var pepper_count: int = 0
+var mint_count: int = 0  
+var pepper_count: int = 0  
 var collected_tokens: Array = []  # This will be used by match-3 GridRefiller
-var health_potions: int = 0  # Health potions collected from match-3
-var jump_potions: int = 0    # Jump potions from mint matches
-var hulk_potions: int = 0    # Hulk potions from pepper matches
+
+var potion_slots: Array = []  # Each element is a PotionType
+const MAX_POTIONS = 3
+
+var health_potions: int = 0  # Total count
+
+var _health_data: Dictionary = {
+	"max": 100,
+	"current": -1 
+}
+
 
 signal garlic_changed(new_count: int)
 signal mint_changed(new_count: int)
 signal pepper_changed(new_count: int)
 signal token_collected(token_type: int)
 signal potions_changed(new_count: int)
-signal jump_potions_changed(new_count: int)
-signal hulk_potions_changed(new_count: int)
+signal health_changed(current: int, maximum: int)
+
+func _ready():
+	# Initialize health only if it's -1 (never been set)
+	if _health_data["current"] == -1:
+		_health_data["current"] = _health_data["max"]
+		health_changed.emit(_health_data["current"], _health_data["max"])
 
 func add_garlic(amount: int = 1):
 	garlic_count += amount
@@ -48,7 +66,6 @@ func add_mint(amount: int = 1):
 func add_pepper(amount: int = 1):
 	pepper_count += amount
 	
-	# Add PEPPER token type to collected_tokens if not already there
 	if not collected_tokens.has(TokenType.PEPPER):
 		collected_tokens.append(TokenType.PEPPER)
 		token_collected.emit(TokenType.PEPPER)
@@ -70,8 +87,6 @@ func get_token_name(token_type: int) -> String:
 			return "GARLIC"
 		TokenType.MINT:
 			return "MINT"
-		TokenType.PEPPER:
-			return "PEPPER"
 		_:
 			return "UNKNOWN"
 
@@ -79,6 +94,13 @@ func remove_garlic(amount: int = 1) -> bool:
 	if garlic_count >= amount:
 		garlic_count -= amount
 		garlic_changed.emit(garlic_count)
+		return true
+	return false
+
+func remove_pepper(amount: int = 1) -> bool:
+	if pepper_count >= amount:
+		pepper_count -= amount
+		pepper_changed.emit(pepper_count)
 		return true
 	return false
 
@@ -97,47 +119,87 @@ func get_collected_tokens() -> Array:
 func has_token_type(token_type: int) -> bool:
 	return collected_tokens.has(token_type)
 
-func add_health_potions(amount: int = 1):
-	var max_potions = 3
-	health_potions = min(health_potions + amount, max_potions)
+func add_potion(potion_type: int, amount: int = 1):
+	for i in range(amount):
+		if potion_slots.size() < MAX_POTIONS:
+			potion_slots.append(potion_type)
+	
+	health_potions = potion_slots.size()
 	potions_changed.emit(health_potions)
 
-func add_jump_potions(amount: int = 1):
-	var max_potions = 3
-	jump_potions = min(jump_potions + amount, max_potions)
-	jump_potions_changed.emit(jump_potions)
+func get_potion_in_slot(slot_index: int) -> int:
+	if slot_index >= 0 and slot_index < potion_slots.size():
+		return potion_slots[slot_index]
+	return -1  # No potion in this slot
 
-func add_hulk_potions(amount: int = 1):
-	var max_potions = 3
-	hulk_potions = min(hulk_potions + amount, max_potions)
-	hulk_potions_changed.emit(hulk_potions)
+func get_potion_slots() -> Array:
+	return potion_slots
+
+func get_potion_type_name(potion_type: int) -> String:
+	match potion_type:
+		PotionType.PINK:
+			return "Pink"
+		PotionType.GREEN:
+			return "Green"
+		PotionType.BLUE:
+			return "Blue"
+		_:
+			return "Unknown"
+
+func use_potion_from_slot(slot_index: int) -> bool:
+	if slot_index >= 0 and slot_index < potion_slots.size():
+		var potion_type = potion_slots[slot_index]
+		potion_slots.remove_at(slot_index)
+		health_potions = potion_slots.size()
+		potions_changed.emit(health_potions)
+		print("Inventory: Used %s potion from slot %d" % [get_potion_type_name(potion_type), slot_index])
+		return true
+	return false
+
+#  use first available potion
+func add_health_potions(amount: int = 1):
+	# Default to pink potions for backwards compatibility
+	add_potion(PotionType.PINK, amount)
 
 func get_health_potions() -> int:
 	return health_potions
 
-func get_jump_potions() -> int:
-	return jump_potions
-
-func get_hulk_potions() -> int:
-	return hulk_potions
-
 func use_health_potion() -> bool:
-	if health_potions > 0:
-		health_potions -= 1
-		potions_changed.emit(health_potions)
+	# Use the first potion in the array
+	if potion_slots.size() > 0:
+		return use_potion_from_slot(0)
+	return false
+
+# Health management functions
+func take_damage(amount: int):
+	_health_data["current"] = max(0, _health_data["current"] - amount)
+	health_changed.emit(_health_data["current"], _health_data["max"])
+	
+	if _health_data["current"] <= 0:
 		return true
 	return false
 
-func use_jump_potion() -> bool:
-	if jump_potions > 0:
-		jump_potions -= 1
-		jump_potions_changed.emit(jump_potions)
-		return true
-	return false
+func heal(amount: int):
+	_health_data["current"] = min(_health_data["max"], _health_data["current"] + amount)
+	health_changed.emit(_health_data["current"], _health_data["max"])
 
-func use_hulk_potion() -> bool:
-	if hulk_potions > 0:
-		hulk_potions -= 1
-		hulk_potions_changed.emit(hulk_potions)
-		return true
-	return false
+func get_current_health() -> int:
+	return _health_data["current"]
+
+func get_max_health() -> int:
+	return _health_data["max"]
+
+func set_max_health(value: int):
+	_health_data["max"] = value
+	_health_data["current"] = min(_health_data["current"], _health_data["max"])
+	health_changed.emit(_health_data["current"], _health_data["max"])
+
+func reset_game():
+	garlic_count = 0
+	mint_count = 0
+	pepper_count = 0
+	collected_tokens.clear()
+	potion_slots.clear()  
+	health_potions = 0
+	_health_data["current"] = _health_data["max"]
+	health_changed.emit(_health_data["current"], _health_data["max"])

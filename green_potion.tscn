@@ -1,0 +1,8 @@
+[gd_scene load_steps=3 format=3 uid="uid://ckcii1d5sf2sh"]
+
+[ext_resource type="Texture2D" uid="uid://bjtufq6sunfap" path="res://assets/green_potion.png" id="1_jr17g"]
+[ext_resource type="Script" uid="uid://cpwh7pev35xpb" path="res://green_potion.gd" id="2_ct3lc"]
+
+[node name="green_potion" type="Sprite2D"]
+texture = ExtResource("1_jr17g")
+script = ExtResource("2_ct3lc")

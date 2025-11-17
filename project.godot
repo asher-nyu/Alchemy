@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="Alchemy"
-run/main_scene="uid://dur0gs8lqb2mn"
+run/main_scene="res://StartScreen.tscn"
 config/features=PackedStringArray("4.5", "Forward Plus")
 config/icon="res://assets/icon.svg"
 
@@ -19,6 +19,9 @@ config/icon="res://assets/icon.svg"
 
 Inventory="*res://Inventory.gd"
 AudioManager="*res://AudioManager.gd"
+GlobalPuzzleData="*res://global_puzzle_data.gd"
+PotionManager="*res://PotionManager.gd"
+LevelManager="*res://LevelManager.gd"
 
 [display]
 

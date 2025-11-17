@@ -13,10 +13,8 @@ func _ready():
 	animate_to_corner()
 
 func animate_to_corner():
-	# Target position in UI corner (different from garlic)
 	var target_pos = Vector2(150, 600)
 	
-	# Start small
 	scale = Vector2(0.1, 0.1)
 	
 	var tween = create_tween()
@@ -51,4 +49,3 @@ func set_start_position(world_pos: Vector2, camera: Camera2D):
 	var offset = world_pos - camera.global_position
 	var screen_pos = screen_center + (offset * camera.zoom)
 	position = screen_pos
-

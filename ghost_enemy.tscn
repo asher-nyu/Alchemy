@@ -1,6 +1,6 @@
-[gd_scene load_steps=11 format=3 uid="uid://dpw3h8k2navnx"]
+[gd_scene load_steps=11 format=3 uid="uid://bcljcfdeec184"]
 
-[ext_resource type="Script" uid="uid://bkb1n5g1alk5t" path="res://ghost_enemy.gd" id="1_ghost"]
+[ext_resource type="Script" uid="uid://b2rhscvc68657" path="res://ghost_enemy.gd" id="1_ghost"]
 [ext_resource type="Texture2D" uid="uid://cfp7yiycen81q" path="res://assets/sprGhost3.png" id="2_ghost"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_ghost_4"]
@@ -50,7 +50,7 @@ animations = [{
 size = Vector2(60, 84)
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_ghost"]
-radius = 200.0
+radius = 53.235325
 
 [node name="GhostEnemy" type="CharacterBody2D"]
 collision_layer = 2

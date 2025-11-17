@@ -3,17 +3,15 @@ extends CharacterBody2D
 var enemy_attack_sound = AudioStreamPlayer.new()
 var enemy_death_sound = AudioStreamPlayer.new()
 
-# Movement constants - Ghost floats!
-const PATROL_SPEED = 70.0  # Slightly faster than skeleton
-const FLOAT_SPEED = 30.0   # Vertical floating motion
-const GRAVITY = 200.0      # Less gravity, floats more
+const PATROL_SPEED = 40.0  # Slightly faster than skeleton
+const FLOAT_SPEED = 30.0   
+const GRAVITY = 200.0      
 const FLOAT_AMPLITUDE = 50.0
 
-# Detection ranges
-const ATTACK_RANGE = 250.0  # Slightly longer range
+const ATTACK_RANGE = 250.0 
 
 # Patrol behavior
-const PATROL_DISTANCE = 500.0  # Wider patrol range
+const PATROL_DISTANCE = 500.0  
 var spawn_position: Vector2
 var patrol_direction = 1
 var float_offset = 0.0
@@ -23,18 +21,17 @@ enum State { PATROL, ATTACK }
 var current_state = State.PATROL
 
 # Attack properties
-var attack_damage = 8  # Less damage than skeleton
+var attack_damage = 15 
 var attack_cooldown = 1.8
 var attack_timer = 0.0
 
 # Health system
-var max_health = 40  # Less health than skeleton
+var max_health = 70
 var current_health = 40
 
 # Preload mint pickup scene
 var mint_pickup_scene = preload("res://mint_pickup.tscn")
 
-# References
 @onready var animated_sprite = $AnimatedSprite2D
 @onready var attack_detector = $AttackDetector
 var player: CharacterBody2D = null
@@ -82,7 +79,6 @@ func _physics_process(delta: float) -> void:
 	if attack_timer > 0:
 		attack_timer -= delta
 	
-	# Apply reduced gravity (ghost floats!)
 	if not is_on_floor():
 		velocity.y += GRAVITY * delta
 	
@@ -181,14 +177,13 @@ func _on_body_left_range(body):
 		player = null
 		current_state = State.PATROL
 
-func take_damage(amount: int):
+func take_damage(amount: int, attacker_position: Vector2 = Vector2.ZERO):
 	if current_health <= 0:
 		return
 	
 	current_health -= amount
-	
 	if animated_sprite:
-		animated_sprite.modulate = Color(0.5, 1.0, 1.0, 1.5)  # Cyan flash for ghost
+		animated_sprite.modulate = Color(0.5, 1.0, 1.0, 1.5)  
 		await get_tree().create_timer(0.1).timeout
 		if is_instance_valid(self):
 			animated_sprite.modulate = Color.WHITE
@@ -215,9 +210,8 @@ func die():
 	var sound_length = enemy_death_sound.stream.get_length()
 	await get_tree().create_timer(sound_length).timeout
 		
-	# Add mint to inventory
+# Add mint to inventory
 	Inventory.add_mint(1)
-	
 	queue_free()
 
 func spawn_mint_pickup():
@@ -232,4 +226,3 @@ func spawn_mint_pickup():
 	ui_layer.add_child(mint)
 	
 	mint.set_start_position(global_position, camera)
-

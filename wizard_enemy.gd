@@ -3,15 +3,14 @@ extends CharacterBody2D
 var enemy_attack_sound = AudioStreamPlayer.new()
 var enemy_death_sound = AudioStreamPlayer.new()
 
-# Movement constants - Wizard is slow but tanky
-const PATROL_SPEED = 40.0   # Slower than skeleton
+const PATROL_SPEED = 40.0  
 const GRAVITY = 980.0
 
 # Detection ranges
-const ATTACK_RANGE = 300.0  # Long range (wizard casts spells)
+const ATTACK_RANGE = 300.0   
 
 # Patrol behavior
-const PATROL_DISTANCE = 300.0  # Shorter patrol range
+const PATROL_DISTANCE = 300.0  
 var spawn_position: Vector2
 var patrol_direction = 1
 
@@ -20,12 +19,12 @@ enum State { PATROL, ATTACK }
 var current_state = State.PATROL
 
 # Attack properties
-var attack_damage = 15  # Higher damage (powerful spells!)
-var attack_cooldown = 2.0  # Slower attack rate
+var attack_damage = 20  
+var attack_cooldown = 2.0  
 var attack_timer = 0.0
 
 # Health system
-var max_health = 80  # Much tankier than skeleton
+var max_health = 80  
 var current_health = 80
 
 # Preload pepper pickup scene
@@ -114,8 +113,6 @@ func attack_behavior():
 	if distance_to_player > ATTACK_RANGE * 1.5:
 		current_state = State.PATROL
 		return
-	
-	# Wizard STOPS to cast spells
 	velocity.x = 0
 	
 	# Face the player
@@ -179,14 +176,14 @@ func _on_body_left_range(body):
 		player = null
 		current_state = State.PATROL
 
-func take_damage(amount: int):
+func take_damage(amount: int, attacker_position: Vector2 = Vector2.ZERO):
 	if current_health <= 0:
 		return
 	
 	current_health -= amount
 	
 	if animated_sprite:
-		animated_sprite.modulate = Color(2.0, 0.5, 0.5, 1.0)  # Red flash for wizard
+		animated_sprite.modulate = Color(2.0, 0.5, 0.5, 1.0) 
 		await get_tree().create_timer(0.1).timeout
 		if is_instance_valid(self):
 			animated_sprite.modulate = Color.WHITE
@@ -213,7 +210,6 @@ func die():
 	var sound_length = enemy_death_sound.stream.get_length()
 	await get_tree().create_timer(sound_length).timeout
 		
-	# Add pepper to inventory
 	Inventory.add_pepper(1)
 	
 	queue_free()

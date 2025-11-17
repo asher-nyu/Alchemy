@@ -1,3 +1,5 @@
+
+
 extends Node2D
 
 var click_sound_player = AudioStreamPlayer.new()
@@ -21,8 +23,7 @@ enum TokenType {
 	ROCK = -1,
 	GINGER = 0,
 	GARLIC = 1,
-	MINT = 2,
-	PEPPER = 3
+	MINT = 2
 }
 
 # Collected tokens
@@ -59,9 +60,9 @@ var potion_sprites_in_circles = []
 var cascade_depth = 0
 const MAX_CASCADE_DEPTH = 10
 
-# Preloaded scenes and classes
 var token_scene = preload("res://token.tscn")
 var pink_potion_scene = preload("res://pink_potion.tscn")
+var green_potion_scene = preload("res://green_potion.tscn")
 var match_detector = MatchDetector.new()
 var grid_refiller = GridRefiller.new()
 
@@ -98,8 +99,9 @@ func load_textures():
 	tile_bg_texture = load("res://assets/tile_bg.png")
 
 func initialize_collected_tokens():
-	collected_tokens = Inventory.get_collected_tokens()  
-
+	collected_tokens = Inventory.get_collected_tokens()
+	print("🎮 Match3 initialized with tokens: ", collected_tokens)
+	
 func initialize_potion_circles():
 	potion_sprites_in_circles.clear()
 	for i in range(MAX_POTIONS):
@@ -272,26 +274,28 @@ func process_all_matches():
 		cascade_depth = 0
 		return
 	
-	# Safety check: prevent infinite loops
 	cascade_depth += 1
 	if cascade_depth > MAX_CASCADE_DEPTH:
 		cascade_depth = 0
 		is_swapping = false
 		return
 	
-	# Check for garlic matches and award pick potions
+	var potions_before = pick_potions
+	
+	# Check for garlic matches and award pink potions
 	var garlic_matches = match_detector.check_for_garlic_matches(matches, grid, GRID_WIDTH, GRID_HEIGHT)
 	if garlic_matches > 0:
-		var potions_before = pick_potions
 		pick_potions += garlic_matches
 		
 		# Cap at max potions
 		if pick_potions > MAX_POTIONS:
 			pick_potions = MAX_POTIONS
 		
-		# Spawn pink potion visual for each new potion (up to max)
+		# Spawn pink potion visual for each new potion (up to max) add to inventory immediately
 		for i in range(potions_before, pick_potions):
 			spawn_pink_potion_in_circle(i)
+			Inventory.add_potion(Inventory.PotionType.PINK)  
+			potions_before += 1  # Update for next ingredient type
 		
 		# Check if player collected max potions
 		if pick_potions >= MAX_POTIONS:
@@ -300,15 +304,26 @@ func process_all_matches():
 			end_game_and_transition()
 			return
 	
-	# Check for mint matches and award jump potions
+	# Check for mint matches and award green potions
 	var mint_matches = match_detector.check_for_mint_matches(matches, grid, GRID_WIDTH, GRID_HEIGHT)
 	if mint_matches > 0:
-		Inventory.add_jump_potions(mint_matches)
-	
-	# Check for pepper matches and award hulk potions
-	var pepper_matches = match_detector.check_for_pepper_matches(matches, grid, GRID_WIDTH, GRID_HEIGHT)
-	if pepper_matches > 0:
-		Inventory.add_hulk_potions(pepper_matches)
+		pick_potions += mint_matches
+		
+		# Cap at max potions
+		if pick_potions > MAX_POTIONS:
+			pick_potions = MAX_POTIONS
+		
+		# Spawn green potion visual for each new potion (up to max)
+		for i in range(potions_before, pick_potions):
+			spawn_green_potion_in_circle(i)
+			Inventory.add_potion(Inventory.PotionType.GREEN)  
+		
+		# Check if player collected max potions
+		if pick_potions >= MAX_POTIONS:
+			cascade_depth = 0
+			await get_tree().create_timer(2.0).timeout
+			end_game_and_transition()
+			return
 	
 	# Add to score
 	var points = matches.size() * 10
@@ -375,6 +390,24 @@ func spawn_pink_potion_in_circle(circle_index: int):
 		potion_sprites_in_circles.append(null)
 	potion_sprites_in_circles[circle_index] = potion
 
+func spawn_green_potion_in_circle(circle_index: int):
+	if circle_index >= MAX_POTIONS:
+		return
+	
+	var start_x = GRID_OFFSET_X + (GRID_WIDTH * TILE_SIZE * SCALE_FACTOR) / 2
+	var start_y = GRID_OFFSET_Y + (GRID_HEIGHT * TILE_SIZE * SCALE_FACTOR) / 2
+	
+	var potion = green_potion_scene.instantiate()
+	add_child(potion)
+	potion.initialize(Vector2(start_x, start_y))
+	await potion.animate_to_circle(POTION_CIRCLE_POSITIONS[circle_index])
+	if collect_sound_player:
+		collect_sound_player.play()
+	
+	while potion_sprites_in_circles.size() <= circle_index:
+		potion_sprites_in_circles.append(null)
+	potion_sprites_in_circles[circle_index] = potion
+
 func has_valid_moves() -> bool:
 	# Check every position for possible swaps that would create a match
 	for y in range(GRID_HEIGHT):
@@ -426,9 +459,6 @@ func end_game_and_transition():
 	game_ended = true
 	is_swapping = true
 	
-	# Save potions to inventory
-	Inventory.add_health_potions(pick_potions)
-	
 	# Pulse the collected potions
 	for i in range(pick_potions):
 		if potion_sprites_in_circles[i]:
@@ -436,5 +466,5 @@ func end_game_and_transition():
 	
 	await get_tree().create_timer(2.0).timeout
 	
-	# Transition to level 2
-	get_tree().change_scene_to_file("res://level_2.tscn")
+	# Go to next level (set by the door)
+	GlobalPuzzleData.puzzle_completed()

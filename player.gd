@@ -1,3 +1,4 @@
+
 extends CharacterBody2D
 
 var run_sound = AudioStreamPlayer.new()
@@ -5,37 +6,64 @@ var attack_sound = AudioStreamPlayer.new()
 var hero_death_sound = AudioStreamPlayer.new()
 var hero_jump_sound = AudioStreamPlayer.new()
 
-
-
 const SPEED = 400.0
-const JUMP_VELOCITY = -800.0
+const JUMP_VELOCITY = -400.0
 const AIR_CONTROL = 0.8
 
-@export var max_health: int = 100
-var current_health: int = max_health
+# Instant death system
+const HAZARD_LAYER = 1  # Physics layer for deadly tiles
+const DEATH_Y = 3000    # Death if player falls below this Y position
 
 # Attack properties
 var can_attack = true
 var is_attacking = false
-var attack_damage = 25
-var attack_range = 300.0
+var base_attack_damage = 25  # Base damage (changed from attack_damage)
+var attack_damage = 25  # Current damage 
+var attack_range = 230.0
 const ATTACK_COOLDOWN = 0.5
 const ATTACK_ANIMATION_TIME = 0.3
 
-# Potion usage cooldown
-var can_use_potion = true
-const POTION_COOLDOWN = 0.3
-
 @onready var animated_sprite = $AnimatedSprite2D
-@onready var camera = $Camera2D3
-@onready var health_label = $Camera2D3/UI/HealthLabel
-@onready var potion_label = $Camera2D3/UI/PotionLabel
+@onready var camera = $Camera2D2
+@onready var health_label = $Camera2D2/UI/HealthLabel
+@onready var potion_label = $Camera2D2/UI/PotionLabel
+
+var inventory_ui = null
+var potion_slots = []  # Keep track of slots for click detection
+
+var original_color = Color.WHITE
 
 func _ready():
+	print("PLAYER: _ready() called!")
 	
+	original_color = animated_sprite.modulate
+	
+	# Connect to PotionManager signals
+	PotionManager.health_changed.connect(_on_health_changed)
+	PotionManager.potion_used.connect(_on_potion_used)
+	PotionManager.potion_count_changed.connect(_on_potion_count_changed)
+	PotionManager.player_died.connect(_on_player_died)
+	PotionManager.strength_activated.connect(_on_strength_activated)
+	PotionManager.strength_deactivated.connect(_on_strength_deactivated)
+	
+	# Try to find the InventoryUI node
+	inventory_ui = get_node_or_null("Camera2D2/UI/InventoryUI")
+	print("PLAYER: inventory_ui = ", inventory_ui)
+	
+	if inventory_ui:
+		print("PLAYER: InventoryUI FOUND!")
+		print("PLAYER: InventoryUI visible = ", inventory_ui.visible)
+		inventory_ui.visible = true
+		inventory_ui.z_index = 1000
+		setup_existing_inventory_ui()
+	else:
+		print("PLAYER: InventoryUI NOT FOUND! Creating it...")
+		create_inventory_ui()
+	
+	# Setup audio
 	add_child(run_sound)
 	run_sound.stream = load("res://assets/Audio Pack/run.wav")
-	run_sound.pitch_scale = 1.2  # make it faster
+	run_sound.pitch_scale = 1.2
 	
 	add_child(attack_sound)
 	attack_sound.stream = load("res://assets/Audio Pack/attack.mp3")
@@ -45,51 +73,44 @@ func _ready():
 	
 	add_child(hero_jump_sound)
 	hero_jump_sound.stream = load("res://assets/Audio Pack/jump.mp3")
-
-
 	
-	current_health = max_health
-	
+	# Setup UI labels
 	if health_label:
 		var parent = health_label.get_parent()
+		print("   Parent (UI) visible: ", parent.visible if parent else "No parent")
 		
-		# Force set properties to make it visible
 		health_label.visible = true
-		health_label.text = "HP: 100/100"
 		health_label.position = Vector2(10, 10)
-		
-		# Try to make it bigger and more obvious
 		health_label.add_theme_font_size_override("font_size", 48)
-		health_label.add_theme_color_override("font_color", Color.RED)  # Bright red so you can't miss it
+		health_label.add_theme_color_override("font_color", Color.RED)
 	
 	if camera:
 		camera.enabled = true
 		camera.make_current()
 	
-	# Setup potion label if it exists
 	if potion_label:
 		potion_label.visible = true
 		potion_label.add_theme_font_size_override("font_size", 48)
 		potion_label.add_theme_color_override("font_color", Color.CYAN)
 	
+	# Initial UI update
 	update_health_display()
 	update_potion_display()
+	update_potion_icons()
 	add_to_group("Player")
 
 func _physics_process(delta: float) -> void:
 	if not is_on_floor():
 		velocity += get_gravity() * delta
 	
-	# Handle potion hotkeys - 1, 2, 3 keys
-	if can_use_potion:
-		if Input.is_physical_key_pressed(KEY_1):
-			use_potion_from_slot(1)
-		elif Input.is_physical_key_pressed(KEY_2):
-			use_potion_from_slot(2)
-		elif Input.is_physical_key_pressed(KEY_3):
-			use_potion_from_slot(3)
+	# Handle inventory hotkeys - 1, 2, 3 keys for potions
+	if Input.is_physical_key_pressed(KEY_1):
+		PotionManager.use_potion_from_slot(0) 
+	elif Input.is_physical_key_pressed(KEY_2):
+		PotionManager.use_potion_from_slot(1)  
+	elif Input.is_physical_key_pressed(KEY_3):
+		PotionManager.use_potion_from_slot(2)  
 	
-	# Handle attack input - ENTER KEY
 	if Input.is_action_just_pressed("ui_accept") and can_attack:
 		perform_attack()
 	
@@ -103,15 +124,11 @@ func _physics_process(delta: float) -> void:
 	if direction != 0 and is_on_floor():
 		if not run_sound.playing:
 			run_sound.play()
-			# Connect signal only if not already connected
-			if not run_sound.is_connected("finished", Callable(run_sound, "play")):
-				run_sound.connect("finished", Callable(run_sound, "play"))  # restart when done
+			run_sound.connect("finished", Callable(run_sound, "play"))
 	else:
 		if run_sound.playing:
 			run_sound.stop()
-			# Disconnect signal only if it's connected
-			if run_sound.is_connected("finished", Callable(run_sound, "play")):
-				run_sound.disconnect("finished", Callable(run_sound, "play"))
+			run_sound.disconnect("finished", Callable(run_sound, "play"))
 		
 	if direction != 0:
 		if is_on_floor():
@@ -125,7 +142,13 @@ func _physics_process(delta: float) -> void:
 		else:
 			velocity.x = move_toward(velocity.x, 0, SPEED * 0.1 * delta * 60)
 	
-	move_and_slide()	
+	move_and_slide()
+	
+	check_for_hazards()
+	
+	# Check if player fell off the map
+	if global_position.y > DEATH_Y:
+		instant_death()
 	
 	if not is_attacking:
 		if not is_on_floor():
@@ -135,10 +158,171 @@ func _physics_process(delta: float) -> void:
 		else:
 			animated_sprite.play("idle")
 
+# --- HAZARD DETECTION ---
+func check_for_hazards():
+	# Loop through all collisions from the last move_and_slide()
+	for i in range(get_slide_collision_count()):
+		var collision = get_slide_collision(i)
+		var collider = collision.get_collider()
+		
+		# Check if we hit a TileMap
+		if collider is TileMap:
+			# Get the exact point where we collided
+			var collision_point = collision.get_position()
+			
+			var tile_pos = collider.local_to_map(collider.to_local(collision_point))
+			
+			var tile_data = collider.get_cell_tile_data(0, tile_pos)
+			
+			if tile_data:
+				# If tile has collision polygons on HAZARD_LAYER (Layer 1)
+				if tile_data.get_collision_polygons_count(HAZARD_LAYER) > 0:
+					print("💀 Player touched deadly tile at position: ", tile_pos)
+					instant_death()
+					return
+
+func instant_death():
+	get_tree().change_scene_to_file("res://GameOverScreen.tscn")
+
+func setup_existing_inventory_ui():
+	var hbox = inventory_ui.get_node_or_null("HBoxContainer")
+	if not hbox:
+		return
+	
+	potion_slots.clear()
+	
+	for i in range(3):
+		var slot = hbox.get_node_or_null("Slot" + str(i + 1))
+		if slot:
+			potion_slots.append(slot)
+			slot.mouse_filter = Control.MOUSE_FILTER_STOP
+			slot.gui_input.connect(_on_slot_gui_input.bind(i)) 
+			slot.mouse_entered.connect(_on_slot_mouse_entered.bind(slot))
+			slot.mouse_exited.connect(_on_slot_mouse_exited.bind(slot))
+			print("PLAYER: Connected slot %d" % i)
+
+func create_inventory_ui():
+	"""Create the InventoryUI programmatically."""
+	var ui_layer = null
+	
+	# Find UI layer
+	for child in camera.get_children():
+		if child.name == "UI":
+			ui_layer = child
+			break
+	
+	if not ui_layer:
+		print("PLAYER: ERROR - UI layer not found!")
+		return
+	
+	print("PLAYER: Creating InventoryUI programmatically...")
+	inventory_ui = Control.new()
+	inventory_ui.name = "InventoryUI"
+	
+	# Position at bottom-right
+	inventory_ui.set_anchors_preset(Control.PRESET_BOTTOM_RIGHT)
+	inventory_ui.anchor_left = 1.0
+	inventory_ui.anchor_top = 1.0
+	inventory_ui.anchor_right = 1.0
+	inventory_ui.anchor_bottom = 1.0
+	inventory_ui.offset_left = -320
+	inventory_ui.offset_top = -180
+	inventory_ui.offset_right = -20
+	inventory_ui.offset_bottom = -20
+	inventory_ui.visible = true
+	inventory_ui.z_index = 1000
+	inventory_ui.mouse_filter = Control.MOUSE_FILTER_STOP
+	
+	# Create dark semi-transparent background
+	var bg = ColorRect.new()
+	bg.name = "Background"
+	bg.color = Color(0.1, 0.1, 0.1, 0.9)
+	bg.set_anchors_preset(Control.PRESET_FULL_RECT)
+	bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	inventory_ui.add_child(bg)
+	
+	var title = Label.new()
+	title.name = "Title"
+	title.text = "INVENTORY"
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title.add_theme_font_size_override("font_size", 24)
+	title.add_theme_color_override("font_color", Color(1, 1, 0, 1))
+	title.position = Vector2(0, 10)
+	title.size = Vector2(300, 30)
+	title.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	inventory_ui.add_child(title)
+	
+	var hbox = HBoxContainer.new()
+	hbox.name = "HBoxContainer"
+	hbox.position = Vector2(15, 50)
+	hbox.size = Vector2(270, 100)
+	hbox.add_theme_constant_override("separation", 10)
+	hbox.alignment = BoxContainer.ALIGNMENT_CENTER
+	hbox.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	inventory_ui.add_child(hbox)
+	
+	potion_slots.clear()
+	
+	for i in range(3):
+		var slot = Panel.new()
+		slot.name = "Slot" + str(i + 1)
+		slot.custom_minimum_size = Vector2(85, 95)
+		slot.mouse_filter = Control.MOUSE_FILTER_STOP
+		
+		var style = StyleBoxFlat.new()
+		style.bg_color = Color(0.15, 0.15, 0.15, 1)
+		style.border_color = Color(1, 1, 0, 1)
+		style.border_width_left = 3
+		style.border_width_right = 3
+		style.border_width_top = 3
+		style.border_width_bottom = 3
+		style.corner_radius_top_left = 4
+		style.corner_radius_top_right = 4
+		style.corner_radius_bottom_left = 4
+		style.corner_radius_bottom_right = 4
+		slot.add_theme_stylebox_override("panel", style)
+		
+		slot.gui_input.connect(_on_slot_gui_input.bind(i)) 
+		slot.mouse_entered.connect(_on_slot_mouse_entered.bind(slot))
+		slot.mouse_exited.connect(_on_slot_mouse_exited.bind(slot))
+		
+		potion_slots.append(slot)
+		
+		var key_label = Label.new()
+		key_label.name = "KeyLabel"
+		key_label.text = str(i + 1)
+		key_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		key_label.add_theme_font_size_override("font_size", 22)
+		key_label.add_theme_color_override("font_color", Color(1, 1, 0, 1))
+		key_label.position = Vector2(0, 5)
+		key_label.size = Vector2(85, 25)
+		key_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		slot.add_child(key_label)
+		
+		# Potion icon
+		var icon = TextureRect.new()
+		icon.name = "PotionIcon"
+		icon.texture = load("res://assets/pink_potion.png")
+		icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		icon.expand_mode = TextureRect.EXPAND_FIT_WIDTH_PROPORTIONAL
+		icon.position = Vector2(10, 35)
+		icon.size = Vector2(65, 55)
+		icon.visible = false
+		icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		slot.add_child(icon)
+		
+		hbox.add_child(slot)
+	
+	# Add to UI layer
+	ui_layer.add_child(inventory_ui)
+
 # --- ATTACK SYSTEM ---
 func perform_attack():
 	can_attack = false
 	is_attacking = true
+	
+	# Update attack damage based on strength buff
+	attack_damage = int(base_attack_damage * PotionManager.get_damage_multiplier())
 	
 	# Play attack animation
 	if animated_sprite.sprite_frames.has_animation("attack"):
@@ -155,9 +339,10 @@ func perform_attack():
 			
 			if distance <= attack_range:
 				if enemy.has_method("take_damage"):
-					enemy.take_damage(attack_damage)
+				# Pass player's position for knockback calculation
+					enemy.take_damage(attack_damage, global_position)
 					hit_something = true
-	
+
 	if hit_something:
 		attack_sound.play()
 		
@@ -171,148 +356,128 @@ func perform_attack():
 
 # --- HEALTH SYSTEM ---
 func take_damage(amount: int) -> void:
-	current_health = max(current_health - amount, 0)
-	update_health_display()
-	
-	# Visual feedback - flash sprite red
+	# Visual feedback
+	var current_modulate = animated_sprite.modulate
 	animated_sprite.modulate = Color.RED
 	await get_tree().create_timer(0.1).timeout
-	animated_sprite.modulate = Color.WHITE
+	animated_sprite.modulate = current_modulate 
 	
-	
-	if current_health <= 0:
-		die()
+	# Apply damage through PotionManager
+	PotionManager.take_damage(amount)
 
-func heal(amount: int) -> void:
-	current_health = min(current_health + amount, max_health)
+# --- POTION SLOT CLICK HANDLERS ---
+func _on_slot_gui_input(event: InputEvent, slot_number: int):
+	"""Handle clicks on potion slots."""
+	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+		print("PLAYER: Clicked slot %d!" % slot_number)
+		var success = PotionManager.use_potion_from_slot(slot_number)
+		if success:
+			# Visual feedback - flash the slot
+			flash_potion_slot(slot_number + 1)  # Add 1 for display purposes
+
+func _on_slot_mouse_entered(slot: Panel):
+	"""Provide hover feedback when mouse enters a slot."""
+	# Check if this slot has a potion
+	var potion_count = PotionManager.get_potion_count()
+	var slot_index = int(slot.name.substr(4)) - 1  
+	
+	if slot_index < potion_count:
+		# Brighten the slot slightly
+		var tween = create_tween()
+		tween.tween_property(slot, "modulate", Color(1.2, 1.2, 1.2, 1), 0.1)
+
+func _on_slot_mouse_exited(slot: Panel):
+	var tween = create_tween()
+	tween.tween_property(slot, "modulate", Color(1, 1, 1, 1), 0.1)
+
+func flash_potion_slot(slot_number: int):
+	if slot_number < 1 or slot_number > potion_slots.size():
+		return
+	
+	var slot = potion_slots[slot_number - 1]
+	if not slot:
+		return
+	
+	# Flash effect (green)
+	var tween = create_tween()
+	tween.tween_property(slot, "modulate", Color(0.5, 1.5, 0.5, 1), 0.15)
+	tween.tween_property(slot, "modulate", Color(1, 1, 1, 1), 0.15)
+
+func _on_strength_activated(duration: float):
+	
+	# Turn player green
+	animated_sprite.modulate = Color(0.3, 1.0, 0.3, 1.0)  # Bright green
+	
+
+func _on_strength_deactivated():
+	animated_sprite.modulate = original_color
+
+# --- POTION ICON VISIBILITY ---
+func update_potion_icons():
+	if not inventory_ui:
+		return
+	
+	var hbox = inventory_ui.get_node_or_null("HBoxContainer")
+	if not hbox:
+		return
+	
+	var potion_slots_data = Inventory.get_potion_slots()
+	
+	for i in range(3):
+		var slot = hbox.get_node_or_null("Slot" + str(i + 1))
+		if slot:
+			var icon = slot.get_node_or_null("PotionIcon")
+			if icon:
+				if i < potion_slots_data.size():
+					# Show icon with correct texture
+					icon.visible = true
+					var potion_type = potion_slots_data[i]
+					match potion_type:
+						Inventory.PotionType.PINK:
+							icon.texture = load("res://assets/pink_potion.png")
+						Inventory.PotionType.GREEN:
+							icon.texture = load("res://assets/green_potion.png")
+						Inventory.PotionType.BLUE:
+							if ResourceLoader.exists("res://assets/blue_potion.png"):
+								icon.texture = load("res://assets/blue_potion.png")
+				else:
+					icon.visible = false
+
+# --- POTION MANAGER SIGNAL HANDLERS ---
+func _on_health_changed(current: int, maximum: int):
 	update_health_display()
 
-func die() -> void:
-	await get_tree().create_timer(1.0).timeout
-	
-	# Play death sound
-	if hero_death_sound:
-		hero_death_sound.play()
-		
-		var hero_sound_length = hero_death_sound.stream.get_length()
-		await get_tree().create_timer(hero_sound_length).timeout
-	
-	get_tree().change_scene_to_file("res://GameOverScreen.tscn")
+func _on_potion_used(potions_remaining: int):
+	update_potion_display()
+	update_potion_icons()
+	print("PLAYER: Potion used! Remaining: %d" % potions_remaining)
 
-	
+func _on_potion_count_changed(new_count: int):
+	update_potion_display()
+	update_potion_icons()
 
+func _on_player_died():
+	die()
+
+# --- UI UPDATE FUNCTIONS ---
 func update_health_display() -> void:
 	if health_label:
-		health_label.text = "HP: %d/%d" % [current_health, max_health]
+		health_label.text = PotionManager.get_health_display_text()
 
 func update_potion_display() -> void:
 	if potion_label:
-		var potion_count = Inventory.get_health_potions()
-		potion_label.text = "Potions: %d" % potion_count
+		var base_text = PotionManager.get_potion_display_text()
+		var strength_text = PotionManager.get_strength_display_text()
+		if strength_text != "":
+			potion_label.text = base_text + " | " + strength_text
+		else:
+			potion_label.text = base_text
 
-func use_health_potion() -> void:
-	if current_health < max_health and Inventory.use_health_potion():
-		heal(50)
-		update_potion_display()
-
-func use_potion_from_slot(slot_number: int) -> void:
-	var potion_count = Inventory.get_health_potions()
-	
-	if slot_number <= potion_count:
-		if current_health < max_health and Inventory.use_health_potion():
-			heal(50)
-			update_potion_display()
-			
-			# Start potion cooldown
-		can_use_potion = false
-		await get_tree().create_timer(POTION_COOLDOWN).timeout
-		can_use_potion = true
-
-func melt_into_lava(target_x: float, lava_y: float) -> void:
-	# Stop movement
-	velocity = Vector2.ZERO
-	set_process(false)
-	set_physics_process(false)
-
-	# Play death sound
+# --- DEATH HANDLING ---
+func die() -> void:
 	if hero_death_sound:
 		hero_death_sound.play()
-
-	var melt_time = 1.5
-	var timer = 0.0
-	var start_pos = global_position
-	var start_scale = scale
-
-	while timer < melt_time:
-		var t = timer / melt_time
-		# Keep x the same, sink y toward lava surface
-		global_position.x = start_pos.x
-		global_position.y = lerp(start_pos.y, lava_y, t)
-		# Shrink vertically only
-		scale.y = start_scale.y * (1.0 - t)
-		timer += get_process_delta_time()
-		await get_tree().process_frame
-
-	# Fully disappear
-	visible = false
-
-	# Wait for death sound
-	if hero_death_sound:
-		var sound_length = hero_death_sound.stream.get_length()
-		await get_tree().create_timer(sound_length).timeout
-
-	# Restart scene
+	
+	await get_tree().create_timer(0.3).timeout
+	
 	get_tree().change_scene_to_file("res://GameOverScreen.tscn")
-	
-
-func start_pixel_death(delay: float = 1.0) -> void:
-	# Stop movement and input
-	set_process(false)
-	set_physics_process(false)
-	velocity = Vector2.ZERO
-
-	# Hide main sprite
-	if $AnimatedSprite2D:
-		$AnimatedSprite2D.hide()
-
-	# Play death sound once
-	if hero_death_sound and not hero_death_sound.playing:
-		hero_death_sound.play()
-
-	# Bold pixel particles
-	var pixels = 20
-	for i in range(pixels):
-		var part = Polygon2D.new()
-		get_parent().add_child(part)
-
-		# Random oval shape
-		var width = randf_range(16, 32)
-		var height = randf_range(8, 24)
-		var segments = 16
-		var points = []
-		for j in range(segments):
-			var angle = (float(j) / segments) * TAU
-			points.append(Vector2(cos(angle) * width / 2, sin(angle) * height / 2))
-		part.polygon = points
-
-		part.color = Color(1, 0.2, 0.2)
-		part.global_position = global_position + Vector2(randf()*32-16, randf()*32-16)
-
-		# Tween particles
-		var t = create_tween()
-		var target_pos = part.global_position + Vector2(randf()*200-100, randf()*200-100)
-		t.tween_property(part, "global_position", target_pos, delay)
-		t.tween_property(part, "modulate:a", 0.0, delay)
-		t.play()
-
-	# Wait for effect + death sound
-	await get_tree().create_timer(delay).timeout
-	if hero_death_sound:
-		var sound_length = hero_death_sound.stream.get_length()
-		await get_tree().create_timer(sound_length).timeout
-		get_tree().change_scene_to_file("res://GameOverScreen.tscn")
-
-func get_hitbox_rect() -> Rect2:
-	# Simple rectangular hitbox for the player
-	var size = Vector2(50, 80)  # Adjust if needed
-	return Rect2(global_position - size * 0.5, size)

@@ -1,7 +1,7 @@
-[gd_scene load_steps=8 format=3 uid="uid://dtbisanq8nk1a"]
+[gd_scene load_steps=8 format=3 uid="uid://b6b2dpvgs271b"]
 
 [ext_resource type="Script" uid="uid://bem6f5621cnd1" path="res://start.gd" id="1_ko4ly"]
-[ext_resource type="Shader" uid="uid://crujeps0d5hfq" path="res://GameOverScreen.gdshader" id="2_gk5la"]
+[ext_resource type="Shader" path="res://GameOverScreen.gdshader" id="2_gk5la"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_ko4ly"]
 shader = ExtResource("2_gk5la")
