@@ -27,9 +27,9 @@ var can_use_potion = true
 const POTION_COOLDOWN = 0.3
 
 @onready var animated_sprite = $AnimatedSprite2D
-@onready var camera = $Camera2D2
-@onready var health_label = $Camera2D2/UI/HealthLabel
-@onready var potion_label = $Camera2D2/UI/PotionLabel
+@onready var camera = $Camera2D3
+@onready var health_label = $Camera2D3/UI/HealthLabel
+@onready var potion_label = $Camera2D3/UI/PotionLabel
 
 func _ready():
 	
@@ -311,3 +311,8 @@ func start_pixel_death(delay: float = 1.0) -> void:
 		var sound_length = hero_death_sound.stream.get_length()
 		await get_tree().create_timer(sound_length).timeout
 		get_tree().change_scene_to_file("res://GameOverScreen.tscn")
+
+func get_hitbox_rect() -> Rect2:
+	# Simple rectangular hitbox for the player
+	var size = Vector2(50, 80)  # Adjust if needed
+	return Rect2(global_position - size * 0.5, size)
