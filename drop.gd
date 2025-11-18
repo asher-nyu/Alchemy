@@ -1,6 +1,6 @@
 extends Node2D
 
-@export var fall_distance_px: float = 1150.0
+@export var fall_distance_px: float = 370.0
 @export var interval_seconds: float = 3.0
 @export var gravity: float = 980.0
 
@@ -86,12 +86,21 @@ func _get_player_hitbox(player) -> Rect2:
 func _player_hit(player) -> void:
 	is_falling = false
 	
+	# Hide the drop immediately
+	if sprite:
+		sprite.visible = false
+
 	# Play drop sound
 	if drop_sound:
 		drop_sound.play()
 	
-	# Instant death - go directly to game over
-	get_tree().change_scene_to_file("res://GameOverScreen.tscn")
+	# Call player's death method
+	if player.has_method("_on_player_died"):
+		player._on_player_died()
+	
+	# Schedule next drop
+	await get_tree().create_timer(interval_seconds).timeout
+	_start_next_drop()
 
 func _start_next_drop() -> void:
 	sprite.position.y = start_y
