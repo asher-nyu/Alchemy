@@ -148,7 +148,7 @@ func _physics_process(delta: float) -> void:
 	
 	# Check if player fell off the map
 	if global_position.y > DEATH_Y:
-		instant_death()
+		_on_player_died()
 	
 	if not is_attacking:
 		if not is_on_floor():
@@ -178,11 +178,8 @@ func check_for_hazards():
 				# If tile has collision polygons on HAZARD_LAYER (Layer 1)
 				if tile_data.get_collision_polygons_count(HAZARD_LAYER) > 0:
 					print("💀 Player touched deadly tile at position: ", tile_pos)
-					instant_death()
+					_on_player_died()
 					return
-
-func instant_death():
-	get_tree().change_scene_to_file("res://GameOverScreen.tscn")
 
 func setup_existing_inventory_ui():
 	var hbox = inventory_ui.get_node_or_null("HBoxContainer")
@@ -456,9 +453,6 @@ func _on_potion_count_changed(new_count: int):
 	update_potion_display()
 	update_potion_icons()
 
-func _on_player_died():
-	die()
-
 # --- UI UPDATE FUNCTIONS ---
 func update_health_display() -> void:
 	if health_label:
@@ -473,11 +467,50 @@ func update_potion_display() -> void:
 		else:
 			potion_label.text = base_text
 
-# --- DEATH HANDLING ---
-func die() -> void:
-	if hero_death_sound:
+# --- DEATH HANDLING ---	
+func _on_player_died():
+	die(0.0)
+func die(delay: float = 0.0) -> void:
+	# Disable all logic
+	set_process(false)
+	set_physics_process(false)
+	remove_from_group("Player")
+	collision_layer = 0
+	collision_mask = 0
+	velocity = Vector2.ZERO
+
+	# Hide sprite instantly
+	if $AnimatedSprite2D:
+		$AnimatedSprite2D.hide()
+
+	# Play death sound
+	if hero_death_sound and not hero_death_sound.playing:
 		hero_death_sound.play()
-	
-	await get_tree().create_timer(0.3).timeout
-	
+
+	# Blood pixel effect (instant)
+	var pixels = 20
+	for i in range(pixels):
+		var part = Polygon2D.new()
+		get_parent().add_child(part)
+
+		var width = randf_range(16, 32)
+		var height = randf_range(8, 24)
+		var segments = 16
+		var points = []
+
+		for j in range(segments):
+			var angle = (float(j) / segments) * TAU
+			points.append(Vector2(cos(angle)*width/2, sin(angle)*height/2))
+
+		part.polygon = points
+		part.color = Color(1,0.2,0.2)
+		part.global_position = global_position + Vector2(randf()*32-16, randf()*32-16)
+
+		var t = create_tween()
+		var target_pos = part.global_position + Vector2(randf()*200-100, randf()*200-100)
+		t.tween_property(part, "global_position", target_pos, 1.0)
+		t.tween_property(part, "modulate:a", 0.0, 1.0)
+
+	# Wait for death sound, then switch scene
+	await get_tree().create_timer(hero_death_sound.stream.get_length()).timeout
 	get_tree().change_scene_to_file("res://GameOverScreen.tscn")

@@ -127,7 +127,12 @@ func enter_door():
 		await portal_sound.finished
 	
 	# Go to match-3
-	get_tree().change_scene_to_file(next_scene)
+	print("DEBUG: Changing scene now")
+	var tree = get_tree()
+	if tree:
+		tree.change_scene_to_file(next_scene)
+	else:
+		print("ERROR: SceneTree is null!")
 	
 func show_message(text: String):
 	"""Show a message above the door."""
