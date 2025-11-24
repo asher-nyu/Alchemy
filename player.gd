@@ -5,6 +5,8 @@ var run_sound = AudioStreamPlayer.new()
 var attack_sound = AudioStreamPlayer.new()
 var hero_death_sound = AudioStreamPlayer.new()
 var hero_jump_sound = AudioStreamPlayer.new()
+var she_hulk_potion_sound = AudioStreamPlayer.new()
+
 
 const SPEED = 400.0
 const JUMP_VELOCITY = -400.0
@@ -74,6 +76,9 @@ func _ready():
 	add_child(hero_jump_sound)
 	hero_jump_sound.stream = load("res://assets/Audio Pack/jump.mp3")
 	
+	add_child(she_hulk_potion_sound)
+	she_hulk_potion_sound.stream = load("res://assets/Audio Pack/she_hulk_potion_sound.mp3")
+	
 	# Setup UI labels
 	if health_label:
 		var parent = health_label.get_parent()
@@ -111,6 +116,9 @@ func _physics_process(delta: float) -> void:
 	elif Input.is_physical_key_pressed(KEY_3):
 		PotionManager.use_potion_from_slot(2)  
 	
+	#if Input.is_key_pressed(KEY_S): # DEBUG: Press S to she-hulk potion effect
+		#PotionManager.activate_strength()
+	
 	if Input.is_action_just_pressed("ui_accept") and can_attack:
 		perform_attack()
 	
@@ -119,7 +127,7 @@ func _physics_process(delta: float) -> void:
 		if hero_jump_sound and not hero_jump_sound.playing:
 			hero_jump_sound.play()
 	
-	var direction := Input.get_axis("ui_left", "ui_right")
+	var direction: float = Input.get_axis("ui_left", "ui_right")
 	
 	if direction != 0 and is_on_floor():
 		if not run_sound.playing:
@@ -402,12 +410,16 @@ func flash_potion_slot(slot_number: int):
 
 func _on_strength_activated(duration: float):
 	
+	if she_hulk_potion_sound and not she_hulk_potion_sound.playing:
+			she_hulk_potion_sound.play()
+	
 	# Turn player green
 	animated_sprite.modulate = Color(0.3, 1.0, 0.3, 1.0)  # Bright green
-	
+
 
 func _on_strength_deactivated():
 	animated_sprite.modulate = original_color
+	
 
 # --- POTION ICON VISIBILITY ---
 func update_potion_icons():

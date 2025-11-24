@@ -1,13 +1,13 @@
 [gd_scene load_steps=52 format=3 uid="uid://kai8oapwfhpr"]
 
-[ext_resource type="Texture2D" uid="uid://dfx8flkugaiwv" path="res://assets/spr_player_attack_strip9.png" id="1_hqtel"]
+[ext_resource type="Texture2D" uid="uid://bio6nu5mws8e4" path="res://assets/spr_player_attack_strip9.png" id="1_hqtel"]
 [ext_resource type="Script" uid="uid://c3pm7d2xpdlcg" path="res://player.gd" id="1_sweqy"]
-[ext_resource type="Texture2D" uid="uid://p222415gi0tv" path="res://assets/spr_player_idle_strip5.png" id="2_sweqy"]
-[ext_resource type="Texture2D" uid="uid://biu7i0ldgud84" path="res://assets/spr_player_jump_strip12.png" id="3_2hs0m"]
-[ext_resource type="Texture2D" uid="uid://cullgs7enrhii" path="res://assets/spr_player_run_strip9.png" id="4_1jxqw"]
-[ext_resource type="Texture2D" uid="uid://k40ycm1jim6e" path="res://adventurer-Sheet.png" id="4_dw050"]
+[ext_resource type="Texture2D" uid="uid://cvb1jv53a2f4q" path="res://assets/spr_player_idle_strip5.png" id="2_sweqy"]
+[ext_resource type="Texture2D" uid="uid://7y0tty7llerl" path="res://assets/spr_player_jump_strip12.png" id="3_2hs0m"]
+[ext_resource type="Texture2D" uid="uid://bl7nn1bfgy88d" path="res://assets/spr_player_run_strip9.png" id="4_1jxqw"]
+[ext_resource type="Texture2D" uid="uid://dpv5qsqvuth4h" path="res://adventurer-Sheet.png" id="4_dw050"]
 [ext_resource type="Script" uid="uid://cjyam5n8rwpvk" path="res://InventoryUI.gd" id="5_invui"]
-[ext_resource type="FontFile" uid="uid://5kju6oyea6g7" path="res://videotype.otf" id="8_dw050"]
+[ext_resource type="FontFile" uid="uid://db55k5tpxg52a" path="res://videotype.otf" id="8_dw050"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_dw050"]
 atlas = ExtResource("1_hqtel")

@@ -37,10 +37,10 @@ var player: CharacterBody2D = null
 
 func _ready():
 	add_child(enemy_attack_sound)
-	enemy_attack_sound.stream = load("res://assets/Audio Pack/enemy_attack_1.mp3")
+	enemy_attack_sound.stream = load("res://assets/Audio Pack/enemy_attack_2.mp3")
 	
 	add_child(enemy_death_sound)
-	enemy_death_sound.stream = load("res://assets/Audio Pack/enemy-death-sound.mp3")
+	enemy_death_sound.stream = load("res://assets/Audio Pack/enemy_death_sound_2.mp3")
 	
 	spawn_position = global_position
 	current_health = max_health

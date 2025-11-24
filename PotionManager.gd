@@ -1,5 +1,7 @@
 extends Node
 
+var health_potion_sound = AudioStreamPlayer.new()
+
 # Player health management
 var max_health: int = 100
 var current_health: int = 100
@@ -27,6 +29,10 @@ signal strength_activated(duration: float)
 signal strength_deactivated()
 
 func _ready():
+	
+	add_child(health_potion_sound)
+	health_potion_sound.stream = load("res://assets/Audio Pack/health_potion_sound.wav")
+	
 	# Create cooldown timer
 	cooldown_timer = Timer.new()
 	cooldown_timer.one_shot = true
@@ -75,6 +81,9 @@ func take_damage(amount: int) -> bool:
 	return false
 
 func heal(amount: int):
+	if health_potion_sound and not health_potion_sound.playing:
+			health_potion_sound.play()
+			
 	current_health = min(max_health, current_health + amount)
 	health_changed.emit(current_health, max_health)
 
