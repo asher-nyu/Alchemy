@@ -1,8 +1,8 @@
 [gd_scene load_steps=20 format=3 uid="uid://ba6ywdvg6ixyb"]
 
 [ext_resource type="Shader" uid="uid://b5lx6eenxs5p6" path="res://Alchemy.gdshader" id="1_b60u5"]
-[ext_resource type="Texture2D" uid="uid://crjd1bscx4mg5" path="res://assets/purplbckgd.png" id="2_kmy7e"]
-[ext_resource type="Texture2D" uid="uid://b4ab64s0jew6g" path="res://assets/tileset-cave.png" id="3_833wy"]
+[ext_resource type="Texture2D" uid="uid://y87xuavicbjn" path="res://assets/purplbckgd.png" id="2_kmy7e"]
+[ext_resource type="Texture2D" uid="uid://bpkv6basthxvi" path="res://assets/tileset-cave.png" id="3_833wy"]
 [ext_resource type="PackedScene" uid="uid://kai8oapwfhpr" path="res://player.tscn" id="4_ghrvs"]
 [ext_resource type="PackedScene" uid="uid://dkbhd60d6pv8h" path="res://door.tscn" id="6_g0tlw"]
 [ext_resource type="PackedScene" uid="uid://bxcbc1a7y52jr" path="res://wizard_enemy.tscn" id="8_7ds5r"]
@@ -10,7 +10,7 @@
 [ext_resource type="Script" uid="uid://cwoh22yjs6ccl" path="res://spike.gd" id="9_m8gss"]
 [ext_resource type="PackedScene" uid="uid://dd324ndwjiayh" path="res://skeleton_enemy.tscn" id="10_kmy7e"]
 [ext_resource type="Texture2D" uid="uid://cwhqtjf2q0m6a" path="res://assets/spikes.png" id="10_wnq0t"]
-[ext_resource type="Texture2D" uid="uid://bejtgyii2u004" path="res://assets/poison1.png" id="11_833wy"]
+[ext_resource type="Texture2D" uid="uid://b7d55bgwx38lb" path="res://assets/poison1.png" id="11_833wy"]
 [ext_resource type="Script" uid="uid://bgonl6heqimvg" path="res://drop.gd" id="12_ghrvs"]
 [ext_resource type="Texture2D" uid="uid://bwjnby4krh56m" path="res://assets/poison3.png" id="13_ghrvs"]
 
@@ -326,13 +326,17 @@ texture = ExtResource("3_833wy")
 2:17/0 = 0
 2:17/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
 0:18/0 = 0
+0:18/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
 1:18/0 = 0
+1:18/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
 2:18/0 = 0
 3:18/0 = 0
 4:18/0 = 0
 5:18/0 = 0
 0:19/0 = 0
+0:19/0/physics_layer_1/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
 1:19/0 = 0
+1:19/0/physics_layer_1/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
 2:19/0 = 0
 3:19/0 = 0
 4:19/0 = 0
@@ -345,7 +349,9 @@ texture = ExtResource("3_833wy")
 11:19/0 = 0
 12:19/0 = 0
 0:20/0 = 0
+0:20/0/physics_layer_1/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
 1:20/0 = 0
+1:20/0/physics_layer_1/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
 2:20/0 = 0
 3:20/0 = 0
 4:20/0 = 0
@@ -375,6 +381,7 @@ texture = ExtResource("3_833wy")
 
 [sub_resource type="TileSet" id="TileSet_fmu3g"]
 physics_layer_0/collision_layer = 1
+physics_layer_1/collision_layer = 1
 sources/0 = SubResource("TileSetAtlasSource_6p2dc")
 
 [node name="level3" type="Node2D"]

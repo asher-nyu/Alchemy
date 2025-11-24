@@ -1,8 +1,8 @@
 [gd_scene load_steps=14 format=3 uid="uid://cufeptqptrwj4"]
 
 [ext_resource type="Shader" uid="uid://b5lx6eenxs5p6" path="res://Alchemy.gdshader" id="1_0s5r2"]
-[ext_resource type="Texture2D" uid="uid://crjd1bscx4mg5" path="res://assets/purplbckgd.png" id="1_hbghi"]
-[ext_resource type="Texture2D" uid="uid://b4ab64s0jew6g" path="res://assets/tileset-cave.png" id="2_hn12h"]
+[ext_resource type="Texture2D" uid="uid://y87xuavicbjn" path="res://assets/purplbckgd.png" id="1_hbghi"]
+[ext_resource type="Texture2D" uid="uid://bpkv6basthxvi" path="res://assets/tileset-cave.png" id="2_hn12h"]
 [ext_resource type="PackedScene" uid="uid://kai8oapwfhpr" path="res://player.tscn" id="3_hn12h"]
 [ext_resource type="PackedScene" uid="uid://dd324ndwjiayh" path="res://skeleton_enemy.tscn" id="4_ihfcg"]
 [ext_resource type="PackedScene" uid="uid://dkbhd60d6pv8h" path="res://door.tscn" id="5_rka8t"]
