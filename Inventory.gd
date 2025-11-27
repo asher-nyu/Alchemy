@@ -8,21 +8,10 @@ enum TokenType {
 	PEPPER = 3
 }
 
-enum PotionType {
-	PINK,
-	GREEN,
-	BLUE
-}
-
 var garlic_count: int = 0
 var mint_count: int = 0  
 var pepper_count: int = 0  
 var collected_tokens: Array = []  # This will be used by match-3 GridRefiller
-
-var potion_slots: Array = []  # Each element is a PotionType
-const MAX_POTIONS = 3
-
-var health_potions: int = 0  # Total count
 
 var _health_data: Dictionary = {
 	"max": 100,
@@ -34,7 +23,6 @@ signal garlic_changed(new_count: int)
 signal mint_changed(new_count: int)
 signal pepper_changed(new_count: int)
 signal token_collected(token_type: int)
-signal potions_changed(new_count: int)
 signal health_changed(current: int, maximum: int)
 
 func _ready():
@@ -119,57 +107,6 @@ func get_collected_tokens() -> Array:
 func has_token_type(token_type: int) -> bool:
 	return collected_tokens.has(token_type)
 
-func add_potion(potion_type: int, amount: int = 1):
-	for i in range(amount):
-		if potion_slots.size() < MAX_POTIONS:
-			potion_slots.append(potion_type)
-	
-	health_potions = potion_slots.size()
-	potions_changed.emit(health_potions)
-
-func get_potion_in_slot(slot_index: int) -> int:
-	if slot_index >= 0 and slot_index < potion_slots.size():
-		return potion_slots[slot_index]
-	return -1  # No potion in this slot
-
-func get_potion_slots() -> Array:
-	return potion_slots
-
-func get_potion_type_name(potion_type: int) -> String:
-	match potion_type:
-		PotionType.PINK:
-			return "Pink"
-		PotionType.GREEN:
-			return "Green"
-		PotionType.BLUE:
-			return "Blue"
-		_:
-			return "Unknown"
-
-func use_potion_from_slot(slot_index: int) -> bool:
-	if slot_index >= 0 and slot_index < potion_slots.size():
-		var potion_type = potion_slots[slot_index]
-		potion_slots.remove_at(slot_index)
-		health_potions = potion_slots.size()
-		potions_changed.emit(health_potions)
-		print("Inventory: Used %s potion from slot %d" % [get_potion_type_name(potion_type), slot_index])
-		return true
-	return false
-
-#  use first available potion
-func add_health_potions(amount: int = 1):
-	# Default to pink potions for backwards compatibility
-	add_potion(PotionType.PINK, amount)
-
-func get_health_potions() -> int:
-	return health_potions
-
-func use_health_potion() -> bool:
-	# Use the first potion in the array
-	if potion_slots.size() > 0:
-		return use_potion_from_slot(0)
-	return false
-
 # Health management functions
 func take_damage(amount: int):
 	_health_data["current"] = max(0, _health_data["current"] - amount)
@@ -199,7 +136,5 @@ func reset_game():
 	mint_count = 0
 	pepper_count = 0
 	collected_tokens.clear()
-	potion_slots.clear()  
-	health_potions = 0
 	_health_data["current"] = _health_data["max"]
 	health_changed.emit(_health_data["current"], _health_data["max"])

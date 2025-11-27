@@ -4,7 +4,8 @@ enum TokenType {
 	ROCK = -1,
 	GINGER = 0,
 	GARLIC = 1,
-	MINT = 2
+	MINT = 2,
+	PEPPER = 3
 }
 
 func check_match_at_position(grid: Array, x: int, y: int, width: int, height: int) -> bool:
@@ -221,3 +222,104 @@ func is_position_in_array(pos: Vector2i, positions: Array) -> bool:
 		if p.x == pos.x and p.y == pos.y:
 			return true
 	return false
+
+func get_match_groups(matches: Array, grid: Array, width: int, height: int) -> Array:
+	"""Returns an array of match groups with their type and size"""
+	var groups = []
+	var processed_positions = []
+	
+	# Check horizontal groups
+	for y in range(height):
+		var consecutive = []
+		var token_type = -1
+		for x in range(width):
+			var pos = Vector2i(x, y)
+			if is_position_in_array(pos, matches) and not is_position_in_array(pos, processed_positions):
+				if consecutive.size() == 0:
+					token_type = grid[x][y]
+					consecutive.append(pos)
+				elif grid[x][y] == token_type:
+					consecutive.append(pos)
+				else:
+					# Different token type, end current group
+					if consecutive.size() >= 3:
+						groups.append({
+							"type": token_type,
+							"size": consecutive.size(),
+							"positions": consecutive.duplicate()
+						})
+						for p in consecutive:
+							processed_positions.append(p)
+					consecutive = [pos]
+					token_type = grid[x][y]
+			else:
+				# End of consecutive run
+				if consecutive.size() >= 3:
+					groups.append({
+						"type": token_type,
+						"size": consecutive.size(),
+						"positions": consecutive.duplicate()
+					})
+					for p in consecutive:
+						processed_positions.append(p)
+				consecutive = []
+				token_type = -1
+		
+		# Check end of row
+		if consecutive.size() >= 3:
+			groups.append({
+				"type": token_type,
+				"size": consecutive.size(),
+				"positions": consecutive.duplicate()
+			})
+			for p in consecutive:
+				processed_positions.append(p)
+	
+	# Check vertical groups
+	for x in range(width):
+		var consecutive = []
+		var token_type = -1
+		for y in range(height):
+			var pos = Vector2i(x, y)
+			if is_position_in_array(pos, matches) and not is_position_in_array(pos, processed_positions):
+				if consecutive.size() == 0:
+					token_type = grid[x][y]
+					consecutive.append(pos)
+				elif grid[x][y] == token_type:
+					consecutive.append(pos)
+				else:
+					# Different token type, end current group
+					if consecutive.size() >= 3:
+						groups.append({
+							"type": token_type,
+							"size": consecutive.size(),
+							"positions": consecutive.duplicate()
+						})
+						for p in consecutive:
+							processed_positions.append(p)
+					consecutive = [pos]
+					token_type = grid[x][y]
+			else:
+				# End of consecutive run
+				if consecutive.size() >= 3:
+					groups.append({
+						"type": token_type,
+						"size": consecutive.size(),
+						"positions": consecutive.duplicate()
+					})
+					for p in consecutive:
+						processed_positions.append(p)
+				consecutive = []
+				token_type = -1
+		
+		# Check end of column
+		if consecutive.size() >= 3:
+			groups.append({
+				"type": token_type,
+				"size": consecutive.size(),
+				"positions": consecutive.duplicate()
+			})
+			for p in consecutive:
+				processed_positions.append(p)
+	
+	return groups

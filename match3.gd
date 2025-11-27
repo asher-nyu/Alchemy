@@ -23,7 +23,8 @@ enum TokenType {
 	ROCK = -1,
 	GINGER = 0,
 	GARLIC = 1,
-	MINT = 2
+	MINT = 2,
+	PEPPER = 3
 }
 
 # Collected tokens
@@ -46,23 +47,18 @@ var camera: Camera2D
 # Score
 var score = 0
 
-# Potions
-var pick_potions = 0
-const MAX_POTIONS = 3
-const POTION_CIRCLE_POSITIONS = [
-	Vector2(300, 1080),
-	Vector2(800, 1080),
-	Vector2(1300, 1080)
-]
-var potion_sprites_in_circles = []
+# Move limit
+var moves_made = 0
+const MAX_MOVES = 5
 
 # Cascade protection
 var cascade_depth = 0
 const MAX_CASCADE_DEPTH = 10
 
+# UI for moves
+var moves_label: Label = null
+
 var token_scene = preload("res://token.tscn")
-var pink_potion_scene = preload("res://pink_potion.tscn")
-var green_potion_scene = preload("res://green_potion.tscn")
 var match_detector = MatchDetector.new()
 var grid_refiller = GridRefiller.new()
 
@@ -92,7 +88,7 @@ func _ready():
 	
 	load_textures()
 	initialize_collected_tokens()
-	initialize_potion_circles()
+	create_moves_ui()
 	create_grid_with_tokens()
 
 func load_textures():
@@ -101,11 +97,30 @@ func load_textures():
 func initialize_collected_tokens():
 	collected_tokens = Inventory.get_collected_tokens()
 	print("🎮 Match3 initialized with tokens: ", collected_tokens)
-	
-func initialize_potion_circles():
-	potion_sprites_in_circles.clear()
-	for i in range(MAX_POTIONS):
-		potion_sprites_in_circles.append(null)
+
+func create_moves_ui():
+	"""Create the UI label showing remaining moves"""
+	moves_label = Label.new()
+	moves_label.name = "MovesLabel"
+	moves_label.position = Vector2(2200, 200)
+	moves_label.add_theme_font_size_override("font_size", 72)
+	moves_label.add_theme_color_override("font_color", Color.YELLOW)
+	moves_label.z_index = 1000
+	update_moves_display()
+	add_child(moves_label)
+
+func update_moves_display():
+	if moves_label:
+		var remaining = MAX_MOVES - moves_made
+		moves_label.text = "Moves: %d/%d" % [remaining, MAX_MOVES]
+		
+		# Change color based on remaining moves
+		if remaining <= 1:
+			moves_label.add_theme_color_override("font_color", Color.RED)
+		elif remaining <= 2:
+			moves_label.add_theme_color_override("font_color", Color.ORANGE)
+		else:
+			moves_label.add_theme_color_override("font_color", Color.YELLOW)
 
 func create_grid_with_tokens():
 	grid = []
@@ -252,7 +267,20 @@ func swap_tiles(x1: int, y1: int, x2: int, y2: int):
 		is_swapping = false
 		return
 	
-	# Valid match - process matches
+	# Valid match - increment moves counter
+	moves_made += 1
+	update_moves_display()
+	
+	# Check if we've reached the move limit
+	if moves_made >= MAX_MOVES:
+		# Process this last match, then end the game
+		await process_all_matches()
+		is_swapping = false
+		await get_tree().create_timer(1.5).timeout
+		end_game_and_transition()
+		return
+	
+	# Process matches normally
 	await process_all_matches()
 	is_swapping = false
 
@@ -267,6 +295,46 @@ func animate_swap(x1: int, y1: int, x2: int, y2: int):
 	
 	await tween.finished
 
+func show_floating_text(text: String, color: Color, positions: Array):
+	"""Show floating text at the average position of the matched tiles"""
+	if positions.size() == 0:
+		return
+	
+	# Calculate center position of the match
+	var avg_x = 0.0
+	var avg_y = 0.0
+	for pos in positions:
+		avg_x += pos.x
+		avg_y += pos.y
+	avg_x /= positions.size()
+	avg_y /= positions.size()
+	
+	var world_pos = get_tile_position(int(avg_x), int(avg_y))
+	
+	# Create floating label
+	var label = Label.new()
+	label.text = text
+	label.position = world_pos
+	label.add_theme_font_size_override("font_size", 80)
+	label.add_theme_color_override("font_color", color)
+	label.z_index = 500
+	
+	# Add outline for better visibility
+	label.add_theme_color_override("font_outline_color", Color.BLACK)
+	label.add_theme_constant_override("outline_size", 8)
+	
+	add_child(label)
+	
+	# Animate the text floating up and fading out
+	var tween = create_tween()
+	tween.set_parallel(true)
+	tween.tween_property(label, "position:y", world_pos.y - 200, 1.5).set_ease(Tween.EASE_OUT)
+	tween.tween_property(label, "modulate:a", 0.0, 1.5).set_delay(0.5)
+	tween.tween_property(label, "scale", Vector2(1.3, 1.3), 0.3).set_ease(Tween.EASE_OUT)
+	
+	await tween.finished
+	label.queue_free()
+
 func process_all_matches():
 	var matches = match_detector.find_all_matches(grid, GRID_WIDTH, GRID_HEIGHT)
 	
@@ -280,50 +348,77 @@ func process_all_matches():
 		is_swapping = false
 		return
 	
-	var potions_before = pick_potions
+	# Get match groups with their sizes and types
+	var match_groups = match_detector.get_match_groups(matches, grid, GRID_WIDTH, GRID_HEIGHT)
 	
-	# Check for garlic matches and award pink potions
-	var garlic_matches = match_detector.check_for_garlic_matches(matches, grid, GRID_WIDTH, GRID_HEIGHT)
-	if garlic_matches > 0:
-		pick_potions += garlic_matches
+	# Apply stat bonuses based on match type and size
+	for group in match_groups:
+		var token_type = group["type"]
+		var match_size = group["size"]
+		var health_bonus = 0
+		var damage_bonus = 0
 		
-		# Cap at max potions
-		if pick_potions > MAX_POTIONS:
-			pick_potions = MAX_POTIONS
-		
-		# Spawn pink potion visual for each new potion (up to max) add to inventory immediately
-		for i in range(potions_before, pick_potions):
-			spawn_pink_potion_in_circle(i)
-			Inventory.add_potion(Inventory.PotionType.PINK)  
-			potions_before += 1  # Update for next ingredient type
-		
-		# Check if player collected max potions
-		if pick_potions >= MAX_POTIONS:
-			cascade_depth = 0
-			await get_tree().create_timer(2.0).timeout
-			end_game_and_transition()
-			return
-	
-	# Check for mint matches and award green potions
-	var mint_matches = match_detector.check_for_mint_matches(matches, grid, GRID_WIDTH, GRID_HEIGHT)
-	if mint_matches > 0:
-		pick_potions += mint_matches
-		
-		# Cap at max potions
-		if pick_potions > MAX_POTIONS:
-			pick_potions = MAX_POTIONS
-		
-		# Spawn green potion visual for each new potion (up to max)
-		for i in range(potions_before, pick_potions):
-			spawn_green_potion_in_circle(i)
-			Inventory.add_potion(Inventory.PotionType.GREEN)  
-		
-		# Check if player collected max potions
-		if pick_potions >= MAX_POTIONS:
-			cascade_depth = 0
-			await get_tree().create_timer(2.0).timeout
-			end_game_and_transition()
-			return
+		match token_type:
+			TokenType.GARLIC:
+				# Garlic increases health: 3-match = +10, 4-match = +20, 5+ = +30
+				if match_size == 3:
+					health_bonus = 10
+				elif match_size == 4:
+					health_bonus = 20
+				elif match_size >= 5:
+					health_bonus = 30
+				
+				if health_bonus > 0:
+					PotionManager.heal(health_bonus)
+					show_floating_text("+%d HP" % health_bonus, Color.GREEN, group["positions"])
+					print("🧄 Garlic %d-match! +%d Health" % [match_size, health_bonus])
+			
+			TokenType.MINT:
+				# Mint increases max health: 3-match = +5, 4-match = +10, 5+ = +15
+				if match_size == 3:
+					health_bonus = 5
+				elif match_size == 4:
+					health_bonus = 10
+				elif match_size >= 5:
+					health_bonus = 15
+				
+				if health_bonus > 0:
+					var new_max = PotionManager.get_max_health() + health_bonus
+					PotionManager.set_max_health(new_max)
+					show_floating_text("+%d MAX HP" % health_bonus, Color.CYAN, group["positions"])
+					print("🌿 Mint %d-match! +%d Max Health" % [match_size, health_bonus])
+			
+			TokenType.GINGER:
+				# Ginger increases base attack damage: 3-match = +2, 4-match = +5, 5+ = +8
+				if match_size == 3:
+					damage_bonus = 2
+				elif match_size == 4:
+					damage_bonus = 5
+				elif match_size >= 5:
+					damage_bonus = 8
+				
+				if damage_bonus > 0:
+					var player = get_tree().get_first_node_in_group("Player")
+					if player and player.has_method("increase_damage"):
+						player.increase_damage(damage_bonus)
+						show_floating_text("+%d ATK" % damage_bonus, Color.ORANGE_RED, group["positions"])
+						print("⚔️ Ginger %d-match! +%d Attack Damage" % [match_size, damage_bonus])
+			
+			TokenType.PEPPER:
+				# Pepper increases base attack damage (more than ginger): 3-match = +3, 4-match = +7, 5+ = +12
+				if match_size == 3:
+					damage_bonus = 3
+				elif match_size == 4:
+					damage_bonus = 7
+				elif match_size >= 5:
+					damage_bonus = 12
+				
+				if damage_bonus > 0:
+					var player = get_tree().get_first_node_in_group("Player")
+					if player and player.has_method("increase_damage"):
+						player.increase_damage(damage_bonus)
+						show_floating_text("+%d ATK" % damage_bonus, Color.RED, group["positions"])
+						print("🌶️ Pepper %d-match! +%d Attack Damage" % [match_size, damage_bonus])
 	
 	# Add to score
 	var points = matches.size() * 10
@@ -371,42 +466,6 @@ func animate_matches(matches: Array):
 				sparkle_sound_player.play()
 	
 	await tween.finished
-
-func spawn_pink_potion_in_circle(circle_index: int):
-	if circle_index >= MAX_POTIONS:
-		return
-	
-	var start_x = GRID_OFFSET_X + (GRID_WIDTH * TILE_SIZE * SCALE_FACTOR) / 2
-	var start_y = GRID_OFFSET_Y + (GRID_HEIGHT * TILE_SIZE * SCALE_FACTOR) / 2
-	
-	var potion = pink_potion_scene.instantiate()
-	add_child(potion)
-	potion.initialize(Vector2(start_x, start_y))
-	await potion.animate_to_circle(POTION_CIRCLE_POSITIONS[circle_index])
-	if collect_sound_player:
-		collect_sound_player.play()
-	
-	while potion_sprites_in_circles.size() <= circle_index:
-		potion_sprites_in_circles.append(null)
-	potion_sprites_in_circles[circle_index] = potion
-
-func spawn_green_potion_in_circle(circle_index: int):
-	if circle_index >= MAX_POTIONS:
-		return
-	
-	var start_x = GRID_OFFSET_X + (GRID_WIDTH * TILE_SIZE * SCALE_FACTOR) / 2
-	var start_y = GRID_OFFSET_Y + (GRID_HEIGHT * TILE_SIZE * SCALE_FACTOR) / 2
-	
-	var potion = green_potion_scene.instantiate()
-	add_child(potion)
-	potion.initialize(Vector2(start_x, start_y))
-	await potion.animate_to_circle(POTION_CIRCLE_POSITIONS[circle_index])
-	if collect_sound_player:
-		collect_sound_player.play()
-	
-	while potion_sprites_in_circles.size() <= circle_index:
-		potion_sprites_in_circles.append(null)
-	potion_sprites_in_circles[circle_index] = potion
 
 func has_valid_moves() -> bool:
 	# Check every position for possible swaps that would create a match
@@ -458,11 +517,6 @@ func end_game_and_transition():
 	
 	game_ended = true
 	is_swapping = true
-	
-	# Pulse the collected potions
-	for i in range(pick_potions):
-		if potion_sprites_in_circles[i]:
-			potion_sprites_in_circles[i].pulse_forever()
 	
 	await get_tree().create_timer(2.0).timeout
 	
