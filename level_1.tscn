@@ -443,10 +443,10 @@ theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_fonts/font = ExtResource("7_j7kpp")
 theme_override_font_sizes/font_size = 27
-text = "Alchemist’s Survival Guide
+text = "Survival Guide for Alchemists
 
-• Move with WASD or the arrows — stay mobile!
-• Smash that Space or Enter key to attack!
-• Drag the view to spot hazards before they kill you!"
+Move using WASD or the arrow keys. Stay mobile.
+Smash that Space or Enter key to attack.
+Drag the view to spot hazards before they kill you."
 horizontal_alignment = 1
 vertical_alignment = 1
