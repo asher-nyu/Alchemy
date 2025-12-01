@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://dyyah0gt6sj7m"]
+[gd_scene load_steps=13 format=3 uid="uid://dyyah0gt6sj7m"]
 
 [ext_resource type="Shader" uid="uid://b5lx6eenxs5p6" path="res://Alchemy.gdshader" id="1_5hph3"]
 [ext_resource type="Texture2D" uid="uid://crjd1bscx4mg5" path="res://assets/purplbckgd.png" id="1_hbghi"]
@@ -6,6 +6,8 @@
 [ext_resource type="PackedScene" uid="uid://kai8oapwfhpr" path="res://player.tscn" id="3_hn12h"]
 [ext_resource type="PackedScene" uid="uid://dd324ndwjiayh" path="res://skeleton_enemy.tscn" id="4_ihfcg"]
 [ext_resource type="PackedScene" uid="uid://dkbhd60d6pv8h" path="res://door.tscn" id="5_rka8t"]
+[ext_resource type="Script" uid="uid://canl6y1q0m3ly" path="res://level_1_banner.gd" id="7_bjebc"]
+[ext_resource type="FontFile" uid="uid://5kju6oyea6g7" path="res://videotype.otf" id="7_j7kpp"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_j7kpp"]
 shader = ExtResource("1_5hph3")
@@ -366,6 +368,9 @@ physics_layer_0/collision_layer = 1
 physics_layer_1/collision_layer = 1
 sources/0 = SubResource("TileSetAtlasSource_ihfcg")
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_j7kpp"]
+bg_color = Color(0, 0, 0, 0.6)
+
 [node name="level1" type="Node2D"]
 
 [node name="Purplbckgd" type="Sprite2D" parent="."]
@@ -382,7 +387,7 @@ layer_0/tile_data = PackedInt32Array(3145733, 65536, 13, 3211269, 65536, 13, 327
 layer_1/name = "Layer1"
 
 [node name="Player" parent="." instance=ExtResource("3_hn12h")]
-position = Vector2(417, 1956)
+position = Vector2(424, 1956)
 scale = Vector2(4, 4)
 
 [node name="Camera2D3" type="Camera2D" parent="Player"]
@@ -402,3 +407,45 @@ scale = Vector2(6, 6)
 
 [node name="door" parent="." instance=ExtResource("5_rka8t")]
 position = Vector2(5834, 2002)
+
+[node name="Level1Banner" type="CanvasLayer" parent="."]
+script = ExtResource("7_bjebc")
+
+[node name="Panel" type="Panel" parent="Level1Banner"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -576.0
+offset_top = -128.5
+offset_right = 576.0
+offset_bottom = 128.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_j7kpp")
+
+[node name="Label" type="Label" parent="Level1Banner/Panel"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -576.0
+offset_top = -253.0
+offset_right = 576.0
+offset_bottom = 253.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.92156863, 0.88235295, 0.6666667, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("7_j7kpp")
+theme_override_font_sizes/font_size = 27
+text = "Suit Up, Fighter!
+
+• Move with WASD or the arrows — stay mobile!
+• Smash that Space or Enter key to attack!"
+horizontal_alignment = 1
+vertical_alignment = 1
