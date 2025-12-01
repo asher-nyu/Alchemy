@@ -375,12 +375,12 @@ bg_color = Color(0, 0, 0, 0.6)
 
 [node name="Purplbckgd" type="Sprite2D" parent="."]
 material = SubResource("ShaderMaterial_j7kpp")
-position = Vector2(4092.0002, 2564)
-scale = Vector2(24.563381, 7.41243)
+position = Vector2(4920.0005, 2650.5)
+scale = Vector2(32.61268, 17.022598)
 texture = ExtResource("1_hbghi")
 
 [node name="TileMap" type="TileMap" parent="."]
-position = Vector2(444, 788)
+position = Vector2(1413.0005, 921)
 scale = Vector2(2, 2)
 tile_set = SubResource("TileSet_rka8t")
 format = 2
@@ -388,7 +388,7 @@ layer_0/tile_data = PackedInt32Array(3145733, 65536, 13, 3211269, 65536, 13, 327
 layer_1/name = "Layer1"
 
 [node name="Player" parent="." instance=ExtResource("3_hn12h")]
-position = Vector2(868, 2744)
+position = Vector2(1837.0005, 2877)
 scale = Vector2(4, 4)
 
 [node name="Camera2D3" type="Camera2D" parent="Player"]
@@ -398,15 +398,15 @@ limit_left = 6000
 limit_right = 9999999
 
 [node name="skeleton_enemy" parent="." instance=ExtResource("4_ihfcg")]
-position = Vector2(3393, 2793)
+position = Vector2(4362.0005, 2926)
 scale = Vector2(6, 6)
 
 [node name="skeleton_enemy2" parent="." instance=ExtResource("4_ihfcg")]
-position = Vector2(5789, 2790)
+position = Vector2(6758.0005, 2923)
 scale = Vector2(6, 6)
 
 [node name="door" parent="." instance=ExtResource("5_rka8t")]
-position = Vector2(6278, 2790)
+position = Vector2(7247.0005, 2923)
 
 [node name="Level1Banner" type="CanvasLayer" parent="."]
 script = ExtResource("7_bjebc")
