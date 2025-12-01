@@ -375,11 +375,12 @@ bg_color = Color(0, 0, 0, 0.6)
 
 [node name="Purplbckgd" type="Sprite2D" parent="."]
 material = SubResource("ShaderMaterial_j7kpp")
-position = Vector2(3648.0002, 1775.9999)
+position = Vector2(4092.0002, 2564)
 scale = Vector2(24.563381, 7.41243)
 texture = ExtResource("1_hbghi")
 
 [node name="TileMap" type="TileMap" parent="."]
+position = Vector2(444, 788)
 scale = Vector2(2, 2)
 tile_set = SubResource("TileSet_rka8t")
 format = 2
@@ -387,26 +388,25 @@ layer_0/tile_data = PackedInt32Array(3145733, 65536, 13, 3211269, 65536, 13, 327
 layer_1/name = "Layer1"
 
 [node name="Player" parent="." instance=ExtResource("3_hn12h")]
-position = Vector2(424, 1956)
+position = Vector2(868, 2744)
 scale = Vector2(4, 4)
 
 [node name="Camera2D3" type="Camera2D" parent="Player"]
 position = Vector2(-10.75, -16.25)
-offset = Vector2(0, -10)
 zoom = Vector2(2, 2)
 limit_left = 6000
 limit_right = 9999999
 
 [node name="skeleton_enemy" parent="." instance=ExtResource("4_ihfcg")]
-position = Vector2(2949, 2005)
+position = Vector2(3393, 2793)
 scale = Vector2(6, 6)
 
 [node name="skeleton_enemy2" parent="." instance=ExtResource("4_ihfcg")]
-position = Vector2(5345, 2002.0001)
+position = Vector2(5789, 2790)
 scale = Vector2(6, 6)
 
 [node name="door" parent="." instance=ExtResource("5_rka8t")]
-position = Vector2(5834, 2002)
+position = Vector2(6278, 2790)
 
 [node name="Level1Banner" type="CanvasLayer" parent="."]
 script = ExtResource("7_bjebc")
@@ -443,9 +443,10 @@ theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_fonts/font = ExtResource("7_j7kpp")
 theme_override_font_sizes/font_size = 27
-text = "Suit Up, Fighter!
+text = "Alchemist’s Survival Guide
 
 • Move with WASD or the arrows — stay mobile!
-• Smash that Space or Enter key to attack!"
+• Smash that Space or Enter key to attack!
+• Drag the view to spot hazards before they kill you!"
 horizontal_alignment = 1
 vertical_alignment = 1

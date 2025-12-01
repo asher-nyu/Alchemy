@@ -6,6 +6,14 @@ var attack_sound = AudioStreamPlayer.new()
 var hero_death_sound = AudioStreamPlayer.new()
 var hero_jump_sound = AudioStreamPlayer.new()
 
+# --- CAMERA DRAG SYSTEM ---
+var dragging = false
+var drag_start = Vector2.ZERO
+var camera_start = Vector2.ZERO
+var camera_offset = Vector2.ZERO
+var camera_base_position = Vector2.ZERO
+
+
 
 const SPEED = 400.0
 const JUMP_VELOCITY = -400.0
@@ -66,11 +74,28 @@ func _ready():
 	if camera:
 		camera.enabled = true
 		camera.make_current()
+		camera_offset = camera.position
+		camera_base_position = camera.position
 	
 	# Initial UI update
 	update_health_display()
 	add_to_group("Player")
 
+
+func _input(event):
+	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
+		if event.pressed:
+			dragging = true
+			drag_start = event.position
+			camera_start = camera_offset
+		else:
+			dragging = false
+			camera_offset = camera_base_position
+
+	elif event is InputEventMouseMotion and dragging:
+		var delta = drag_start - event.position
+		camera_offset = camera_start + delta
+				
 func _physics_process(delta: float) -> void:
 	if not is_on_floor():
 		velocity += get_gravity() * delta
@@ -121,7 +146,10 @@ func _physics_process(delta: float) -> void:
 			animated_sprite.play("run")
 		else:
 			animated_sprite.play("idle")
-
+			
+	if camera:
+		camera.position = camera_offset
+		
 # --- HAZARD DETECTION ---
 func check_for_hazards():
 	# Loop through all collisions from the last move_and_slide()
