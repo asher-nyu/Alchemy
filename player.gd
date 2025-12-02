@@ -16,7 +16,7 @@ var camera_base_position = Vector2.ZERO
 
 
 const SPEED = 400.0
-const JUMP_VELOCITY = -400.0
+const JUMP_VELOCITY = -700.0
 const AIR_CONTROL = 0.8
 
 # Instant death system
