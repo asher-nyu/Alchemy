@@ -1,6 +1,6 @@
 [gd_scene load_steps=8 format=3 uid="uid://dur0gs8lqb2mn"]
 
-[ext_resource type="Script" uid="uid://bem6f5621cnd1" path="res://start.gd" id="1_ko4ly"]
+[ext_resource type="Script" uid="uid://bem6f5621cnd1" path="res://StartScreen.gd" id="1_ko4ly"]
 [ext_resource type="Shader" uid="uid://baj6buaogoeeg" path="res://StartScreen.gdshader" id="2_0on6r"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_ko4ly"]
@@ -118,7 +118,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 0
 
-[node name="StartButton" type="Button" parent="BottomPanel"]
+[node name="ReStartButton" type="Button" parent="BottomPanel"]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -138,5 +138,6 @@ theme_override_font_sizes/font_size = 32
 theme_override_styles/normal = SubResource("StyleBoxFlat_d4clo")
 theme_override_styles/hover = SubResource("StyleBoxFlat_mqr7l")
 text = "Start Your Quest"
+script = ExtResource("1_ko4ly")
 
-[connection signal="pressed" from="BottomPanel/StartButton" to="." method="_on_start_button_pressed"]
+[connection signal="pressed" from="BottomPanel/ReStartButton" to="." method="_on_start_button_pressed"]

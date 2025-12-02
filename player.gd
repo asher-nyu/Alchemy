@@ -38,8 +38,13 @@ const ATTACK_ANIMATION_TIME = 0.3
 
 var original_color = Color.WHITE
 
+var level_to_load: String = ""
+
+
 func _ready():
 	print("PLAYER: _ready() called!")
+	
+	level_to_load = get_scene_file_path()
 	
 	original_color = animated_sprite.modulate
 	
@@ -289,5 +294,8 @@ func die(delay: float = 0.0) -> void:
 	# Reset health before reloading
 	PotionManager.reset_all()
 	
-	# Reload the current level
-	get_tree().reload_current_scene()
+	# Load Game Over screen
+	var game_over_scene = load("res://GameOverScreen.tscn").instantiate()
+	game_over_scene.level_to_load = get_tree().current_scene.get_scene_file_path()
+	get_tree().root.add_child(game_over_scene)
+	get_tree().current_scene.queue_free()  # Remove the old level

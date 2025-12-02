@@ -1,7 +1,7 @@
 [gd_scene load_steps=8 format=3 uid="uid://b6b2dpvgs271b"]
 
-[ext_resource type="Script" uid="uid://bem6f5621cnd1" path="res://start.gd" id="1_ko4ly"]
-[ext_resource type="Shader" path="res://GameOverScreen.gdshader" id="2_gk5la"]
+[ext_resource type="Script" uid="uid://cri1xhpe8ever" path="res://GameOverScreen.gd" id="1_gk5la"]
+[ext_resource type="Shader" uid="uid://crujeps0d5hfq" path="res://GameOverScreen.gdshader" id="2_gk5la"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_ko4ly"]
 shader = ExtResource("2_gk5la")
@@ -51,7 +51,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_ko4ly")
+script = ExtResource("1_gk5la")
 
 [node name="Background" type="ColorRect" parent="."]
 material = SubResource("ShaderMaterial_ko4ly")
