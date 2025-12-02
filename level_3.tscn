@@ -34,7 +34,7 @@ shader_parameter/crack_density = 0.45
 shader_parameter/ooze_layers = 4.0
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_eoq84"]
-size = Vector2(144, 30.126953)
+size = Vector2(148, 41.906128)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_jvy75"]
 size = Vector2(401.5, 34.5)
@@ -388,16 +388,15 @@ sources/0 = SubResource("TileSetAtlasSource_6p2dc")
 
 [node name="Background" type="Sprite2D" parent="."]
 material = SubResource("ShaderMaterial_7j8ne")
-position = Vector2(1248.0001, 1077.5)
+position = Vector2(1242, 1074)
 scale = Vector2(19.161972, 19.237288)
 texture = ExtResource("2_kmy7e")
 
 [node name="Player" parent="." instance=ExtResource("4_ghrvs")]
-position = Vector2(830, 1519)
+position = Vector2(23, 938)
 scale = Vector2(4, 4)
 
 [node name="Camera2D3" type="Camera2D" parent="Player"]
-position = Vector2(165.75, -33)
 zoom = Vector2(0.5, 0.5)
 
 [node name="Spike2" type="Area2D" parent="."]
@@ -405,17 +404,17 @@ position = Vector2(1393, 89)
 script = ExtResource("9_m8gss")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Spike2"]
-position = Vector2(942, 1790.0635)
+position = Vector2(942, 1793.0469)
 shape = SubResource("RectangleShape2D_eoq84")
 debug_color = Color(0.13504621, 0.62819105, 0.44359782, 0.41960785)
 
 [node name="Sprite2D2" type="Sprite2D" parent="Spike2"]
-position = Vector2(906, 1788)
+position = Vector2(906, 1794)
 scale = Vector2(1.2121195, 0.8804371)
 texture = ExtResource("10_wnq0t")
 
 [node name="Sprite2D25" type="Sprite2D" parent="Spike2"]
-position = Vector2(897, 1787)
+position = Vector2(897, 1793)
 scale = Vector2(1.304417, 0.91304606)
 texture = ExtResource("10_wnq0t")
 offset = Vector2(60, 0)
@@ -425,18 +424,18 @@ position = Vector2(-2807, 1135)
 script = ExtResource("9_m8gss")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Spike4"]
-position = Vector2(3121.521, 178.87573)
+position = Vector2(3121, 185.9696)
 shape = SubResource("RectangleShape2D_eoq84")
 debug_color = Color(0.13504621, 0.62819105, 0.44359782, 0.41960785)
 
 [node name="Sprite2D26" type="Sprite2D" parent="Spike4"]
-position = Vector2(2996.521, 175.87573)
+position = Vector2(2996.521, 188.87573)
 scale = Vector2(1.3791083, 0.8336531)
 texture = ExtResource("10_wnq0t")
 offset = Vector2(60, 0)
 
 [node name="Sprite2D25" type="Sprite2D" parent="Spike4"]
-position = Vector2(3073.5208, 174.87573)
+position = Vector2(3073.5208, 186.87573)
 scale = Vector2(1.4441032, 0.91304606)
 texture = ExtResource("10_wnq0t")
 offset = Vector2(60, 0)
