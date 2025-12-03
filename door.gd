@@ -8,6 +8,8 @@ extends Area2D
 var portal_sound = AudioStreamPlayer.new()
 var is_unlocked: bool = false
 var player_in_range: bool = false
+var input_cooldown: float = 1.0  # Cooldown after level load
+var time_since_ready: float = 0.0
 
 @onready var sprite = $Sprite2D if has_node("Sprite2D") else null
 @onready var animated_sprite = $AnimatedSprite2D if has_node("AnimatedSprite2D") else null
@@ -21,19 +23,34 @@ func _ready():
 	add_child(portal_sound)
 	portal_sound.stream = load("res://assets/Audio Pack/portal.wav")
 	
-	# Start locked
+	# Start locked and ensure player_in_range is false
+	is_unlocked = false
+	player_in_range = false
 	set_door_locked()
 	
 	print("Door ready. Current level: ", current_level_number, " → Next scene: ", next_scene)
 
-func _process(_delta):
+func _process(delta):
+	# Track time since ready for input cooldown
+	time_since_ready += delta
+	
 	# Check if all enemies are dead
 	check_enemies()
+	
+	# Check for door entry input (using Input.is_action_just_pressed instead of _input)
+	if player_in_range and is_unlocked and time_since_ready >= input_cooldown:
+		if Input.is_action_just_pressed("ui_accept"):
+			var player = get_tree().get_first_node_in_group("Player")
+			if player and is_instance_valid(player):
+				enter_door()
 	
 	# Show message if player is near
 	if player_in_range:
 		if is_unlocked:
-			show_message("Press ENTER to enter")
+			if time_since_ready >= input_cooldown:
+				show_message("Press ENTER to enter")
+			else:
+				show_message("Door ready...")
 		else:
 			var enemies_left = count_remaining_enemies()
 			show_message("Locked! Kill all enemies (%d left)" % enemies_left)
@@ -92,18 +109,23 @@ func set_door_locked():
 
 func _on_body_entered(body):
 	if body.is_in_group("Player"):
-		player_in_range = true
-		print("Player near door. Unlocked: ", is_unlocked)
+		# Don't trigger if scene is reloading
+		await get_tree().create_timer(0.5).timeout
+		if is_instance_valid(body) and body.is_in_group("Player"):
+			player_in_range = true
+			print("Player near door. Unlocked: ", is_unlocked)
 
 func _on_body_exited(body):
 	if body.is_in_group("Player"):
 		player_in_range = false
 		hide_message()
 
-func _input(event):
-	if player_in_range and is_unlocked:
-		if event.is_action_pressed("ui_accept"):
-			enter_door()
+func _exit_tree():
+	# Clean up when scene changes
+	player_in_range = false
+
+# Removed _input to prevent global input capturing that interferes with player attacks
+# Door entry is now handled in _process() using Input.is_action_just_pressed
 
 func enter_door():
 	"""Player enters the door - go to match-3 and set next level."""

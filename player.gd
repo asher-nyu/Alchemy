@@ -36,6 +36,7 @@ const ATTACK_ANIMATION_TIME = 0.3
 @onready var camera = $Camera2D2
 @onready var health_label = $Camera2D2/UI/HealthLabel
 
+var energy_label: Label = null
 var original_color = Color.WHITE
 
 var level_to_load: String = ""
@@ -48,9 +49,12 @@ func _ready():
 	
 	original_color = animated_sprite.modulate
 	
-	# Connect to PotionManager signals (for health only)
+	# Connect to PotionManager signals
 	PotionManager.health_changed.connect(_on_health_changed)
 	PotionManager.player_died.connect(_on_player_died)
+	PotionManager.energy_changed.connect(_on_energy_changed)
+	PotionManager.ultimate_activated.connect(_on_ultimate_activated)
+	PotionManager.ultimate_deactivated.connect(_on_ultimate_deactivated)
 	
 	# Setup audio
 	add_child(run_sound)
@@ -76,6 +80,9 @@ func _ready():
 		health_label.add_theme_font_size_override("font_size", 48)
 		health_label.add_theme_color_override("font_color", Color.RED)
 	
+	# Create energy label
+	create_energy_label()
+	
 	if camera:
 		camera.enabled = true
 		camera.make_current()
@@ -84,6 +91,7 @@ func _ready():
 	
 	# Initial UI update
 	update_health_display()
+	update_energy_display()
 	add_to_group("Player")
 
 
@@ -104,6 +112,10 @@ func _input(event):
 func _physics_process(delta: float) -> void:
 	if not is_on_floor():
 		velocity += get_gravity() * delta
+	
+	# Ultimate activation with 'E' key
+	if Input.is_key_pressed(KEY_E):
+		PotionManager.activate_ultimate()
 	
 	if Input.is_action_just_pressed("ui_accept") and can_attack:
 		perform_attack()
@@ -184,8 +196,9 @@ func perform_attack():
 	can_attack = false
 	is_attacking = true
 	
-	# Use current base attack damage
-	attack_damage = base_attack_damage
+	# Get ultimate multiplier and apply to damage
+	var multiplier = PotionManager.get_attack_multiplier()
+	attack_damage = int(base_attack_damage * multiplier)
 	
 	# Play attack animation
 	if animated_sprite.sprite_frames.has_animation("attack"):
@@ -195,6 +208,7 @@ func perform_attack():
 	var enemies = get_tree().get_nodes_in_group("Enemy")
 	
 	var hit_something = false
+	var total_damage_dealt = 0
 	
 	for enemy in enemies:
 		if enemy and is_instance_valid(enemy) and enemy.current_health > 0:
@@ -202,12 +216,21 @@ func perform_attack():
 			
 			if distance <= attack_range:
 				if enemy.has_method("take_damage"):
-				# Pass player's position for knockback calculation
+					# Store old health to calculate actual damage dealt
+					var old_health = enemy.current_health
 					enemy.take_damage(attack_damage, global_position)
+					var damage_dealt = old_health - enemy.current_health
+					total_damage_dealt += damage_dealt
 					hit_something = true
 
 	if hit_something:
 		attack_sound.play()
+		# Add energy from damage dealt
+		PotionManager.add_energy_from_damage_dealt(total_damage_dealt)
+		
+	# Consume ultimate charge if active
+	if PotionManager.is_ultimate_mode_active():
+		PotionManager.consume_ultimate_charge()
 		
 	# Wait for attack animation to finish
 	await get_tree().create_timer(ATTACK_ANIMATION_TIME).timeout
@@ -235,14 +258,63 @@ func increase_damage(amount: int):
 	attack_damage = base_attack_damage
 	print("PLAYER: Attack damage increased by %d! New damage: %d" % [amount, attack_damage])
 
-# --- HEALTH SIGNAL HANDLERS ---
+# --- SIGNAL HANDLERS ---
 func _on_health_changed(current: int, maximum: int):
 	update_health_display()
+
+func _on_energy_changed(current: int, maximum: int):
+	update_energy_display()
+
+func _on_ultimate_activated(attacks_remaining: int):
+	# Visual feedback - player glows during ultimate
+	animated_sprite.modulate = Color(2.0, 1.5, 0.0, 1.0)  # Bright yellow/orange glow
+	update_energy_display()
+
+func _on_ultimate_deactivated():
+	# Return to normal color
+	animated_sprite.modulate = original_color
+	update_energy_display()
 
 # --- UI UPDATE FUNCTIONS ---
 func update_health_display() -> void:
 	if health_label:
 		health_label.text = PotionManager.get_health_display_text()
+
+func update_energy_display() -> void:
+	if energy_label:
+		energy_label.text = PotionManager.get_energy_display_text()
+		
+		# Change color based on energy state
+		if PotionManager.is_ultimate_mode_active():
+			energy_label.add_theme_color_override("font_color", Color.ORANGE)
+		elif PotionManager.can_activate_ultimate():
+			energy_label.add_theme_color_override("font_color", Color.YELLOW)
+		else:
+			energy_label.add_theme_color_override("font_color", Color.CYAN)
+
+func create_energy_label():
+	"""Create the energy bar label"""
+	var ui_layer = null
+	for child in camera.get_children():
+		if child.name == "UI":
+			ui_layer = child
+			break
+	
+	if not ui_layer:
+		print("PLAYER: ERROR - UI layer not found for energy label!")
+		return
+	
+	energy_label = Label.new()
+	energy_label.name = "EnergyLabel"
+	energy_label.visible = true
+	energy_label.position = Vector2(10, 70)
+	energy_label.add_theme_font_size_override("font_size", 40)
+	energy_label.add_theme_color_override("font_color", Color.CYAN)
+	energy_label.add_theme_color_override("font_outline_color", Color.BLACK)
+	energy_label.add_theme_constant_override("outline_size", 3)
+	
+	ui_layer.add_child(energy_label)
+	print("PLAYER: Energy label created!")
 
 # --- DEATH HANDLING ---	
 func _on_player_died():
