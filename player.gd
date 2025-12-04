@@ -113,8 +113,8 @@ func _physics_process(delta: float) -> void:
 	if not is_on_floor():
 		velocity += get_gravity() * delta
 	
-	# Ultimate activation with 'E' key
-	if Input.is_key_pressed(KEY_E):
+	# Trigger She-Hulk Mode with the S key
+	if Input.is_key_pressed(KEY_S):
 		PotionManager.activate_ultimate()
 	
 	if Input.is_action_just_pressed("ui_accept") and can_attack:
@@ -267,7 +267,7 @@ func _on_energy_changed(current: int, maximum: int):
 
 func _on_ultimate_activated(attacks_remaining: int):
 	# Visual feedback - player glows during ultimate
-	animated_sprite.modulate = Color(2.0, 1.5, 0.0, 1.0)  # Bright yellow/orange glow
+	animated_sprite.modulate = Color(0.3, 1.0, 0.3, 1.0)  # Tint the sprite She-Hulk green
 	update_energy_display()
 
 func _on_ultimate_deactivated():
@@ -284,13 +284,13 @@ func update_energy_display() -> void:
 	if energy_label:
 		energy_label.text = PotionManager.get_energy_display_text()
 		
-		# Change color based on energy state
+		# Change color based on She-Hulk energy state
 		if PotionManager.is_ultimate_mode_active():
-			energy_label.add_theme_color_override("font_color", Color.ORANGE)
+			energy_label.add_theme_color_override("font_color", Color(0.9, 1.0, 0.3))   # Rampaging neon-gamma green
 		elif PotionManager.can_activate_ultimate():
-			energy_label.add_theme_color_override("font_color", Color.YELLOW)
+			energy_label.add_theme_color_override("font_color", Color(0.5, 1.0, 0.5))   # Charged up, glowing green
 		else:
-			energy_label.add_theme_color_override("font_color", Color.CYAN)
+			energy_label.add_theme_color_override("font_color", Color(0.3, 0.8, 0.3))   # Base She-Hulk green
 
 func create_energy_label():
 	"""Create the energy bar label"""
@@ -308,10 +308,10 @@ func create_energy_label():
 	energy_label.name = "EnergyLabel"
 	energy_label.visible = true
 	energy_label.position = Vector2(10, 70)
-	energy_label.add_theme_font_size_override("font_size", 40)
-	energy_label.add_theme_color_override("font_color", Color.CYAN)
-	energy_label.add_theme_color_override("font_outline_color", Color.BLACK)
-	energy_label.add_theme_constant_override("outline_size", 3)
+	
+	var custom_font := load("videotype.otf") as FontFile
+	energy_label.add_theme_font_override("font", custom_font)
+	energy_label.add_theme_font_size_override("font_size", 48)
 	
 	ui_layer.add_child(energy_label)
 	print("PLAYER: Energy label created!")
