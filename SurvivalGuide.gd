@@ -84,7 +84,7 @@ func show_guide() -> void:
 	banner.modulate.a = 0.0
 	banner.show()
 	var tween := create_tween()
-	tween.set_pause_mode(Tween.TWEEN_PAUSE_PROCESS) # <-- REQUIRED
+	tween.set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
 	tween.tween_property(banner, "position", end_pos, 0.4)\
 	.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
 	tween.tween_property(banner, "modulate:a", 1.0, 0.4)\
@@ -94,8 +94,22 @@ func show_guide() -> void:
 	)
 
 func _on_guide_button_pressed() -> void:
+	guide_button.disabled = true  # Prevent multiple clicks
+	var start_pos = guide_button.position
+	var end_pos = guide_button.position + Vector2(60, 0)
+	var tween := create_tween()
+	tween.set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
+	tween.tween_property(guide_button, "position", end_pos, 0.4)\
+	.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	tween.tween_property(guide_button, "modulate:a", 0.0, 0.4)\
+	.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	tween.tween_callback(func():
+		guide_button.hide()
+		guide_button.modulate.a = 1.0  # Reset alpha for next show
+		guide_button.position = start_pos  # Reset position for next show
+		guide_button.disabled = false
+	)
 	show_guide()
-	guide_button.hide()
 
 func _process_guide_freeze(event: InputEvent) -> void:
 	# If not in guide freeze mode, skip this
@@ -108,7 +122,13 @@ func _process_guide_freeze(event: InputEvent) -> void:
 			guide_pause_mode = false
 			get_tree().paused = false
 			_fade_out_and_hide()
+			var start_pos = guide_button.position + Vector2(60, 0)
+			var end_pos = guide_button.position
+			guide_button.position = start_pos
 			guide_button.show()
+			var tween := create_tween()
+			tween.tween_property(guide_button, "position", end_pos, 0.4)\
+			.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
 			# Reset dismissal state
 			can_dismiss = false
 			# Re-enable player movement
