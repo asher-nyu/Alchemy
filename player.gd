@@ -228,10 +228,10 @@ func perform_attack():
 		# Add energy from damage dealt
 		PotionManager.add_energy_from_damage_dealt(total_damage_dealt)
 		
-	# Consume ultimate charge if active
-	if PotionManager.is_ultimate_mode_active():
-		PotionManager.consume_ultimate_charge()
-		
+		# Only consume ultimate charge if the punch actually connected
+		if PotionManager.is_ultimate_mode_active():
+			PotionManager.consume_ultimate_charge()
+			
 	# Wait for attack animation to finish
 	await get_tree().create_timer(ATTACK_ANIMATION_TIME).timeout
 	is_attacking = false
