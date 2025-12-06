@@ -14,6 +14,7 @@ var camera_start = Vector2.ZERO
 var camera_offset = Vector2.ZERO
 var camera_base_position = Vector2.ZERO
 
+var is_dying: bool = false
 
 
 const SPEED = 400.0
@@ -245,9 +246,11 @@ func perform_attack():
 	can_attack = true
 
 
-# --- HEALTH SYSTEM ---
 func take_damage(amount: int) -> void:
-	# Stronger visual feedback
+	# If the death sequence is already in progress, ignore further damage
+	# and definitely don't start any new hurt sounds.
+	if is_dying:
+		return
 
 	# Preserve current color/scale so She-Hulk mode and other tints survive the flash
 	var current_modulate = animated_sprite.modulate
@@ -257,8 +260,8 @@ func take_damage(amount: int) -> void:
 	animated_sprite.modulate = Color(1, 0.3, 0.3)           # bright red flash
 	animated_sprite.scale = current_scale * Vector2(1.1, 0.9)
 
-	# Play hurt sound
-	if hero_hurt_sound and not hero_hurt_sound.playing:
+	# Play hurt sound ONLY if we're not in the middle of dying and it's not already playing
+	if hero_hurt_sound and not hero_hurt_sound.playing and not is_dying:
 		hero_hurt_sound.play()
 
 	# Camera shake
@@ -270,11 +273,18 @@ func take_damage(amount: int) -> void:
 	# Short hit flash duration – longer than your original 0.1 so it’s noticeable
 	await get_tree().create_timer(0.15).timeout
 
+	# If we started dying during the wait (e.g. from some other fatal event),
+	# restore visuals and skip applying further damage.
+	if is_dying:
+		animated_sprite.modulate = current_modulate
+		animated_sprite.scale = current_scale
+		return
+
 	# Restore visual state (keeps She-Hulk green etc.)
 	animated_sprite.modulate = current_modulate
 	animated_sprite.scale = current_scale
 
-	# Apply gameplay damage through PotionManager
+	# Apply gameplay damage through PotionManager (this may trigger _on_player_died → die())
 	PotionManager.take_damage(amount)
 
 
@@ -346,8 +356,18 @@ func create_energy_label():
 # --- DEATH HANDLING ---	
 func _on_player_died():
 	die(0.0)
+
 func die(delay: float = 0.0) -> void:
-	# Disable all logic
+	# Prevent running the death sequence multiple times
+	if is_dying:
+		return
+	is_dying = true
+
+	# Extra delay before starting the death sequence (if you pass > 0)
+	if delay > 0.0:
+		await get_tree().create_timer(delay).timeout
+
+	# Disable all logic so player can't move / act anymore
 	set_process(false)
 	set_physics_process(false)
 	remove_from_group("Player")
@@ -358,10 +378,6 @@ func die(delay: float = 0.0) -> void:
 	# Hide sprite instantly
 	if $AnimatedSprite2D:
 		$AnimatedSprite2D.hide()
-
-	# Play death sound
-	if hero_death_sound and not hero_death_sound.playing:
-		hero_death_sound.play()
 
 	# Blood pixel effect (instant)
 	var pixels = 20
@@ -376,28 +392,38 @@ func die(delay: float = 0.0) -> void:
 
 		for j in range(segments):
 			var angle = (float(j) / segments) * TAU
-			points.append(Vector2(cos(angle)*width/2, sin(angle)*height/2))
+			points.append(Vector2(cos(angle) * width / 2, sin(angle) * height / 2))
 
 		part.polygon = points
-		part.color = Color(1,0.2,0.2)
-		part.global_position = global_position + Vector2(randf()*32-16, randf()*32-16)
+		part.color = Color(1, 0.2, 0.2)
+		part.global_position = global_position + Vector2(randf() * 32 - 16, randf() * 32 - 16)
 
 		var t = create_tween()
-		var target_pos = part.global_position + Vector2(randf()*200-100, randf()*200-100)
+		var target_pos = part.global_position + Vector2(randf() * 200 - 100, randf() * 200 - 100)
 		t.tween_property(part, "global_position", target_pos, 1.0)
 		t.tween_property(part, "modulate:a", 0.0, 1.0)
 
-	# Wait for death sound, then respawn on same level
-	await get_tree().create_timer(hero_death_sound.stream.get_length()).timeout
-	
+	# --- AUDIO ORDER: let last hurt finish, then death sound ---
+
+	# If a hurt sound was already playing when we died, let it finish naturally.
+	if hero_hurt_sound and hero_hurt_sound.playing:
+		await hero_hurt_sound.finished
+
+	# Now play the death sound (if present) and let it finish.
+	if hero_death_sound and hero_death_sound.stream:
+		hero_death_sound.play()
+		await hero_death_sound.finished
+
 	# Reset health before reloading
 	PotionManager.reset_all()
-	
+
 	# Load Game Over screen
 	var game_over_scene = load("res://GameOverScreen.tscn").instantiate()
 	game_over_scene.level_to_load = get_tree().current_scene.get_scene_file_path()
 	get_tree().root.add_child(game_over_scene)
 	get_tree().current_scene.queue_free()  # Remove the old level
+
+
 
 func shake_camera(intensity: float = 16.0, duration: float = 0.15) -> void:
 	if not camera:
