@@ -3,6 +3,7 @@ extends Node2D
 @export var fall_distance_px: float = 370.0
 @export var interval_seconds: float = 3.0
 @export var gravity: float = 980.0
+@export var damage_amount: int = 10   # How much HP the drop removes on hit
 
 var sprite: Sprite2D
 var start_y: float
@@ -17,7 +18,6 @@ func _ready() -> void:
 		if child is Sprite2D:
 			sprite = child
 			break
-	
 	
 	start_y = sprite.position.y
 	target_y = start_y + fall_distance_px
@@ -94,9 +94,9 @@ func _player_hit(player) -> void:
 	if drop_sound:
 		drop_sound.play()
 	
-	# Call player's death method
-	if player.has_method("_on_player_died"):
-		player._on_player_died()
+	# Deal damage instead of instant death
+	if player and is_instance_valid(player) and player.has_method("take_damage"):
+		player.take_damage(damage_amount)
 	
 	# Schedule next drop
 	await get_tree().create_timer(interval_seconds).timeout
