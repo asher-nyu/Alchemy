@@ -5,6 +5,7 @@ var run_sound = AudioStreamPlayer.new()
 var attack_sound = AudioStreamPlayer.new()
 var hero_death_sound = AudioStreamPlayer.new()
 var hero_jump_sound = AudioStreamPlayer.new()
+var hero_hurt_sound = AudioStreamPlayer.new()
 
 # --- CAMERA DRAG SYSTEM ---
 var dragging = false
@@ -69,6 +70,9 @@ func _ready():
 	
 	add_child(hero_jump_sound)
 	hero_jump_sound.stream = load("res://assets/Audio Pack/jump.mp3")
+	
+	add_child(hero_hurt_sound)
+	hero_hurt_sound.stream = load("res://assets/Audio Pack/hero_hurt_sound.mp3")
 	
 	# Setup UI labels
 	if health_label:
@@ -240,16 +244,39 @@ func perform_attack():
 	await get_tree().create_timer(ATTACK_COOLDOWN - ATTACK_ANIMATION_TIME).timeout
 	can_attack = true
 
+
 # --- HEALTH SYSTEM ---
 func take_damage(amount: int) -> void:
-	# Visual feedback
+	# Stronger visual feedback
+
+	# Preserve current color/scale so She-Hulk mode and other tints survive the flash
 	var current_modulate = animated_sprite.modulate
-	animated_sprite.modulate = Color.RED
-	await get_tree().create_timer(0.1).timeout
-	animated_sprite.modulate = current_modulate 
-	
-	# Apply damage through PotionManager
+	var current_scale = animated_sprite.scale
+
+	# Flash + slight squash/stretch
+	animated_sprite.modulate = Color(1, 0.3, 0.3)           # bright red flash
+	animated_sprite.scale = current_scale * Vector2(1.1, 0.9)
+
+	# Play hurt sound
+	if hero_hurt_sound and not hero_hurt_sound.playing:
+		hero_hurt_sound.play()
+
+	# Camera shake
+	shake_camera(16.0, 0.15)
+
+	# HUD bump (optional)
+	bump_health_label()
+
+	# Short hit flash duration – longer than your original 0.1 so it’s noticeable
+	await get_tree().create_timer(0.15).timeout
+
+	# Restore visual state (keeps She-Hulk green etc.)
+	animated_sprite.modulate = current_modulate
+	animated_sprite.scale = current_scale
+
+	# Apply gameplay damage through PotionManager
 	PotionManager.take_damage(amount)
+
 
 # --- DAMAGE INCREASE SYSTEM ---
 func increase_damage(amount: int):
@@ -371,3 +398,28 @@ func die(delay: float = 0.0) -> void:
 	game_over_scene.level_to_load = get_tree().current_scene.get_scene_file_path()
 	get_tree().root.add_child(game_over_scene)
 	get_tree().current_scene.queue_free()  # Remove the old level
+
+func shake_camera(intensity: float = 16.0, duration: float = 0.15) -> void:
+	if not camera:
+		return
+	
+	var original_offset = camera_offset
+	var tween := create_tween()
+	
+	# Quick left-right shake, then back to center
+	tween.tween_property(self, "camera_offset",
+		original_offset + Vector2(intensity, 0), duration * 0.25)
+	tween.tween_property(self, "camera_offset",
+		original_offset + Vector2(-intensity, 0), duration * 0.5)
+	tween.tween_property(self, "camera_offset",
+		original_offset, duration * 0.25)
+
+func bump_health_label():
+	if not health_label:
+		return
+	
+	var original_scale = health_label.scale
+	var tween := create_tween()
+	
+	health_label.scale = original_scale * 1.2
+	tween.tween_property(health_label, "scale", original_scale, 0.15)
