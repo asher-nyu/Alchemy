@@ -7,7 +7,7 @@ var collect_sound_player = AudioStreamPlayer.new()
 var match_start = AudioStreamPlayer.new()
 var sparkle_sound_player = AudioStreamPlayer.new()
 var swap_fail_sound = AudioStreamPlayer.new()
-
+var custom_font := load("videotype.otf") as FontFile
 
 # Grid settings
 const GRID_WIDTH = 9
@@ -15,8 +15,8 @@ const GRID_HEIGHT = 9
 const TILE_SIZE = 300  
 const TILE_SPACING = 2
 const SCALE_FACTOR = 0.5
-const GRID_OFFSET_X = 2174
-const GRID_OFFSET_Y = 397
+var GRID_OFFSET_X: float = 0.0
+var GRID_OFFSET_Y: float = 0.0
 
 # Token types
 enum TokenType {
@@ -86,9 +86,19 @@ func _ready():
 	
 	camera = get_viewport().get_camera_2d()
 	
+	var effective_tile_size = TILE_SIZE * SCALE_FACTOR
+	var tile_pitch = effective_tile_size + TILE_SPACING
+
+	var grid_width = (GRID_WIDTH - 1) * tile_pitch + effective_tile_size
+	var grid_height = (GRID_HEIGHT - 1) * tile_pitch + effective_tile_size
+
+	var center = camera.get_screen_center_position()  # world coords of screen center
+	GRID_OFFSET_X = center.x - grid_width / 2.0
+	GRID_OFFSET_Y = center.y - grid_height / 2.0
+	
 	load_textures()
 	initialize_collected_tokens()
-	create_moves_ui()
+	create_moves_ui(center)
 	create_grid_with_tokens()
 
 func load_textures():
@@ -98,16 +108,21 @@ func initialize_collected_tokens():
 	collected_tokens = Inventory.get_collected_tokens()
 	print("🎮 Match3 initialized with tokens: ", collected_tokens)
 
-func create_moves_ui():
-	"""Create the UI label showing remaining moves"""
+func create_moves_ui(screen_center: Vector2):
 	moves_label = Label.new()
 	moves_label.name = "MovesLabel"
-	moves_label.position = Vector2(2200, 200)
+	moves_label.add_theme_font_override("font", custom_font)
+	
 	moves_label.add_theme_font_size_override("font_size", 72)
 	moves_label.add_theme_color_override("font_color", Color.YELLOW)
 	moves_label.z_index = 1000
-	update_moves_display()
+		
 	add_child(moves_label)
+	update_moves_display()
+	
+	var label_x := GRID_OFFSET_X + 10
+	var label_y := GRID_OFFSET_Y - 150.0
+	moves_label.global_position = Vector2(label_x, label_y)
 
 func update_moves_display():
 	if moves_label:
@@ -315,6 +330,7 @@ func show_floating_text(text: String, color: Color, positions: Array):
 	var label = Label.new()
 	label.text = text
 	label.position = world_pos
+	label.add_theme_font_override("font", custom_font)
 	label.add_theme_font_size_override("font_size", 80)
 	label.add_theme_color_override("font_color", color)
 	label.z_index = 500
