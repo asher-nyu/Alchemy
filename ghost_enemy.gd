@@ -212,6 +212,11 @@ func die():
 		
 # Add mint to inventory
 	Inventory.add_mint(1)
+	
+	# Track kill for bonus match-3 moves
+	if has_node("/root/LevelManager"):
+		LevelManager.add_enemy_kill()
+	
 	queue_free()
 
 func spawn_mint_pickup():

@@ -49,7 +49,9 @@ var score = 0
 
 # Move limit
 var moves_made = 0
-const MAX_MOVES = 5
+const BASE_MOVES = 5
+var bonus_moves = 0  # Bonus moves from killing enemies
+var max_moves = BASE_MOVES  # Total moves available
 
 # Cascade protection
 var cascade_depth = 0
@@ -86,6 +88,14 @@ func _ready():
 	
 	camera = get_viewport().get_camera_2d()
 	
+	# Get bonus moves from enemies killed
+	if has_node("/root/LevelManager"):
+		bonus_moves = LevelManager.get_bonus_moves()
+		max_moves = BASE_MOVES + bonus_moves
+		print("🎮 Match3: Starting with %d base moves + %d bonus moves = %d total moves!" % [BASE_MOVES, bonus_moves, max_moves])
+	else:
+		max_moves = BASE_MOVES
+	
 	load_textures()
 	initialize_collected_tokens()
 	create_moves_ui()
@@ -111,8 +121,13 @@ func create_moves_ui():
 
 func update_moves_display():
 	if moves_label:
-		var remaining = MAX_MOVES - moves_made
-		moves_label.text = "Moves: %d/%d" % [remaining, MAX_MOVES]
+		var remaining = max_moves - moves_made
+		
+		# Show bonus moves if any
+		if bonus_moves > 0:
+			moves_label.text = "Moves: %d/%d (+%d bonus)" % [remaining, max_moves, bonus_moves]
+		else:
+			moves_label.text = "Moves: %d/%d" % [remaining, max_moves]
 		
 		# Change color based on remaining moves
 		if remaining <= 1:
@@ -272,7 +287,7 @@ func swap_tiles(x1: int, y1: int, x2: int, y2: int):
 	update_moves_display()
 	
 	# Check if we've reached the move limit
-	if moves_made >= MAX_MOVES:
+	if moves_made >= max_moves:
 		# Process this last match, then end the game
 		await process_all_matches()
 		is_swapping = false
@@ -519,6 +534,10 @@ func end_game_and_transition():
 	is_swapping = true
 	
 	await get_tree().create_timer(2.0).timeout
+	
+	# Reset enemy kill counter for next level
+	if has_node("/root/LevelManager"):
+		LevelManager.reset_enemy_kills()
 	
 	# Go to next level (set by the door)
 	GlobalPuzzleData.puzzle_completed()

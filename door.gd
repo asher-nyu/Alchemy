@@ -23,19 +23,16 @@ func _ready():
 	add_child(portal_sound)
 	portal_sound.stream = load("res://assets/Audio Pack/portal.wav")
 	
-	# Start locked and ensure player_in_range is false
-	is_unlocked = false
+	# Doors are now always unlocked - no need to kill enemies
+	is_unlocked = true
 	player_in_range = false
-	set_door_locked()
+	set_door_unlocked()
 	
-	print("Door ready. Current level: ", current_level_number, " → Next scene: ", next_scene)
+	print("Door ready (always unlocked). Current level: ", current_level_number, " → Next scene: ", next_scene)
 
 func _process(delta):
 	# Track time since ready for input cooldown
 	time_since_ready += delta
-	
-	# Check if all enemies are dead
-	check_enemies()
 	
 	# Check for door entry input (using Input.is_action_just_pressed instead of _input)
 	if player_in_range and is_unlocked and time_since_ready >= input_cooldown:
@@ -44,68 +41,22 @@ func _process(delta):
 			if player and is_instance_valid(player):
 				enter_door()
 	
-	# Show message if player is near
+	# Show message if player is near (door is always unlocked now)
 	if player_in_range:
-		if is_unlocked:
-			if time_since_ready >= input_cooldown:
-				show_message("Press ENTER to enter")
-			else:
-				show_message("Door ready...")
+		if time_since_ready >= input_cooldown:
+			show_message("Press ENTER to enter")
 		else:
-			var enemies_left = count_remaining_enemies()
-			show_message("Locked! Kill all enemies (%d left)" % enemies_left)
+			show_message("Door ready...")
 
-func check_enemies():
-	"""Check if all enemies are defeated and unlock door."""
-	if is_unlocked:
-		return
-	
-	var enemies = get_tree().get_nodes_in_group("Enemy")
-	
-	# Count alive enemies
-	var alive_count = 0
-	for enemy in enemies:
-		if enemy and is_instance_valid(enemy) and enemy.current_health > 0:
-			alive_count += 1
-	
-	# If no enemies left, unlock!
-	if alive_count == 0:
-		unlock_door()
-
-func count_remaining_enemies() -> int:
-	"""Count how many enemies are still alive."""
-	var enemies = get_tree().get_nodes_in_group("Enemy")
-	var count = 0
-	
-	for enemy in enemies:
-		if enemy and is_instance_valid(enemy) and enemy.current_health > 0:
-			count += 1
-	
-	return count
-
-func unlock_door():
-	"""Unlock the door - all enemies are dead!"""
-	if is_unlocked:
-		return
-	
+func set_door_unlocked():
+	"""Set the door to unlocked state with visual feedback."""
 	is_unlocked = true
-	print(" Door unlocked! All enemies defeated!")
 	
-	# Visual feedback
+	# Visual feedback - door is always unlocked
 	if sprite:
 		sprite.modulate = door_unlocked_color
 	if animated_sprite:
 		animated_sprite.modulate = door_unlocked_color
-
-func set_door_locked():
-	"""Lock the door - enemies still alive."""
-	is_unlocked = false
-	
-	# Visual feedback
-	if sprite:
-		sprite.modulate = door_locked_color
-	if animated_sprite:
-		animated_sprite.modulate = door_locked_color
 
 func _on_body_entered(body):
 	if body.is_in_group("Player"):

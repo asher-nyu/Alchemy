@@ -5,6 +5,9 @@ extends Node
 var current_level: int = 1
 var next_level_path: String = "res://level_2.tscn"
 
+# Track enemies killed for bonus match-3 moves
+var enemies_killed_this_level: int = 0
+
 func set_next_level(level_number: int):
 	"""Call this when entering a door to set where match-3 should lead."""
 	current_level = level_number
@@ -31,3 +34,16 @@ func go_to_match3():
 
 func go_to_next_level():
 	get_tree().change_scene_to_file(next_level_path)
+
+func add_enemy_kill():
+	"""Call this when an enemy dies to grant bonus match-3 moves"""
+	enemies_killed_this_level += 1
+	print("LevelManager: Enemy killed! Total: %d (bonus moves for match-3)" % enemies_killed_this_level)
+
+func get_bonus_moves() -> int:
+	"""Get the number of bonus moves earned from killing enemies"""
+	return enemies_killed_this_level
+
+func reset_enemy_kills():
+	"""Reset the enemy kill counter (called when starting a new level or after match-3)"""
+	enemies_killed_this_level = 0

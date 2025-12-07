@@ -289,6 +289,10 @@ func die():
 	# Add to inventory
 	Inventory.add_garlic(1)
 	
+	# Track kill for bonus match-3 moves
+	if has_node("/root/LevelManager"):
+		LevelManager.add_enemy_kill()
+	
 	# Remove from scene
 	queue_free()
 
