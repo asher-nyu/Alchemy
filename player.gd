@@ -5,6 +5,7 @@ var run_sound = AudioStreamPlayer.new()
 var attack_sound = AudioStreamPlayer.new()
 var hero_death_sound = AudioStreamPlayer.new()
 var hero_jump_sound = AudioStreamPlayer.new()
+var hero_hurt_sound = AudioStreamPlayer.new()
 
 # --- CAMERA DRAG SYSTEM ---
 var dragging = false
@@ -13,6 +14,7 @@ var camera_start = Vector2.ZERO
 var camera_offset = Vector2.ZERO
 var camera_base_position = Vector2.ZERO
 
+var is_dying: bool = false
 
 
 const SPEED = 400.0
@@ -70,6 +72,9 @@ func _ready():
 	add_child(hero_jump_sound)
 	hero_jump_sound.stream = load("res://assets/Audio Pack/jump.mp3")
 	
+	add_child(hero_hurt_sound)
+	hero_hurt_sound.stream = load("res://assets/Audio Pack/hero_hurt_sound.mp3")
+	
 	# Setup UI labels
 	if health_label:
 		var parent = health_label.get_parent()
@@ -113,8 +118,8 @@ func _physics_process(delta: float) -> void:
 	if not is_on_floor():
 		velocity += get_gravity() * delta
 	
-	# Ultimate activation with 'E' key
-	if Input.is_key_pressed(KEY_E):
+	# Trigger She-Hulk Mode with the S key
+	if Input.is_key_pressed(KEY_S):
 		PotionManager.activate_ultimate()
 	
 	if Input.is_action_just_pressed("ui_accept") and can_attack:
@@ -228,10 +233,10 @@ func perform_attack():
 		# Add energy from damage dealt
 		PotionManager.add_energy_from_damage_dealt(total_damage_dealt)
 		
-	# Consume ultimate charge if active
-	if PotionManager.is_ultimate_mode_active():
-		PotionManager.consume_ultimate_charge()
-		
+		# Only consume ultimate charge if the punch actually connected
+		if PotionManager.is_ultimate_mode_active():
+			PotionManager.consume_ultimate_charge()
+			
 	# Wait for attack animation to finish
 	await get_tree().create_timer(ATTACK_ANIMATION_TIME).timeout
 	is_attacking = false
@@ -240,16 +245,48 @@ func perform_attack():
 	await get_tree().create_timer(ATTACK_COOLDOWN - ATTACK_ANIMATION_TIME).timeout
 	can_attack = true
 
-# --- HEALTH SYSTEM ---
+
 func take_damage(amount: int) -> void:
-	# Visual feedback
+	# If the death sequence is already in progress, ignore further damage
+	# and definitely don't start any new hurt sounds.
+	if is_dying:
+		return
+
+	# Preserve current color/scale so She-Hulk mode and other tints survive the flash
 	var current_modulate = animated_sprite.modulate
-	animated_sprite.modulate = Color.RED
-	await get_tree().create_timer(0.1).timeout
-	animated_sprite.modulate = current_modulate 
-	
-	# Apply damage through PotionManager
+	var current_scale = animated_sprite.scale
+
+	# Flash + slight squash/stretch
+	animated_sprite.modulate = Color(1, 0.3, 0.3)           # bright red flash
+	animated_sprite.scale = current_scale * Vector2(1.1, 0.9)
+
+	# Play hurt sound ONLY if we're not in the middle of dying and it's not already playing
+	if hero_hurt_sound and not hero_hurt_sound.playing and not is_dying:
+		hero_hurt_sound.play()
+
+	# Camera shake
+	shake_camera(16.0, 0.15)
+
+	# HUD bump (optional)
+	bump_health_label()
+
+	# Short hit flash duration – longer than your original 0.1 so it’s noticeable
+	await get_tree().create_timer(0.15).timeout
+
+	# If we started dying during the wait (e.g. from some other fatal event),
+	# restore visuals and skip applying further damage.
+	if is_dying:
+		animated_sprite.modulate = current_modulate
+		animated_sprite.scale = current_scale
+		return
+
+	# Restore visual state (keeps She-Hulk green etc.)
+	animated_sprite.modulate = current_modulate
+	animated_sprite.scale = current_scale
+
+	# Apply gameplay damage through PotionManager (this may trigger _on_player_died → die())
 	PotionManager.take_damage(amount)
+
 
 # --- DAMAGE INCREASE SYSTEM ---
 func increase_damage(amount: int):
@@ -267,7 +304,7 @@ func _on_energy_changed(current: int, maximum: int):
 
 func _on_ultimate_activated(attacks_remaining: int):
 	# Visual feedback - player glows during ultimate
-	animated_sprite.modulate = Color(2.0, 1.5, 0.0, 1.0)  # Bright yellow/orange glow
+	animated_sprite.modulate = Color(0.3, 1.0, 0.3, 1.0)  # Tint the sprite She-Hulk green
 	update_energy_display()
 
 func _on_ultimate_deactivated():
@@ -284,13 +321,13 @@ func update_energy_display() -> void:
 	if energy_label:
 		energy_label.text = PotionManager.get_energy_display_text()
 		
-		# Change color based on energy state
+		# Change color based on She-Hulk energy state
 		if PotionManager.is_ultimate_mode_active():
-			energy_label.add_theme_color_override("font_color", Color.ORANGE)
+			energy_label.add_theme_color_override("font_color", Color(0.9, 1.0, 0.3))   # Rampaging neon-gamma green
 		elif PotionManager.can_activate_ultimate():
-			energy_label.add_theme_color_override("font_color", Color.YELLOW)
+			energy_label.add_theme_color_override("font_color", Color(0.5, 1.0, 0.5))   # Charged up, glowing green
 		else:
-			energy_label.add_theme_color_override("font_color", Color.CYAN)
+			energy_label.add_theme_color_override("font_color", Color(0.3, 0.8, 0.3))   # Base She-Hulk green
 
 func create_energy_label():
 	"""Create the energy bar label"""
@@ -308,10 +345,10 @@ func create_energy_label():
 	energy_label.name = "EnergyLabel"
 	energy_label.visible = true
 	energy_label.position = Vector2(10, 70)
-	energy_label.add_theme_font_size_override("font_size", 40)
-	energy_label.add_theme_color_override("font_color", Color.CYAN)
-	energy_label.add_theme_color_override("font_outline_color", Color.BLACK)
-	energy_label.add_theme_constant_override("outline_size", 3)
+	
+	var custom_font := load("videotype.otf") as FontFile
+	energy_label.add_theme_font_override("font", custom_font)
+	energy_label.add_theme_font_size_override("font_size", 48)
 	
 	ui_layer.add_child(energy_label)
 	print("PLAYER: Energy label created!")
@@ -319,8 +356,18 @@ func create_energy_label():
 # --- DEATH HANDLING ---	
 func _on_player_died():
 	die(0.0)
+
 func die(delay: float = 0.0) -> void:
-	# Disable all logic
+	# Prevent running the death sequence multiple times
+	if is_dying:
+		return
+	is_dying = true
+
+	# Extra delay before starting the death sequence (if you pass > 0)
+	if delay > 0.0:
+		await get_tree().create_timer(delay).timeout
+
+	# Disable all logic so player can't move / act anymore
 	set_process(false)
 	set_physics_process(false)
 	remove_from_group("Player")
@@ -331,10 +378,6 @@ func die(delay: float = 0.0) -> void:
 	# Hide sprite instantly
 	if $AnimatedSprite2D:
 		$AnimatedSprite2D.hide()
-
-	# Play death sound
-	if hero_death_sound and not hero_death_sound.playing:
-		hero_death_sound.play()
 
 	# Blood pixel effect (instant)
 	var pixels = 20
@@ -349,25 +392,60 @@ func die(delay: float = 0.0) -> void:
 
 		for j in range(segments):
 			var angle = (float(j) / segments) * TAU
-			points.append(Vector2(cos(angle)*width/2, sin(angle)*height/2))
+			points.append(Vector2(cos(angle) * width / 2, sin(angle) * height / 2))
 
 		part.polygon = points
-		part.color = Color(1,0.2,0.2)
-		part.global_position = global_position + Vector2(randf()*32-16, randf()*32-16)
+		part.color = Color(1, 0.2, 0.2)
+		part.global_position = global_position + Vector2(randf() * 32 - 16, randf() * 32 - 16)
 
 		var t = create_tween()
-		var target_pos = part.global_position + Vector2(randf()*200-100, randf()*200-100)
+		var target_pos = part.global_position + Vector2(randf() * 200 - 100, randf() * 200 - 100)
 		t.tween_property(part, "global_position", target_pos, 1.0)
 		t.tween_property(part, "modulate:a", 0.0, 1.0)
 
-	# Wait for death sound, then respawn on same level
-	await get_tree().create_timer(hero_death_sound.stream.get_length()).timeout
-	
+	# --- AUDIO ORDER: let last hurt finish, then death sound ---
+
+	# If a hurt sound was already playing when we died, let it finish naturally.
+	if hero_hurt_sound and hero_hurt_sound.playing:
+		await hero_hurt_sound.finished
+
+	# Now play the death sound (if present) and let it finish.
+	if hero_death_sound and hero_death_sound.stream:
+		hero_death_sound.play()
+		await hero_death_sound.finished
+
 	# Reset health before reloading
 	PotionManager.reset_all()
-	
+
 	# Load Game Over screen
 	var game_over_scene = load("res://GameOverScreen.tscn").instantiate()
 	game_over_scene.level_to_load = get_tree().current_scene.get_scene_file_path()
 	get_tree().root.add_child(game_over_scene)
 	get_tree().current_scene.queue_free()  # Remove the old level
+
+
+
+func shake_camera(intensity: float = 16.0, duration: float = 0.15) -> void:
+	if not camera:
+		return
+	
+	var original_offset = camera_offset
+	var tween := create_tween()
+	
+	# Quick left-right shake, then back to center
+	tween.tween_property(self, "camera_offset",
+		original_offset + Vector2(intensity, 0), duration * 0.25)
+	tween.tween_property(self, "camera_offset",
+		original_offset + Vector2(-intensity, 0), duration * 0.5)
+	tween.tween_property(self, "camera_offset",
+		original_offset, duration * 0.25)
+
+func bump_health_label():
+	if not health_label:
+		return
+	
+	var original_scale = health_label.scale
+	var tween := create_tween()
+	
+	health_label.scale = original_scale * 1.2
+	tween.tween_property(health_label, "scale", original_scale, 0.15)

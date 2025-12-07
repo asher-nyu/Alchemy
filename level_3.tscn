@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=3 uid="uid://ba6ywdvg6ixyb"]
+[gd_scene load_steps=25 format=3 uid="uid://ba6ywdvg6ixyb"]
 
 [ext_resource type="Shader" uid="uid://b5lx6eenxs5p6" path="res://Alchemy.gdshader" id="1_b60u5"]
 [ext_resource type="Texture2D" uid="uid://crjd1bscx4mg5" path="res://assets/purplbckgd.png" id="2_kmy7e"]
@@ -13,6 +13,9 @@
 [ext_resource type="Texture2D" uid="uid://b7d55bgwx38lb" path="res://assets/poison1.png" id="11_833wy"]
 [ext_resource type="Script" uid="uid://bgonl6heqimvg" path="res://drop.gd" id="12_ghrvs"]
 [ext_resource type="Texture2D" uid="uid://qn2nu2uqnk7q" path="res://assets/poison3.png" id="13_ghrvs"]
+[ext_resource type="Script" uid="uid://canl6y1q0m3ly" path="res://SurvivalGuide.gd" id="14_keufu"]
+[ext_resource type="FontFile" uid="uid://5kju6oyea6g7" path="res://videotype.otf" id="15_joegk"]
+[ext_resource type="Texture2D" uid="uid://dbobvyedbw152" path="res://assets/GuideButton.png" id="16_m8gss"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_7j8ne"]
 shader = ExtResource("1_b60u5")
@@ -384,6 +387,11 @@ physics_layer_0/collision_layer = 1
 physics_layer_1/collision_layer = 1
 sources/0 = SubResource("TileSetAtlasSource_6p2dc")
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wnq0t"]
+bg_color = Color(0, 0, 0, 0.6)
+
+[sub_resource type="Theme" id="Theme_ra6nl"]
+
 [node name="level3" type="Node2D"]
 
 [node name="Background" type="Sprite2D" parent="."]
@@ -393,7 +401,7 @@ scale = Vector2(19.161972, 19.237288)
 texture = ExtResource("2_kmy7e")
 
 [node name="Player" parent="." instance=ExtResource("4_ghrvs")]
-position = Vector2(23, 938)
+position = Vector2(29, 924)
 scale = Vector2(4, 4)
 
 [node name="Camera2D3" type="Camera2D" parent="Player"]
@@ -505,3 +513,67 @@ offset_top = 1151.0
 offset_right = 2352.0
 offset_bottom = 1167.0
 color = Color(0, 0.39215687, 0, 0.5019608)
+
+[node name="SurvivalGuide" type="CanvasLayer" parent="."]
+script = ExtResource("14_keufu")
+
+[node name="Panel" type="Panel" parent="SurvivalGuide"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -576.0
+offset_top = -160.0
+offset_right = 576.0
+offset_bottom = 160.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_wnq0t")
+
+[node name="Label" type="Label" parent="SurvivalGuide/Panel"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -576.0
+offset_top = -253.0
+offset_right = 576.0
+offset_bottom = 253.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.92156863, 0.88235295, 0.6666667, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("15_joegk")
+theme_override_font_sizes/font_size = 27
+text = "Survival Guide for Alchemists
+
+Move using WASD or the arrow keys. Stay mobile.
+Smash that Space or Enter key to attack.
+Drag the view to spot hazards before they kill you.
+Build energy as you fight, then hit S to go She-Hulk and smash hard.
+
+Fully grasped? Press Shift to acknowledge."
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="GuideButton" type="TextureButton" parent="SurvivalGuide"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 509.80005
+offset_top = -309.0
+offset_right = 1021.80005
+offset_bottom = 203.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(0.1, 0.1)
+theme = SubResource("Theme_ra6nl")
+texture_normal = ExtResource("16_m8gss")
+
+[connection signal="pressed" from="SurvivalGuide/GuideButton" to="SurvivalGuide" method="_on_guide_button_pressed"]
