@@ -51,7 +51,7 @@ animations = [{
 }],
 "loop": true,
 "name": &"fly",
-"speed": 5.0
+"speed": 4.0
 }]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_4jvlg"]

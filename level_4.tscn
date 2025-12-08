@@ -390,7 +390,7 @@ bg_color = Color(0, 0, 0, 0.6)
 
 [sub_resource type="Theme" id="Theme_ra6nl"]
 
-[node name="level3" type="Node2D"]
+[node name="level4" type="Node2D"]
 
 [node name="Background" type="Sprite2D" parent="."]
 material = SubResource("ShaderMaterial_7j8ne")
