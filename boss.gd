@@ -39,6 +39,11 @@ var return_tween: Tween = null
 @onready var sprite = $AnimatedSprite2D
 @onready var collision_shape = $CollisionShape2D
 
+@onready var fireball_timer: Timer = Timer.new()
+@onready var dive_timer: Timer = Timer.new()
+@onready var dive_duration_timer: Timer = Timer.new()  # For the dive duration await
+
+
 func _ready() -> void:
 	add_to_group("Enemy")
 	player = get_tree().get_first_node_in_group("Player")
@@ -66,6 +71,21 @@ func _ready() -> void:
 			sprite.play("fly")
 		elif sprite.sprite_frames.has_animation("default"):
 			sprite.play("default")
+	
+	# Setup fireball timer
+	add_child(fireball_timer)
+	fireball_timer.wait_time = fireball_interval
+	fireball_timer.one_shot = true  # We'll restart it manually in the loop
+
+	# Setup dive loop timer (every 10s)
+	add_child(dive_timer)
+	dive_timer.wait_time = 10.0
+	dive_timer.one_shot = true
+
+	# Setup dive duration timer (5s during dive)
+	add_child(dive_duration_timer)
+	dive_duration_timer.wait_time = dive_duration
+	dive_duration_timer.one_shot = true
 	
 	# Start attack patterns
 	fireball_loop()   # Shoot fireballs every 2 seconds
@@ -146,9 +166,8 @@ func dive_maintain_distance() -> void:
 # ============ ATTACK 1: FIREBALL (Every 2 seconds) ============
 func fireball_loop() -> void:
 	while current_health > 0:
-		await get_tree().create_timer(fireball_interval).timeout
-		
-		# Don't shoot while diving
+		fireball_timer.start()
+		await fireball_timer.timeout
 		if not is_diving:
 			shoot_fireball()
 
@@ -176,19 +195,21 @@ func shoot_fireball() -> void:
 # ============ ATTACK 2: DIVE ATTACK (Every 10 seconds, lasts 5 seconds) ============
 func dive_loop() -> void:
 	while current_health > 0:
-		await get_tree().create_timer(10.0).timeout
+		dive_timer.start()
+		await dive_timer.timeout
 		dive_attack()
 
 func dive_attack() -> void:
 	is_diving = true
-	
+
 	# Enable melee damage
 	collision_layer = 1
 	collision_mask = 1
-	
+
 	# Dive for 5 seconds - will chase player directly via _physics_process
-	await get_tree().create_timer(dive_duration).timeout
-	
+	dive_duration_timer.start()
+	await dive_duration_timer.timeout
+
 	is_diving = false
 	
 	# Fly back to hover position: 400px in front, 200px above player's ground position

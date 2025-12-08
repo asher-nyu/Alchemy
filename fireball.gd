@@ -5,6 +5,7 @@ var speed: float = 400.0
 var damage: int = 15
 
 @onready var sprite = $AnimatedSprite2D
+@onready var lifetime_timer: Timer = Timer.new()
 
 func _ready() -> void:
 	body_entered.connect(_on_body_entered)
@@ -13,9 +14,12 @@ func _ready() -> void:
 	if sprite and sprite.sprite_frames:
 		sprite.play("default")
 	
-	# Auto-destroy after 5 seconds
-	await get_tree().create_timer(5.0).timeout
-	queue_free()
+	# Setup and start lifetime timer instead of SceneTreeTimer
+	add_child(lifetime_timer)
+	lifetime_timer.wait_time = 5.0
+	lifetime_timer.one_shot = true
+	lifetime_timer.timeout.connect(queue_free)  # Connect signal to free the node
+	lifetime_timer.start()
 
 func launch(dir: Vector2, dmg: int) -> void:
 	direction = dir.normalized()

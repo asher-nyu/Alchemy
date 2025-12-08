@@ -3,7 +3,7 @@ extends Node2D
 @export var fall_distance_px: float = 370.0
 @export var interval_seconds: float = 3.0
 @export var gravity: float = 980.0
-@export var damage_amount: int = 10   # How much HP the drop removes on hit
+@export var damage_amount: int = 10  # How much HP the drop removes on hit
 
 var sprite: Sprite2D
 var start_y: float
@@ -11,6 +11,7 @@ var target_y: float
 var vel_y: float = 0.0
 var is_falling: bool = false
 var drop_sound: AudioStreamPlayer
+@onready var interval_timer: Timer = Timer.new()
 
 func _ready() -> void:
 	# Find the first Sprite2D child
@@ -27,6 +28,13 @@ func _ready() -> void:
 	add_child(drop_sound)
 	drop_sound.stream = load("res://assets/Audio Pack/drop.wav")
 	
+	# Setup interval timer (pauses with tree pause)
+	add_child(interval_timer)
+	interval_timer.wait_time = interval_seconds
+	interval_timer.one_shot = true
+	interval_timer.timeout.connect(_on_interval_timeout)
+	
+	# Start the first drop
 	_start_next_drop()
 
 func _process(delta: float) -> void:
@@ -45,24 +53,26 @@ func _process(delta: float) -> void:
 		
 		# Get player's collision shape for hitbox
 		var player_hitbox = _get_player_hitbox(player)
-		
 		if drop_rect.intersects(player_hitbox):
 			_player_hit(player)
 			return
 	
 	# Reached bottom
 	if sprite.position.y >= target_y:
-		sprite.visible = false
-		is_falling = false
-		vel_y = 0.0
-		
-		# Play drop sound
-		if drop_sound:
-			drop_sound.play()
-		
-		# Schedule next drop
-		await get_tree().create_timer(interval_seconds).timeout
-		_start_next_drop()
+		_end_drop()
+
+func _end_drop() -> void:
+	"""Called when drop reaches bottom (no player hit)"""
+	sprite.visible = false
+	is_falling = false
+	vel_y = 0.0
+	
+	# Play drop sound
+	if drop_sound:
+		drop_sound.play()
+	
+	# Start timer for next drop
+	interval_timer.start()
 
 func _get_player_hitbox(player) -> Rect2:
 	# Assuming player has a CollisionShape2D
@@ -89,7 +99,7 @@ func _player_hit(player) -> void:
 	# Hide the drop immediately
 	if sprite:
 		sprite.visible = false
-
+	
 	# Play drop sound
 	if drop_sound:
 		drop_sound.play()
@@ -98,8 +108,11 @@ func _player_hit(player) -> void:
 	if player and is_instance_valid(player) and player.has_method("take_damage"):
 		player.take_damage(damage_amount)
 	
-	# Schedule next drop
-	await get_tree().create_timer(interval_seconds).timeout
+	# Start timer for next drop
+	interval_timer.start()
+
+func _on_interval_timeout() -> void:
+	"""Timer finished: start next drop"""
 	_start_next_drop()
 
 func _start_next_drop() -> void:
