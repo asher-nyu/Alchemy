@@ -31,6 +31,7 @@ var player_ground_y: float = 0.0  # Player's Y position when on ground
 var boss_flapping_sound: AudioStreamPlayer = AudioStreamPlayer.new()
 var boss_hurt_sound: AudioStreamPlayer = AudioStreamPlayer.new()
 var boss_die_sound: AudioStreamPlayer = AudioStreamPlayer.new()
+var fireball_shoot_sound: AudioStreamPlayer = AudioStreamPlayer.new()
 
 var is_dying: bool = false
 var return_tween: Tween = null
@@ -46,17 +47,18 @@ func _ready() -> void:
 	if player:
 		player_ground_y = player.global_position.y
 	
-	# --- AUDIO SETUP ---	 
 	add_child(boss_flapping_sound)
 	boss_flapping_sound.stream = load("res://assets/Audio Pack/boss_flapping_sound.wav") 
 	boss_flapping_sound.pitch_scale = 0.3
-
 	
 	add_child(boss_hurt_sound)
 	boss_hurt_sound.stream = load("res://assets/Audio Pack/boss_hurt_sound.wav") 
 	
 	add_child(boss_die_sound)
 	boss_die_sound.stream = load("res://assets/Audio Pack/boss_die_sound.wav") 
+	
+	add_child(fireball_shoot_sound)
+	fireball_shoot_sound.stream = load("res://assets/Audio Pack/fireball_shoot_sound.mp3")
 
 	# Play the flying animation
 	if sprite and sprite.sprite_frames:
@@ -156,7 +158,10 @@ func shoot_fireball() -> void:
 	
 	if not player:
 		return
-	
+		
+	if fireball_shoot_sound:
+		fireball_shoot_sound.play()
+		
 	# Create fireball
 	var fireball = fireball_scene.instantiate()
 	get_parent().add_child(fireball)
