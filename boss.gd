@@ -1,8 +1,8 @@
 extends CharacterBody2D
 
 # BOSS STATS
-@export var max_health: int = 50
-@export var current_health: int = 50
+@export var max_health: int = 500
+@export var current_health: int = 500
 @export var fly_speed: float = 150.0
 @export var dive_speed: float = 300.0
 
