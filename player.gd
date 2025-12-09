@@ -67,7 +67,7 @@ func _ready():
 	attack_sound.stream = load("res://assets/Audio Pack/attack.mp3")
 	
 	add_child(hero_death_sound)
-	hero_death_sound.stream = load("res://assets/Audio Pack/hero-death.mp3")
+	hero_death_sound.stream = load("res://assets/Audio Pack/hero_death_2.mp3")
 	
 	add_child(hero_jump_sound)
 	hero_jump_sound.stream = load("res://assets/Audio Pack/jump2.mp3")
