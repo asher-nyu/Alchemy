@@ -437,20 +437,30 @@ func process_all_matches():
 						print("⚔️ Ginger %d-match! +%d Attack Damage" % [match_size, damage_bonus])
 			
 			TokenType.PEPPER:
-				# Pepper increases base attack damage (more than ginger): 3-match = +3, 4-match = +7, 5+ = +12
+				# Pepper increases both energy and max health: 3-match = +10 energy +5 max HP, 4-match = +20 energy +10 max HP, 5+ = +30 energy +15 max HP
+				var energy_bonus = 0
 				if match_size == 3:
-					damage_bonus = 3
+					energy_bonus = 10
+					health_bonus = 5
 				elif match_size == 4:
-					damage_bonus = 7
+					energy_bonus = 20
+					health_bonus = 10
 				elif match_size >= 5:
-					damage_bonus = 12
+					energy_bonus = 30
+					health_bonus = 15
 				
-				if damage_bonus > 0:
-					var player = get_tree().get_first_node_in_group("Player")
-					if player and player.has_method("increase_damage"):
-						player.increase_damage(damage_bonus)
-						show_floating_text("+%d ATK" % damage_bonus, Color.RED, group["positions"])
-						print("🌶️ Pepper %d-match! +%d Attack Damage" % [match_size, damage_bonus])
+				if energy_bonus > 0 or health_bonus > 0:
+					# Add energy
+					if energy_bonus > 0:
+						PotionManager.add_energy(energy_bonus)
+					
+					# Increase max health
+					if health_bonus > 0:
+						var new_max = PotionManager.get_max_health() + health_bonus
+						PotionManager.set_max_health(new_max)
+					
+					show_floating_text("+%d ENERGY +%d MAX HP" % [energy_bonus, health_bonus], Color.RED, group["positions"])
+					print("🌶️ Pepper %d-match! +%d Energy +%d Max Health" % [match_size, energy_bonus, health_bonus])
 	
 	# Add to score
 	var points = matches.size() * 10
