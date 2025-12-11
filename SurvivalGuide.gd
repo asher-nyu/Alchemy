@@ -11,10 +11,15 @@ KEY_SPACE, KEY_ENTER
 ]
 var block_input := true
 var guide_pause_mode := false
+var tap_sound = AudioStreamPlayer.new()
 
 func _ready() -> void:
 	process_mode = PROCESS_MODE_ALWAYS
 	set_process_input(true)
+	
+	add_child(tap_sound)
+	tap_sound.stream = load("res://assets/Audio Pack/tap.wav")
+	
 	var current_scene_path = get_tree().current_scene.scene_file_path
 	var is_level_1 = current_scene_path.ends_with("level_1.tscn")
 	if is_level_1:
@@ -94,6 +99,10 @@ func show_guide() -> void:
 	)
 
 func _on_guide_button_pressed() -> void:
+	
+	if tap_sound and not tap_sound.playing:
+			tap_sound.play()
+			
 	guide_button.disabled = true  # Prevent multiple clicks
 	var start_pos = guide_button.position
 	var end_pos = guide_button.position + Vector2(60, 0)
