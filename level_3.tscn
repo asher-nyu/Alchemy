@@ -461,17 +461,17 @@ position = Vector2(1562, 1594)
 scale = Vector2(2, 2)
 
 [node name="GhostEnemy" parent="." instance=ExtResource("9_b60u5")]
-position = Vector2(2878, 1076)
+position = Vector2(2822, 999)
 
 [node name="skeleton_enemy" parent="." instance=ExtResource("10_kmy7e")]
 position = Vector2(1427, 1201)
 scale = Vector2(3, 3)
 
 [node name="GhostEnemy2" parent="." instance=ExtResource("9_b60u5")]
-position = Vector2(597, 1040)
+position = Vector2(586, 1008)
 
 [node name="GhostEnemy3" parent="." instance=ExtResource("9_b60u5")]
-position = Vector2(-14, 1597)
+position = Vector2(-3, 1565)
 
 [node name="Area2D" type="Area2D" parent="."]
 position = Vector2(0, -3)

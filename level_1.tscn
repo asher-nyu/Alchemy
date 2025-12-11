@@ -391,7 +391,7 @@ layer_0/tile_data = PackedInt32Array(3145733, 65536, 13, 3211269, 65536, 13, 327
 layer_1/name = "Layer1"
 
 [node name="Player" parent="." instance=ExtResource("3_hn12h")]
-position = Vector2(4054, 2934)
+position = Vector2(1871, 2836)
 scale = Vector2(4, 4)
 
 [node name="Camera2D3" type="Camera2D" parent="Player"]
