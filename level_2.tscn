@@ -465,7 +465,7 @@ texture = ExtResource("9_ehv2h")
 offset = Vector2(60, 0)
 
 [node name="skeleton_enemy3" parent="." instance=ExtResource("4_ihfcg")]
-position = Vector2(1336, 1721)
+position = Vector2(1346, 1703)
 scale = Vector2(4, 4)
 
 [node name="GhostEnemy" parent="." instance=ExtResource("12_s77qv")]
@@ -473,11 +473,11 @@ position = Vector2(2043, 1047)
 scale = Vector2(2, 2)
 
 [node name="skeleton_enemy" parent="." instance=ExtResource("4_ihfcg")]
-position = Vector2(2431, 1305)
-scale = Vector2(4, 4)
+position = Vector2(2451, 1312)
+scale = Vector2(3, 3)
 
 [node name="skeleton_enemy2" parent="." instance=ExtResource("4_ihfcg")]
-position = Vector2(915, 1029)
+position = Vector2(919, 1008)
 scale = Vector2(3, 3)
 
 [node name="GhostEnemy2" parent="." instance=ExtResource("12_s77qv")]

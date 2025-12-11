@@ -391,7 +391,7 @@ layer_0/tile_data = PackedInt32Array(3145733, 65536, 13, 3211269, 65536, 13, 327
 layer_1/name = "Layer1"
 
 [node name="Player" parent="." instance=ExtResource("3_hn12h")]
-position = Vector2(1836, 2843)
+position = Vector2(4054, 2934)
 scale = Vector2(4, 4)
 
 [node name="Camera2D3" type="Camera2D" parent="Player"]
@@ -399,12 +399,12 @@ zoom = Vector2(2, 2)
 limit_left = 10000000
 
 [node name="skeleton_enemy" parent="." instance=ExtResource("4_ihfcg")]
-position = Vector2(4362.0005, 2926)
-scale = Vector2(6, 6)
+position = Vector2(4293, 2955)
+scale = Vector2(3, 3)
 
 [node name="skeleton_enemy2" parent="." instance=ExtResource("4_ihfcg")]
-position = Vector2(6758.0005, 2923)
-scale = Vector2(6, 6)
+position = Vector2(6739.0005, 2987)
+scale = Vector2(3, 3)
 
 [node name="door" parent="." instance=ExtResource("5_rka8t")]
 position = Vector2(7247.0005, 2923)
