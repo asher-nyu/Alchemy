@@ -127,8 +127,8 @@ func attack_behavior():
 	velocity.x = direction_to_player.x * PATROL_SPEED * 0.5
 	
 	# Face the player
-	var direction = sign(player.global_position.x - global_position.x)
-	animated_sprite.flip_h = direction > 0
+	#var direction = sign(player.global_position.x - global_position.x)
+	#animated_sprite.flip_h = direction > 0
 	
 	if attack_timer <= 0:
 		deal_damage_to_player()
@@ -145,28 +145,34 @@ func update_animation():
 	if not animated_sprite:
 		return
 	
+	# 1) Decide which way we should face
+	var dir_x := 0.0
+	
+	if current_state == State.ATTACK and player:
+		# Face the player in attack state
+		dir_x = player.global_position.x - global_position.x
+	else:
+		# Otherwise face the direction we're moving
+		dir_x = velocity.x
+	
+	if dir_x != 0:
+		animated_sprite.flip_h = dir_x > 0
+	
+	# 2) Play the correct animation
 	match current_state:
 		State.PATROL:
-			if velocity.x > 0:
-				animated_sprite.flip_h = false
-			elif velocity.x < 0:
-				animated_sprite.flip_h = true
-			
 			# Ghost always floating - use idle animation
 			if animated_sprite.animation != "idle":
 				animated_sprite.play("idle")
 		
 		State.ATTACK:
-			var direction = sign(player.global_position.x - global_position.x) if player else 1
-			animated_sprite.flip_h = direction < 0
-			
 			if animated_sprite.sprite_frames.has_animation("attack"):
 				if animated_sprite.animation != "attack":
 					animated_sprite.play("attack")
 			else:
 				if animated_sprite.animation != "idle":
 					animated_sprite.play("idle")
-
+					
 func _on_body_entered_range(body):
 	if body.is_in_group("Player"):
 		player = body

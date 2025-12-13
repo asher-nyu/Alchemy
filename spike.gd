@@ -25,22 +25,30 @@ func _ready():
 func _on_body_entered(body: Node) -> void:
 	if body.is_in_group("Player"):
 		player = body
-		damage_timer.start()  # start damaging once per second
+
+		# Deal damage immediately
+		_apply_damage()
+
+		# Then start ticking damage over time
+		damage_timer.start()
 
 
 func _on_body_exited(body: Node) -> void:
 	if body == player:
 		damage_timer.stop()
-		player = null          # stop damaging when player leaves
+		player = null
 
 
 func _on_damage_tick() -> void:
+	_apply_damage()
+
+
+func _apply_damage() -> void:
 	# Safety checks in case the player died/was freed while on the spikes
 	if not player or not is_instance_valid(player):
 		damage_timer.stop()
 		player = null
 		return
 
-	# Use your existing damage pipeline on the player
 	if player.has_method("take_damage"):
 		player.take_damage(damage_per_tick)
