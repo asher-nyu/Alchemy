@@ -9,7 +9,9 @@ enum TokenType {
 }
 
 func get_valid_token(grid: Array, x: int, y: int, collected_tokens: Array, width: int, height: int) -> int:
-	var rock_probability = 0.7 if collected_tokens.size() < 2 else 0.0
+	# Reduced rock probability - only 10% chance when less than 2 tokens, 0% otherwise
+	# This gives more vegetables while still preventing impossible situations
+	var rock_probability = 0.1 if collected_tokens.size() < 2 else 0.0
 	if randf() < rock_probability:
 		return TokenType.ROCK
 	
@@ -18,14 +20,16 @@ func get_valid_token(grid: Array, x: int, y: int, collected_tokens: Array, width
 	for forbidden in forbidden_tokens:
 		available_tokens.erase(forbidden)
 	
+	# If no available tokens after filtering, use rock to prevent matches
+	# This ensures no 3-in-a-row matches are created initially
 	if available_tokens.is_empty():
 		return TokenType.ROCK
 	return available_tokens[randi() % available_tokens.size()]
 
 func get_valid_refill_token(grid: Array, x: int, y: int, collected_tokens: Array, width: int, height: int) -> int:
 	
-	# Special case: if only 1 token type collected, use rocks to break loops
-	if collected_tokens.size() <= 1:
+	# Only use rock as last resort if no tokens collected at all
+	if collected_tokens.is_empty():
 		return TokenType.ROCK
 	
 	var available_tokens = collected_tokens.duplicate()
@@ -35,6 +39,7 @@ func get_valid_refill_token(grid: Array, x: int, y: int, collected_tokens: Array
 		available_tokens.erase(forbidden)
 	
 	# If all tokens would create a match, use a rock instead
+	# This prevents creating 3-in-a-row matches during refills
 	if available_tokens.is_empty():
 		return TokenType.ROCK
 	
