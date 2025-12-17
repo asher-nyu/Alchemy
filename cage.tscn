@@ -1,0 +1,19 @@
+[gd_scene load_steps=4 format=3 uid="uid://bxku01lhb2u7o"]
+
+[ext_resource type="Script" uid="uid://bibc7ksc252nf" path="res://cage.gd" id="1_p80af"]
+[ext_resource type="Texture2D" uid="uid://ph6bdfw4yamn" path="res://assets/cage_closed.png" id="2_x53gr"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_x53gr"]
+size = Vector2(320, 348)
+
+[node name="Cage" type="StaticBody2D"]
+script = ExtResource("1_p80af")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(67.5, 29.999989)
+scale = Vector2(0.63000005, 0.63619745)
+texture = ExtResource("2_x53gr")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(68, 27)
+shape = SubResource("RectangleShape2D_x53gr")

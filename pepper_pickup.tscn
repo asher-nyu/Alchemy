@@ -1,0 +1,13 @@
+[gd_scene load_steps=3 format=3 uid="uid://vtry1rktmgky"]
+
+[ext_resource type="Script" path="res://pepper_pickup.gd" id="1_pepper"]
+[ext_resource type="Texture2D" uid="uid://cmprx8l3wdlwo" path="res://assets/vegetables/pepper.png" id="2_pepper"]
+
+[node name="PepperPickup" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_pepper")
+
+[node name="Sprite" type="TextureRect" parent="."]
+layout_mode = 0
+texture = ExtResource("2_pepper")

@@ -1,0 +1,36 @@
+[gd_scene load_steps=5 format=3 uid="uid://cwght4oqqw0f2"]
+
+[ext_resource type="Script" uid="uid://t4t3huf4a8pg" path="res://match3.gd" id="1_ddw6a"]
+[ext_resource type="Texture2D" uid="uid://bhmmre1ofq8x7" path="res://assets/background_pic.png" id="2_2d2f5"]
+[ext_resource type="Shader" uid="uid://b5lx6eenxs5p6" path="res://Alchemy.gdshader" id="2_awcxq"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_3eybo"]
+shader = ExtResource("2_awcxq")
+shader_parameter/base_color = Color(0.05, 0.03, 0.05, 1)
+shader_parameter/vein_color = Color(0.7, 0.35, 1, 1)
+shader_parameter/fog_color = Color(0.15, 0.08, 0.12, 1)
+shader_parameter/ooze_color = Color(0.3, 0.15, 0.4, 1)
+shader_parameter/vein_strength = 0.8
+shader_parameter/vein_thickness = 0.012
+shader_parameter/fog_density = 0.7
+shader_parameter/ooze_density = 0.98
+shader_parameter/flow_speed = 0.1
+shader_parameter/distort_amp = 0.045
+shader_parameter/ooze_thickness = 0.02
+shader_parameter/blob_count = 25.0
+shader_parameter/blob_speed = 0.01
+shader_parameter/ooze_shine = 0.5
+shader_parameter/crack_density = 0.7
+shader_parameter/ooze_layers = 4.0
+
+[node name="match3" type="Node2D"]
+script = ExtResource("1_ddw6a")
+
+[node name="BackgroundPic" type="Sprite2D" parent="."]
+material = SubResource("ShaderMaterial_3eybo")
+position = Vector2(1920, 1080)
+texture = ExtResource("2_2d2f5")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+anchor_mode = 0
+zoom = Vector2(0.3, 0.3)

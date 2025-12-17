@@ -1,0 +1,19 @@
+[gd_scene load_steps=4 format=3 uid="uid://dkbhd60d6pv8h"]
+
+[ext_resource type="Script" uid="uid://biqgvbpedkk6l" path="res://portal_01.gd" id="1_v6xrn"]
+[ext_resource type="Texture2D" uid="uid://naxd8bfjkr7t" path="res://assets/tileset_dungeon_PNG.png" id="2_0phs7"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_50cdl"]
+size = Vector2(133, 138)
+
+[node name="portal_01" type="Area2D"]
+script = ExtResource("1_v6xrn")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(-7.5, 49)
+shape = SubResource("RectangleShape2D_50cdl")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(-3.8146973e-06, -1)
+scale = Vector2(0.6857143, 0.70487803)
+texture = ExtResource("2_0phs7")

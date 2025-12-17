@@ -1,0 +1,118 @@
+[gd_scene load_steps=6 format=3 uid="uid://dq2w6yardp36g"]
+
+[ext_resource type="VideoStream" uid="uid://cd87nxdsfel08" path="res://assets/VictoryScreen.ogv" id="2_earqp"]
+[ext_resource type="FontFile" uid="uid://5kju6oyea6g7" path="res://Alchemy.otf" id="3_earqp"]
+[ext_resource type="Script" uid="uid://bugftp61p1amt" path="res://VictoryScreen.gd" id="3_xy3l2"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_d4clo"]
+bg_color = Color(0.72156864, 0.7529412, 0.4392157, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mqr7l"]
+bg_color = Color(0.24313726, 0.54509807, 0.7490196, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[node name="VictoryScreen" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(-315, -3877)
+script = ExtResource("3_xy3l2")
+
+[node name="Background" type="VideoStreamPlayer" parent="."]
+layout_mode = 1
+offset_right = 1152.0
+offset_bottom = 648.0
+stream = ExtResource("2_earqp")
+autoplay = true
+expand = true
+loop = true
+
+[node name="Main Title" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -148.0
+offset_top = 100.0
+offset_right = 148.0
+offset_bottom = 159.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(0.039215688, 0.13725491, 0.2, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("3_earqp")
+theme_override_font_sizes/font_size = 48
+text = "Hope Rekindled"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Narrative Text" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -576.0
+offset_top = -54.0
+offset_right = 576.0
+offset_bottom = 54.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(1517, 277)
+theme_override_colors/font_color = Color(0.19607843, 0.42745098, 0.4745098, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("3_earqp")
+theme_override_font_sizes/font_size = 18
+text = "The Queen is free, and the dungeon's curse begins to loosen.
+Your alchemy turned ruin into rescue and darkness into breath.
+But every legend invites another telling."
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BottomPanel" type="Control" parent="."]
+custom_minimum_size = Vector2(0, 300)
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="Button" type="Button" parent="BottomPanel"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -284.0
+offset_top = -48.0
+offset_right = 284.0
+offset_bottom = 48.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(806, 266)
+theme_override_colors/font_color = Color(0.03137255, 0.12156863, 0.19215687, 1)
+theme_override_colors/font_hover_color = Color(0.93333334, 0.93333334, 0.8352941, 1)
+theme_override_fonts/font = ExtResource("3_earqp")
+theme_override_font_sizes/font_size = 32
+theme_override_styles/normal = SubResource("StyleBoxFlat_d4clo")
+theme_override_styles/hover = SubResource("StyleBoxFlat_mqr7l")
+text = "Begin a New Legend"
+script = ExtResource("3_xy3l2")
+
+[connection signal="pressed" from="BottomPanel/Button" to="." method="_on_play_again_button_pressed"]

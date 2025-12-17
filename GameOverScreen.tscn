@@ -1,0 +1,139 @@
+[gd_scene load_steps=7 format=3 uid="uid://b6b2dpvgs271b"]
+
+[ext_resource type="Script" uid="uid://cri1xhpe8ever" path="res://GameOverScreen.gd" id="1_gk5la"]
+[ext_resource type="Shader" uid="uid://crujeps0d5hfq" path="res://GameOverScreen.gdshader" id="2_gk5la"]
+[ext_resource type="FontFile" uid="uid://5kju6oyea6g7" path="res://Alchemy.otf" id="3_51cef"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ko4ly"]
+shader = ExtResource("2_gk5la")
+shader_parameter/stone_dark = Color(0.06, 0.02, 0.09, 1)
+shader_parameter/stone_light = Color(0.2, 0.1, 0.3, 1)
+shader_parameter/mist_color = Color(0.3, 0.15, 0.45, 1)
+shader_parameter/rune_glow = Color(0.65, 0.35, 1, 1)
+shader_parameter/ember_blue = Color(0.45, 0.65, 1, 1)
+shader_parameter/brick_count = 8.0
+shader_parameter/seam_thickness = 0.006
+shader_parameter/crack_intensity = 0.7
+shader_parameter/noise_strength = 1.1
+shader_parameter/vignette_strength = 0.75
+shader_parameter/fog_amount = 0.22
+shader_parameter/flicker_amount = 0.35
+shader_parameter/light_pos = Vector2(0.64, 0.84)
+shader_parameter/light_radius = 0.95
+shader_parameter/light_strength = 1.9
+shader_parameter/chroma_px = 2.0
+shader_parameter/jitter_amount = 0.1
+shader_parameter/slice_freq = 140.0
+shader_parameter/glitch_speed = 2.2
+shader_parameter/glitch_intensity = 0.55
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_d4clo"]
+bg_color = Color(0.1764706, 0.101960786, 0.30980393, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mqr7l"]
+bg_color = Color(0.3137255, 0.16470589, 0.53333336, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[node name="Control" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_gk5la")
+
+[node name="Background" type="ColorRect" parent="."]
+material = SubResource("ShaderMaterial_ko4ly")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.11764706, 0.05882353, 0.18431373, 1)
+
+[node name="Main Title" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -184.0
+offset_top = 100.0
+offset_right = 184.0
+offset_bottom = 145.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(0.8117647, 0.6392157, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("3_51cef")
+theme_override_font_sizes/font_size = 48
+text = "The Darkness Prevails"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Narrative Text" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -576.0
+offset_top = -54.0
+offset_right = 576.0
+offset_bottom = 54.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.654902, 0.59607846, 0.7882353, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("3_51cef")
+theme_override_font_sizes/font_size = 18
+text = "The hero falls, and the Warlord's grip tightens on the throne.
+The Queen's cries echo unanswered through the dungeon halls.
+Return stronger, master your potions, and strike back against the shadows."
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BottomPanel" type="Control" parent="."]
+custom_minimum_size = Vector2(0, 300)
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="EndButton" type="Button" parent="BottomPanel"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -284.0
+offset_top = -48.0
+offset_right = 284.0
+offset_bottom = 48.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.8784314, 0.7607843, 1, 1)
+theme_override_colors/font_hover_color = Color(0.94509804, 0.8980392, 1, 1)
+theme_override_fonts/font = ExtResource("3_51cef")
+theme_override_font_sizes/font_size = 32
+theme_override_styles/normal = SubResource("StyleBoxFlat_d4clo")
+theme_override_styles/hover = SubResource("StyleBoxFlat_mqr7l")
+text = "Rise Once More"
+script = ExtResource("1_gk5la")
+
+[connection signal="pressed" from="BottomPanel/EndButton" to="." method="_on_start_button_pressed"]

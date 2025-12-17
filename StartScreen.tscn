@@ -1,0 +1,140 @@
+[gd_scene load_steps=7 format=3 uid="uid://dur0gs8lqb2mn"]
+
+[ext_resource type="Script" uid="uid://bem6f5621cnd1" path="res://StartScreen.gd" id="1_ko4ly"]
+[ext_resource type="Shader" uid="uid://baj6buaogoeeg" path="res://StartScreen.gdshader" id="2_0on6r"]
+[ext_resource type="FontFile" uid="uid://5kju6oyea6g7" path="res://Alchemy.otf" id="3_mqr7l"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ko4ly"]
+shader = ExtResource("2_0on6r")
+shader_parameter/stone_dark = Color(0.06, 0.02, 0.09, 1)
+shader_parameter/stone_light = Color(0.2, 0.1, 0.3, 1)
+shader_parameter/rune_glow = Color(0.65, 0.35, 1, 1)
+shader_parameter/mist_color = Color(0.3, 0.15, 0.45, 1)
+shader_parameter/magic_fire = Color(0.95, 0.75, 1, 1)
+shader_parameter/ember_blue = Color(0.45, 0.65, 1, 1)
+shader_parameter/brick_count = 8.0
+shader_parameter/seam_thickness = 0.006
+shader_parameter/crack_intensity = 0.7
+shader_parameter/noise_strength = 1.1
+shader_parameter/vignette_strength = 0.75
+shader_parameter/fog_amount = 0.22
+shader_parameter/flicker_amount = 0.35
+shader_parameter/light_pos = Vector2(0.64, 0.84)
+shader_parameter/light_radius = 0.95
+shader_parameter/light_strength = 1.9
+shader_parameter/chroma_px = 2.0
+shader_parameter/jitter_amount = 0.1
+shader_parameter/slice_freq = 140.0
+shader_parameter/glitch_speed = 2.2
+shader_parameter/glitch_intensity = 0.55
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_d4clo"]
+bg_color = Color(0.7254902, 0.6509804, 0.8509804, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mqr7l"]
+bg_color = Color(0.49411765, 0.24705882, 0.8980392, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[node name="Control" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_ko4ly")
+
+[node name="Background" type="ColorRect" parent="."]
+material = SubResource("ShaderMaterial_ko4ly")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.11764706, 0.05882353, 0.18431373, 1)
+
+[node name="Main Title" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -184.0
+offset_top = 100.0
+offset_right = 184.0
+offset_bottom = 145.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(0.827451, 0.6627451, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("3_mqr7l")
+theme_override_font_sizes/font_size = 48
+text = "Alchemy: The Last Hope"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Intro Narrative Text" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -576.0
+offset_top = -54.0
+offset_right = 576.0
+offset_bottom = 54.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.7254902, 0.6509804, 0.8509804, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("3_mqr7l")
+theme_override_font_sizes/font_size = 18
+text = "An evil warlord has seized the kingdom and imprisoned the Queen deep within the dungeons below.
+As the last living alchemist, you alone possess the power to turn fallen monsters into potions of might and magic.
+Brew your way through the darkness and save the Queen before it's too late."
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BottomPanel" type="Control" parent="."]
+custom_minimum_size = Vector2(0, 300)
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="ReStartButton" type="Button" parent="BottomPanel"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -284.0
+offset_top = -48.0
+offset_right = 284.0
+offset_bottom = 48.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.9529412, 0.827451, 0.48235294, 1)
+theme_override_colors/font_hover_color = Color(0.9647059, 0.9372549, 1, 1)
+theme_override_fonts/font = ExtResource("3_mqr7l")
+theme_override_font_sizes/font_size = 32
+theme_override_styles/normal = SubResource("StyleBoxFlat_d4clo")
+theme_override_styles/hover = SubResource("StyleBoxFlat_mqr7l")
+text = "Start Your Quest"
+script = ExtResource("1_ko4ly")
+
+[connection signal="pressed" from="BottomPanel/ReStartButton" to="." method="_on_start_button_pressed"]

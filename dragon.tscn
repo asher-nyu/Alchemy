@@ -1,0 +1,72 @@
+[gd_scene load_steps=12 format=3 uid="uid://nl6v3bmcopy"]
+
+[ext_resource type="Script" uid="uid://b30vuo0jmfsf4" path="res://dragon.gd" id="1_4jvlg"]
+[ext_resource type="PackedScene" uid="uid://chl70cowp6oi8" path="res://fireball.tscn" id="2_ohn0q"]
+[ext_resource type="Texture2D" uid="uid://dn1hvijo05w7n" path="res://assets/sprDragon.png" id="2_paxtu"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ohn0q"]
+atlas = ExtResource("2_paxtu")
+region = Rect2(0, 0, 70, 73)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_bgi7q"]
+atlas = ExtResource("2_paxtu")
+region = Rect2(70, 0, 70, 73)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_d2uyg"]
+atlas = ExtResource("2_paxtu")
+region = Rect2(140, 0, 70, 73)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7nydw"]
+atlas = ExtResource("2_paxtu")
+region = Rect2(210, 0, 70, 73)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ihc62"]
+atlas = ExtResource("2_paxtu")
+region = Rect2(280, 0, 70, 73)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_6a0v0"]
+atlas = ExtResource("2_paxtu")
+region = Rect2(350, 0, 70, 73)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_8x4hd"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ohn0q")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_bgi7q")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_d2uyg")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_7nydw")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ihc62")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_6a0v0")
+}],
+"loop": true,
+"name": &"fly",
+"speed": 4.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_4jvlg"]
+size = Vector2(72, 67)
+
+[node name="Boss" type="CharacterBody2D" groups=["Enemy"]]
+collision_layer = 3
+script = ExtResource("1_4jvlg")
+fireball_scene = ExtResource("2_ohn0q")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+scale = Vector2(3, 3)
+sprite_frames = SubResource("SpriteFrames_8x4hd")
+animation = &"fly"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(6, -2.5)
+shape = SubResource("RectangleShape2D_4jvlg")
