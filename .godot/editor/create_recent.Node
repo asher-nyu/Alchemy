@@ -1,0 +1,13 @@
+AnimatedSprite2D
+Node2D
+Control
+VideoStreamPlayer
+Sprite2D
+CollisionShape2D
+StaticBody2D
+Area2D
+TextureButton
+Label
+Panel
+CanvasLayer
+ColorRect

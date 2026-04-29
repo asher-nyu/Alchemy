@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://bryfjg4ujkh78"
+path="res://.godot/imported/fireball_shoot_sound.mp3-bab4d200170615daef1c5c2baaa40e3e.mp3str"
+
+[deps]
+
+source_file="res://assets/Audio Pack/fireball_shoot_sound.mp3"
+dest_files=["res://.godot/imported/fireball_shoot_sound.mp3-bab4d200170615daef1c5c2baaa40e3e.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

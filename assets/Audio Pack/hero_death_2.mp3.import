@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://oh7f242r31tr"
+path="res://.godot/imported/hero_death_2.mp3-bd173dea94eefb0a6d298001c0e289b8.mp3str"
+
+[deps]
+
+source_file="res://assets/Audio Pack/hero_death_2.mp3"
+dest_files=["res://.godot/imported/hero_death_2.mp3-bd173dea94eefb0a6d298001c0e289b8.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

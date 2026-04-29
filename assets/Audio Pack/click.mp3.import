@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://cx52x61slylaw"
+path="res://.godot/imported/click.mp3-b0abdccb4f4f0b6b89410e108cd6a60e.mp3str"
+
+[deps]
+
+source_file="res://assets/Audio Pack/click.mp3"
+dest_files=["res://.godot/imported/click.mp3-b0abdccb4f4f0b6b89410e108cd6a60e.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

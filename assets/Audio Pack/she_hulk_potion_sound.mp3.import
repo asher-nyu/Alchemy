@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://b4llen6huhfu7"
+path="res://.godot/imported/she_hulk_potion_sound.mp3-abd0f93718a922d40b0ef036035ca2b1.mp3str"
+
+[deps]
+
+source_file="res://assets/Audio Pack/she_hulk_potion_sound.mp3"
+dest_files=["res://.godot/imported/she_hulk_potion_sound.mp3-abd0f93718a922d40b0ef036035ca2b1.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4
